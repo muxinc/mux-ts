@@ -37,7 +37,7 @@ describe('resource jobs', () => {
   });
 
   test('cancel', async () => {
-    const responsePromise = client.robotsPreview.jobs.cancel('rjob_lK9w2kI5J1');
+    const responsePromise = client.robotsPreview.jobs.cancel('x');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

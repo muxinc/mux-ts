@@ -56,6 +56,11 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">RobotsJobAskQuestionsErroredWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobAskQuestionsPendingWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobAskQuestionsProcessingWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobEditCaptionsCancelledWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobEditCaptionsCompletedWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobEditCaptionsErroredWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobEditCaptionsPendingWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobEditCaptionsProcessingWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsCancelledWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsCompletedWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsErroredWebhookEvent</a></code>

@@ -39,7 +39,7 @@ export class GenerateChapters extends APIResource {
    * ```ts
    * const generateChaptersJob =
    *   await client.robotsPreview.jobs.generateChapters.retrieve(
-   *     'rjob_lK9w2kI5J1',
+   *     'x',
    *   );
    * ```
    */
