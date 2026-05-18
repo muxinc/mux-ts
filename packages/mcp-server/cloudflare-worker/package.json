@@ -18,10 +18,22 @@
   },
   "dependencies": {
     "@cloudflare/workers-oauth-provider": "^0.0.5",
-    "@modelcontextprotocol/sdk": "^1.27.1",
-    "agents": "^0.8.5",
+    "@modelcontextprotocol/sdk": "1.28.0",
+    "agents": "~0.8.7",
     "hono": "^4.12.4",
     "@mux/mcp": "latest",
-    "zod": "^3.24.4"
+    "@mux/mux-node": "latest"
+  },
+  "// overrides": "agents pins @modelcontextprotocol/sdk exactly; the three override blocks below force npm/yarn/pnpm to dedupe to that same version. Keep all four @modelcontextprotocol/sdk values in sync. See src/index.ts for the full rationale.",
+  "overrides": {
+    "@modelcontextprotocol/sdk": "1.28.0"
+  },
+  "resolutions": {
+    "@modelcontextprotocol/sdk": "1.28.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@modelcontextprotocol/sdk": "1.28.0"
+    }
   }
 }

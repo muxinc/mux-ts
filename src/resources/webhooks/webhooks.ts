@@ -22382,8 +22382,9 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
       asset_id: string;
 
       /**
-       * One or more questions to ask about the video. Each question can specify its own
-       * answer_options.
+       * One or more questions to ask about the video. Each question can either select
+       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+       * receive a free-form prose answer.
        */
       questions: Array<Parameters.Question>;
 
@@ -22392,6 +22393,12 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
        * omitted, the SDK uses the default track.
        */
       language_code?: string;
+
+      /**
+       * Experimental. Max character length for free-form answers. Ignored unless at
+       * least one question sets free_form_reply: true.
+       */
+      max_free_form_answer_length?: number;
     }
 
     export namespace Parameters {
@@ -22402,9 +22409,17 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
         question: string;
 
         /**
-         * Allowed answer values for this question. Defaults to ["yes", "no"].
+         * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
          */
         answer_options?: Array<string>;
+
+        /**
+         * Experimental. When true, the model replies with free-form prose instead of
+         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+         * answer as untrusted model output.
+         */
+        free_form_reply?: boolean;
       }
     }
 
@@ -22438,8 +22453,10 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
     export namespace Outputs {
       export interface Answer {
         /**
-         * The answer, constrained to one of the provided answer_options. Null when the
-         * question was skipped.
+         * For enum questions, constrained to one of the provided answer_options. For
+         * free-form questions, responds with prose up to max_free_form_answer_length
+         * characters - treat as untrusted model output. Null when the question was
+         * skipped.
          */
         answer: string | null;
 
@@ -22618,8 +22635,9 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
       asset_id: string;
 
       /**
-       * One or more questions to ask about the video. Each question can specify its own
-       * answer_options.
+       * One or more questions to ask about the video. Each question can either select
+       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+       * receive a free-form prose answer.
        */
       questions: Array<Parameters.Question>;
 
@@ -22628,6 +22646,12 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
        * omitted, the SDK uses the default track.
        */
       language_code?: string;
+
+      /**
+       * Experimental. Max character length for free-form answers. Ignored unless at
+       * least one question sets free_form_reply: true.
+       */
+      max_free_form_answer_length?: number;
     }
 
     export namespace Parameters {
@@ -22638,9 +22662,17 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
         question: string;
 
         /**
-         * Allowed answer values for this question. Defaults to ["yes", "no"].
+         * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
          */
         answer_options?: Array<string>;
+
+        /**
+         * Experimental. When true, the model replies with free-form prose instead of
+         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+         * answer as untrusted model output.
+         */
+        free_form_reply?: boolean;
       }
     }
 
@@ -22674,8 +22706,10 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
     export namespace Outputs {
       export interface Answer {
         /**
-         * The answer, constrained to one of the provided answer_options. Null when the
-         * question was skipped.
+         * For enum questions, constrained to one of the provided answer_options. For
+         * free-form questions, responds with prose up to max_free_form_answer_length
+         * characters - treat as untrusted model output. Null when the question was
+         * skipped.
          */
         answer: string | null;
 
@@ -22854,8 +22888,9 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
       asset_id: string;
 
       /**
-       * One or more questions to ask about the video. Each question can specify its own
-       * answer_options.
+       * One or more questions to ask about the video. Each question can either select
+       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+       * receive a free-form prose answer.
        */
       questions: Array<Parameters.Question>;
 
@@ -22864,6 +22899,12 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
        * omitted, the SDK uses the default track.
        */
       language_code?: string;
+
+      /**
+       * Experimental. Max character length for free-form answers. Ignored unless at
+       * least one question sets free_form_reply: true.
+       */
+      max_free_form_answer_length?: number;
     }
 
     export namespace Parameters {
@@ -22874,9 +22915,17 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
         question: string;
 
         /**
-         * Allowed answer values for this question. Defaults to ["yes", "no"].
+         * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
          */
         answer_options?: Array<string>;
+
+        /**
+         * Experimental. When true, the model replies with free-form prose instead of
+         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+         * answer as untrusted model output.
+         */
+        free_form_reply?: boolean;
       }
     }
 
@@ -22910,8 +22959,10 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
     export namespace Outputs {
       export interface Answer {
         /**
-         * The answer, constrained to one of the provided answer_options. Null when the
-         * question was skipped.
+         * For enum questions, constrained to one of the provided answer_options. For
+         * free-form questions, responds with prose up to max_free_form_answer_length
+         * characters - treat as untrusted model output. Null when the question was
+         * skipped.
          */
         answer: string | null;
 
@@ -23090,8 +23141,9 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
       asset_id: string;
 
       /**
-       * One or more questions to ask about the video. Each question can specify its own
-       * answer_options.
+       * One or more questions to ask about the video. Each question can either select
+       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+       * receive a free-form prose answer.
        */
       questions: Array<Parameters.Question>;
 
@@ -23100,6 +23152,12 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
        * omitted, the SDK uses the default track.
        */
       language_code?: string;
+
+      /**
+       * Experimental. Max character length for free-form answers. Ignored unless at
+       * least one question sets free_form_reply: true.
+       */
+      max_free_form_answer_length?: number;
     }
 
     export namespace Parameters {
@@ -23110,9 +23168,17 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
         question: string;
 
         /**
-         * Allowed answer values for this question. Defaults to ["yes", "no"].
+         * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
          */
         answer_options?: Array<string>;
+
+        /**
+         * Experimental. When true, the model replies with free-form prose instead of
+         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+         * answer as untrusted model output.
+         */
+        free_form_reply?: boolean;
       }
     }
 
@@ -23146,8 +23212,10 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
     export namespace Outputs {
       export interface Answer {
         /**
-         * The answer, constrained to one of the provided answer_options. Null when the
-         * question was skipped.
+         * For enum questions, constrained to one of the provided answer_options. For
+         * free-form questions, responds with prose up to max_free_form_answer_length
+         * characters - treat as untrusted model output. Null when the question was
+         * skipped.
          */
         answer: string | null;
 
@@ -23326,8 +23394,9 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
       asset_id: string;
 
       /**
-       * One or more questions to ask about the video. Each question can specify its own
-       * answer_options.
+       * One or more questions to ask about the video. Each question can either select
+       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+       * receive a free-form prose answer.
        */
       questions: Array<Parameters.Question>;
 
@@ -23336,6 +23405,12 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
        * omitted, the SDK uses the default track.
        */
       language_code?: string;
+
+      /**
+       * Experimental. Max character length for free-form answers. Ignored unless at
+       * least one question sets free_form_reply: true.
+       */
+      max_free_form_answer_length?: number;
     }
 
     export namespace Parameters {
@@ -23346,9 +23421,17 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
         question: string;
 
         /**
-         * Allowed answer values for this question. Defaults to ["yes", "no"].
+         * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
          */
         answer_options?: Array<string>;
+
+        /**
+         * Experimental. When true, the model replies with free-form prose instead of
+         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+         * answer as untrusted model output.
+         */
+        free_form_reply?: boolean;
       }
     }
 
@@ -23382,8 +23465,10 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
     export namespace Outputs {
       export interface Answer {
         /**
-         * The answer, constrained to one of the provided answer_options. Null when the
-         * question was skipped.
+         * For enum questions, constrained to one of the provided answer_options. For
+         * free-form questions, responds with prose up to max_free_form_answer_length
+         * characters - treat as untrusted model output. Null when the question was
+         * skipped.
          */
         answer: string | null;
 
@@ -23410,6 +23495,1371 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
          */
         skipped: boolean;
       }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobEditCaptionsCancelledWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobEditCaptionsCancelledWebhookEvent.Data;
+
+  type: 'robots.job.edit_captions.cancelled';
+}
+
+export namespace RobotsJobEditCaptionsCancelledWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'edit-captions';
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID whose existing text track should be edited.
+       */
+      asset_id: string;
+
+      /**
+       * The existing ready Mux text track ID to edit and optionally replace.
+       */
+      track_id: string;
+
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      auto_censor_profanity?: Parameters.AutoCensorProfanity;
+
+      /**
+       * Whether to delete the original source text track after the edited track upload
+       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       */
+      delete_original_track?: boolean;
+
+      /**
+       * Optional static word or phrase replacements applied directly to cue text.
+       */
+      replacements?: Array<Parameters.Replacement>;
+
+      /**
+       * Optional suffix appended to the uploaded replacement track name. Defaults to
+       * "edited".
+       */
+      track_name_suffix?: string;
+
+      /**
+       * Whether to upload the edited VTT back to the Mux asset as a new text track.
+       * Defaults to true.
+       */
+      upload_to_mux?: boolean;
+    }
+
+    export namespace Parameters {
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      export interface AutoCensorProfanity {
+        /**
+         * Additional words or short phrases that should always be censored even if the
+         * model does not detect them.
+         */
+        always_censor?: Array<string>;
+
+        /**
+         * How profanity is detected. Currently only `llm` is supported, which uses an LLM
+         * to identify profanity in cue text.
+         */
+        detection_method?: 'llm';
+
+        /**
+         * Replacement strategy for detected profanity: blank inserts bracketed
+         * underscores, remove drops the match, and mask replaces characters with question
+         * marks. Defaults to "blank".
+         */
+        mode?: 'blank' | 'remove' | 'mask';
+
+        /**
+         * Words or short phrases that should never be censored even if the model flags
+         * them.
+         */
+        never_censor?: Array<string>;
+      }
+
+      export interface Replacement {
+        /**
+         * Exact word or phrase to replace in cue text.
+         */
+        find: string;
+
+        /**
+         * Replacement text to insert when a match is found.
+         */
+        replace: string;
+
+        /**
+         * When true, `find` is matched only with exact case. Defaults to false
+         * (case-insensitive matching), so "gonna" also matches "Gonna" and "GONNA".
+         */
+        case_sensitive?: boolean;
+      }
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Total count of cue text replacements applied across all edit operations.
+       */
+      total_replacement_count: number;
+
+      /**
+       * Temporary pre-signed URL for downloading the edited VTT file.
+       */
+      temporary_vtt_url?: string;
+
+      /**
+       * Mux text track ID for the uploaded edited captions. Present when upload_to_mux
+       * is true and the upload succeeds.
+       */
+      uploaded_track_id?: string;
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobEditCaptionsCompletedWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobEditCaptionsCompletedWebhookEvent.Data;
+
+  type: 'robots.job.edit_captions.completed';
+}
+
+export namespace RobotsJobEditCaptionsCompletedWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'edit-captions';
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID whose existing text track should be edited.
+       */
+      asset_id: string;
+
+      /**
+       * The existing ready Mux text track ID to edit and optionally replace.
+       */
+      track_id: string;
+
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      auto_censor_profanity?: Parameters.AutoCensorProfanity;
+
+      /**
+       * Whether to delete the original source text track after the edited track upload
+       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       */
+      delete_original_track?: boolean;
+
+      /**
+       * Optional static word or phrase replacements applied directly to cue text.
+       */
+      replacements?: Array<Parameters.Replacement>;
+
+      /**
+       * Optional suffix appended to the uploaded replacement track name. Defaults to
+       * "edited".
+       */
+      track_name_suffix?: string;
+
+      /**
+       * Whether to upload the edited VTT back to the Mux asset as a new text track.
+       * Defaults to true.
+       */
+      upload_to_mux?: boolean;
+    }
+
+    export namespace Parameters {
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      export interface AutoCensorProfanity {
+        /**
+         * Additional words or short phrases that should always be censored even if the
+         * model does not detect them.
+         */
+        always_censor?: Array<string>;
+
+        /**
+         * How profanity is detected. Currently only `llm` is supported, which uses an LLM
+         * to identify profanity in cue text.
+         */
+        detection_method?: 'llm';
+
+        /**
+         * Replacement strategy for detected profanity: blank inserts bracketed
+         * underscores, remove drops the match, and mask replaces characters with question
+         * marks. Defaults to "blank".
+         */
+        mode?: 'blank' | 'remove' | 'mask';
+
+        /**
+         * Words or short phrases that should never be censored even if the model flags
+         * them.
+         */
+        never_censor?: Array<string>;
+      }
+
+      export interface Replacement {
+        /**
+         * Exact word or phrase to replace in cue text.
+         */
+        find: string;
+
+        /**
+         * Replacement text to insert when a match is found.
+         */
+        replace: string;
+
+        /**
+         * When true, `find` is matched only with exact case. Defaults to false
+         * (case-insensitive matching), so "gonna" also matches "Gonna" and "GONNA".
+         */
+        case_sensitive?: boolean;
+      }
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Total count of cue text replacements applied across all edit operations.
+       */
+      total_replacement_count: number;
+
+      /**
+       * Temporary pre-signed URL for downloading the edited VTT file.
+       */
+      temporary_vtt_url?: string;
+
+      /**
+       * Mux text track ID for the uploaded edited captions. Present when upload_to_mux
+       * is true and the upload succeeds.
+       */
+      uploaded_track_id?: string;
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobEditCaptionsErroredWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobEditCaptionsErroredWebhookEvent.Data;
+
+  type: 'robots.job.edit_captions.errored';
+}
+
+export namespace RobotsJobEditCaptionsErroredWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'edit-captions';
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID whose existing text track should be edited.
+       */
+      asset_id: string;
+
+      /**
+       * The existing ready Mux text track ID to edit and optionally replace.
+       */
+      track_id: string;
+
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      auto_censor_profanity?: Parameters.AutoCensorProfanity;
+
+      /**
+       * Whether to delete the original source text track after the edited track upload
+       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       */
+      delete_original_track?: boolean;
+
+      /**
+       * Optional static word or phrase replacements applied directly to cue text.
+       */
+      replacements?: Array<Parameters.Replacement>;
+
+      /**
+       * Optional suffix appended to the uploaded replacement track name. Defaults to
+       * "edited".
+       */
+      track_name_suffix?: string;
+
+      /**
+       * Whether to upload the edited VTT back to the Mux asset as a new text track.
+       * Defaults to true.
+       */
+      upload_to_mux?: boolean;
+    }
+
+    export namespace Parameters {
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      export interface AutoCensorProfanity {
+        /**
+         * Additional words or short phrases that should always be censored even if the
+         * model does not detect them.
+         */
+        always_censor?: Array<string>;
+
+        /**
+         * How profanity is detected. Currently only `llm` is supported, which uses an LLM
+         * to identify profanity in cue text.
+         */
+        detection_method?: 'llm';
+
+        /**
+         * Replacement strategy for detected profanity: blank inserts bracketed
+         * underscores, remove drops the match, and mask replaces characters with question
+         * marks. Defaults to "blank".
+         */
+        mode?: 'blank' | 'remove' | 'mask';
+
+        /**
+         * Words or short phrases that should never be censored even if the model flags
+         * them.
+         */
+        never_censor?: Array<string>;
+      }
+
+      export interface Replacement {
+        /**
+         * Exact word or phrase to replace in cue text.
+         */
+        find: string;
+
+        /**
+         * Replacement text to insert when a match is found.
+         */
+        replace: string;
+
+        /**
+         * When true, `find` is matched only with exact case. Defaults to false
+         * (case-insensitive matching), so "gonna" also matches "Gonna" and "GONNA".
+         */
+        case_sensitive?: boolean;
+      }
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Total count of cue text replacements applied across all edit operations.
+       */
+      total_replacement_count: number;
+
+      /**
+       * Temporary pre-signed URL for downloading the edited VTT file.
+       */
+      temporary_vtt_url?: string;
+
+      /**
+       * Mux text track ID for the uploaded edited captions. Present when upload_to_mux
+       * is true and the upload succeeds.
+       */
+      uploaded_track_id?: string;
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobEditCaptionsPendingWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobEditCaptionsPendingWebhookEvent.Data;
+
+  type: 'robots.job.edit_captions.pending';
+}
+
+export namespace RobotsJobEditCaptionsPendingWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'edit-captions';
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID whose existing text track should be edited.
+       */
+      asset_id: string;
+
+      /**
+       * The existing ready Mux text track ID to edit and optionally replace.
+       */
+      track_id: string;
+
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      auto_censor_profanity?: Parameters.AutoCensorProfanity;
+
+      /**
+       * Whether to delete the original source text track after the edited track upload
+       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       */
+      delete_original_track?: boolean;
+
+      /**
+       * Optional static word or phrase replacements applied directly to cue text.
+       */
+      replacements?: Array<Parameters.Replacement>;
+
+      /**
+       * Optional suffix appended to the uploaded replacement track name. Defaults to
+       * "edited".
+       */
+      track_name_suffix?: string;
+
+      /**
+       * Whether to upload the edited VTT back to the Mux asset as a new text track.
+       * Defaults to true.
+       */
+      upload_to_mux?: boolean;
+    }
+
+    export namespace Parameters {
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      export interface AutoCensorProfanity {
+        /**
+         * Additional words or short phrases that should always be censored even if the
+         * model does not detect them.
+         */
+        always_censor?: Array<string>;
+
+        /**
+         * How profanity is detected. Currently only `llm` is supported, which uses an LLM
+         * to identify profanity in cue text.
+         */
+        detection_method?: 'llm';
+
+        /**
+         * Replacement strategy for detected profanity: blank inserts bracketed
+         * underscores, remove drops the match, and mask replaces characters with question
+         * marks. Defaults to "blank".
+         */
+        mode?: 'blank' | 'remove' | 'mask';
+
+        /**
+         * Words or short phrases that should never be censored even if the model flags
+         * them.
+         */
+        never_censor?: Array<string>;
+      }
+
+      export interface Replacement {
+        /**
+         * Exact word or phrase to replace in cue text.
+         */
+        find: string;
+
+        /**
+         * Replacement text to insert when a match is found.
+         */
+        replace: string;
+
+        /**
+         * When true, `find` is matched only with exact case. Defaults to false
+         * (case-insensitive matching), so "gonna" also matches "Gonna" and "GONNA".
+         */
+        case_sensitive?: boolean;
+      }
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Total count of cue text replacements applied across all edit operations.
+       */
+      total_replacement_count: number;
+
+      /**
+       * Temporary pre-signed URL for downloading the edited VTT file.
+       */
+      temporary_vtt_url?: string;
+
+      /**
+       * Mux text track ID for the uploaded edited captions. Present when upload_to_mux
+       * is true and the upload succeeds.
+       */
+      uploaded_track_id?: string;
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobEditCaptionsProcessingWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobEditCaptionsProcessingWebhookEvent.Data;
+
+  type: 'robots.job.edit_captions.processing';
+}
+
+export namespace RobotsJobEditCaptionsProcessingWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'edit-captions';
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID whose existing text track should be edited.
+       */
+      asset_id: string;
+
+      /**
+       * The existing ready Mux text track ID to edit and optionally replace.
+       */
+      track_id: string;
+
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      auto_censor_profanity?: Parameters.AutoCensorProfanity;
+
+      /**
+       * Whether to delete the original source text track after the edited track upload
+       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       */
+      delete_original_track?: boolean;
+
+      /**
+       * Optional static word or phrase replacements applied directly to cue text.
+       */
+      replacements?: Array<Parameters.Replacement>;
+
+      /**
+       * Optional suffix appended to the uploaded replacement track name. Defaults to
+       * "edited".
+       */
+      track_name_suffix?: string;
+
+      /**
+       * Whether to upload the edited VTT back to the Mux asset as a new text track.
+       * Defaults to true.
+       */
+      upload_to_mux?: boolean;
+    }
+
+    export namespace Parameters {
+      /**
+       * Optional LLM-driven profanity detection and censorship rules applied to the
+       * selected caption track.
+       */
+      export interface AutoCensorProfanity {
+        /**
+         * Additional words or short phrases that should always be censored even if the
+         * model does not detect them.
+         */
+        always_censor?: Array<string>;
+
+        /**
+         * How profanity is detected. Currently only `llm` is supported, which uses an LLM
+         * to identify profanity in cue text.
+         */
+        detection_method?: 'llm';
+
+        /**
+         * Replacement strategy for detected profanity: blank inserts bracketed
+         * underscores, remove drops the match, and mask replaces characters with question
+         * marks. Defaults to "blank".
+         */
+        mode?: 'blank' | 'remove' | 'mask';
+
+        /**
+         * Words or short phrases that should never be censored even if the model flags
+         * them.
+         */
+        never_censor?: Array<string>;
+      }
+
+      export interface Replacement {
+        /**
+         * Exact word or phrase to replace in cue text.
+         */
+        find: string;
+
+        /**
+         * Replacement text to insert when a match is found.
+         */
+        replace: string;
+
+        /**
+         * When true, `find` is matched only with exact case. Defaults to false
+         * (case-insensitive matching), so "gonna" also matches "Gonna" and "GONNA".
+         */
+        case_sensitive?: boolean;
+      }
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Total count of cue text replacements applied across all edit operations.
+       */
+      total_replacement_count: number;
+
+      /**
+       * Temporary pre-signed URL for downloading the edited VTT file.
+       */
+      temporary_vtt_url?: string;
+
+      /**
+       * Mux text track ID for the uploaded edited captions. Present when upload_to_mux
+       * is true and the upload succeeds.
+       */
+      uploaded_track_id?: string;
     }
 
     /**
@@ -29850,6 +31300,11 @@ export type UnwrapWebhookEvent =
   | RobotsJobAskQuestionsErroredWebhookEvent
   | RobotsJobAskQuestionsPendingWebhookEvent
   | RobotsJobAskQuestionsProcessingWebhookEvent
+  | RobotsJobEditCaptionsCancelledWebhookEvent
+  | RobotsJobEditCaptionsCompletedWebhookEvent
+  | RobotsJobEditCaptionsErroredWebhookEvent
+  | RobotsJobEditCaptionsPendingWebhookEvent
+  | RobotsJobEditCaptionsProcessingWebhookEvent
   | RobotsJobFindKeyMomentsCancelledWebhookEvent
   | RobotsJobFindKeyMomentsCompletedWebhookEvent
   | RobotsJobFindKeyMomentsErroredWebhookEvent
@@ -29932,6 +31387,11 @@ export declare namespace Webhooks {
     type RobotsJobAskQuestionsErroredWebhookEvent as RobotsJobAskQuestionsErroredWebhookEvent,
     type RobotsJobAskQuestionsPendingWebhookEvent as RobotsJobAskQuestionsPendingWebhookEvent,
     type RobotsJobAskQuestionsProcessingWebhookEvent as RobotsJobAskQuestionsProcessingWebhookEvent,
+    type RobotsJobEditCaptionsCancelledWebhookEvent as RobotsJobEditCaptionsCancelledWebhookEvent,
+    type RobotsJobEditCaptionsCompletedWebhookEvent as RobotsJobEditCaptionsCompletedWebhookEvent,
+    type RobotsJobEditCaptionsErroredWebhookEvent as RobotsJobEditCaptionsErroredWebhookEvent,
+    type RobotsJobEditCaptionsPendingWebhookEvent as RobotsJobEditCaptionsPendingWebhookEvent,
+    type RobotsJobEditCaptionsProcessingWebhookEvent as RobotsJobEditCaptionsProcessingWebhookEvent,
     type RobotsJobFindKeyMomentsCancelledWebhookEvent as RobotsJobFindKeyMomentsCancelledWebhookEvent,
     type RobotsJobFindKeyMomentsCompletedWebhookEvent as RobotsJobFindKeyMomentsCompletedWebhookEvent,
     type RobotsJobFindKeyMomentsErroredWebhookEvent as RobotsJobFindKeyMomentsErroredWebhookEvent,

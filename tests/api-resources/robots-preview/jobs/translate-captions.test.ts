@@ -39,7 +39,7 @@ describe('resource translateCaptions', () => {
   });
 
   test('retrieve', async () => {
-    const responsePromise = client.robotsPreview.jobs.translateCaptions.retrieve('rjob_lK9w2kI5J1');
+    const responsePromise = client.robotsPreview.jobs.translateCaptions.retrieve('x');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

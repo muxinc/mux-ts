@@ -45,7 +45,7 @@ export class TranslateCaptions extends APIResource {
    * ```ts
    * const translateCaptionsJob =
    *   await client.robotsPreview.jobs.translateCaptions.retrieve(
-   *     'rjob_lK9w2kI5J1',
+   *     'x',
    *   );
    * ```
    */

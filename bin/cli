@@ -4,19 +4,26 @@ const { spawnSync } = require('child_process');
 
 const commands = {
   migrate: {
-    description: 'Run migrations to update your code using @mux/mux-node@13 to be compatible with @mux/mux-node@14',
+    description:
+      'Run migrations to update your code using @mux/mux-node@13 to be compatible with @mux/mux-node@14',
     fn: () => {
       const result = spawnSync(
         'npx',
-        ['-y', 'https://github.com/stainless-api/migrate-ts/releases/download/0.0.2/stainless-api-migrate-0.0.2-6.tgz', '--migrationConfig', require.resolve('./migration-config.json'), ...process.argv.slice(3)],
+        [
+          '-y',
+          'https://github.com/stainless-api/migrate-ts/releases/download/0.0.2/stainless-api-migrate-0.0.2-6.tgz',
+          '--migrationConfig',
+          require.resolve('./migration-config.json'),
+          ...process.argv.slice(3),
+        ],
         { stdio: 'inherit' },
       );
       if (result.status !== 0) {
         process.exit(result.status);
       }
-    }
-  }
-}
+    },
+  },
+};
 
 function exitWithHelp() {
   console.log(`Usage: mux-mux-node <subcommand>`);

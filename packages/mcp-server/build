@@ -32,7 +32,7 @@ chmod +x dist/index.js
 DIST_PATH=./dist PKG_IMPORT_PATH=@mux/mcp/ node ../../scripts/utils/postprocess-files.cjs
 
 # mcp bundle
-rm -rf dist-bundle mux_mux_node_api.mcpb; mkdir dist-bundle
+rm -rf dist-bundle mux.mcpb; mkdir dist-bundle
 
 # copy package.json
 PKG_JSON_PATH=../../packages/mcp-server/package.json node ../../scripts/utils/make-dist-package-json.cjs > dist-bundle/package.json
@@ -48,9 +48,9 @@ cd ..
 # pack bundle
 cp manifest.json dist-bundle
 
-npx mcpb pack dist-bundle mux_mux_node_api.mcpb
+npx mcpb pack dist-bundle mux.mcpb
 
-npx mcpb sign mux_mux_node_api.mcpb --self-signed
+npx mcpb sign mux.mcpb --self-signed
 
 # clean up
 rm -rf dist-bundle

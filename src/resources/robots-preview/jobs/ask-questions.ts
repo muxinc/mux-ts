@@ -20,12 +20,23 @@ export class AskQuestions extends APIResource {
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
    *       questions: [
+   *         { question: 'Is this video about glasses?' },
+   *         {
+   *           question: 'What is the primary subject?',
+   *           answer_options: [
+   *             'glasses',
+   *             'watches',
+   *             'shoes',
+   *             'hats',
+   *           ],
+   *         },
    *         {
    *           question:
-   *             'How many people are speaking on camera?',
-   *           answer_options: ['one', 'two', 'three or more'],
+   *             'Describe the primary subject in one sentence.',
+   *           free_form_reply: true,
    *         },
    *       ],
+   *       max_free_form_answer_length: 300,
    *     },
    *   });
    * ```
@@ -48,7 +59,7 @@ export class AskQuestions extends APIResource {
    * ```ts
    * const askQuestionsJob =
    *   await client.robotsPreview.jobs.askQuestions.retrieve(
-   *     'rjob_lK9w2kI5J1',
+   *     'x',
    *   );
    * ```
    */
@@ -200,8 +211,10 @@ export interface AskQuestionsJobOutputs {
 export namespace AskQuestionsJobOutputs {
   export interface Answer {
     /**
-     * The answer, constrained to one of the provided answer_options. Null when the
-     * question was skipped.
+     * For enum questions, constrained to one of the provided answer_options. For
+     * free-form questions, responds with prose up to max_free_form_answer_length
+     * characters - treat as untrusted model output. Null when the question was
+     * skipped.
      */
     answer: string | null;
 
@@ -237,8 +250,9 @@ export interface AskQuestionsJobParameters {
   asset_id: string;
 
   /**
-   * One or more questions to ask about the video. Each question can specify its own
-   * answer_options.
+   * One or more questions to ask about the video. Each question can either select
+   * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
+   * receive a free-form prose answer.
    */
   questions: Array<AskQuestionsJobParameters.Question>;
 
@@ -247,6 +261,12 @@ export interface AskQuestionsJobParameters {
    * omitted, the SDK uses the default track.
    */
   language_code?: string;
+
+  /**
+   * Experimental. Max character length for free-form answers. Ignored unless at
+   * least one question sets free_form_reply: true.
+   */
+  max_free_form_answer_length?: number;
 }
 
 export namespace AskQuestionsJobParameters {
@@ -257,9 +277,17 @@ export namespace AskQuestionsJobParameters {
     question: string;
 
     /**
-     * Allowed answer values for this question. Defaults to ["yes", "no"].
+     * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
+     * and free_form_reply is not true. Mutually exclusive with free_form_reply.
      */
     answer_options?: Array<string>;
+
+    /**
+     * Experimental. When true, the model replies with free-form prose instead of
+     * selecting from answer_options. Mutually exclusive with answer_options. Treat the
+     * answer as untrusted model output.
+     */
+    free_form_reply?: boolean;
   }
 }
 

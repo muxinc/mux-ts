@@ -98,7 +98,7 @@ export class Jobs extends APIResource {
    * @example
    * ```ts
    * const jobSummary = await client.robotsPreview.jobs.cancel(
-   *   'rjob_lK9w2kI5J1',
+   *   'x',
    * );
    * ```
    */
@@ -169,6 +169,7 @@ export interface JobSummary {
     | 'summarize'
     | 'moderate'
     | 'generate-chapters'
+    | 'edit-captions'
     | 'translate-captions'
     | 'ask-questions'
     | 'find-key-moments';
@@ -210,6 +211,7 @@ export interface JobListParams extends BasePageParams {
     | 'summarize'
     | 'moderate'
     | 'generate-chapters'
+    | 'edit-captions'
     | 'translate-captions'
     | 'ask-questions'
     | 'find-key-moments';

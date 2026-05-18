@@ -43,7 +43,7 @@ export class FindKeyMoments extends APIResource {
    * ```ts
    * const findKeyMomentsJob =
    *   await client.robotsPreview.jobs.findKeyMoments.retrieve(
-   *     'rjob_lK9w2kI5J1',
+   *     'x',
    *   );
    * ```
    */

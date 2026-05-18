@@ -3,33 +3,33 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "mux-mux-node-api-mcp-server",
-	"main": "src/index.ts",
-	"compatibility_date": "2025-03-10",
-	"compatibility_flags": ["nodejs_compat"],
-	"migrations": [
-		{
-			"new_sqlite_classes": ["MyMCP"],
-			"tag": "v1"
-		}
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"class_name": "MyMCP",
-				"name": "MCP_OBJECT"
-			}
-		]
-	},
-	"kv_namespaces": [
-		{
-			"binding": "OAUTH_KV",
-			"id": "ae6fe7d7993146a9b8d54d87f73b0bdf"
-		}
-	],
-	"observability": {
-		"enabled": true
-	},
-	"assets": { "directory": "./static/", "binding": "ASSETS" }
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mux-mux-node-api-mcp-server",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "migrations": [
+    {
+      "new_sqlite_classes": ["MyMCP"],
+      "tag": "v1"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "MyMCP",
+        "name": "MCP_OBJECT"
+      }
+    ]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "ae6fe7d7993146a9b8d54d87f73b0bdf"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": { "directory": "./static/", "binding": "ASSETS" }
 }

@@ -42,9 +42,7 @@ export class Moderate extends APIResource {
    * @example
    * ```ts
    * const moderateJob =
-   *   await client.robotsPreview.jobs.moderate.retrieve(
-   *     'rjob_lK9w2kI5J1',
-   *   );
+   *   await client.robotsPreview.jobs.moderate.retrieve('x');
    * ```
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<ModerateJob> {

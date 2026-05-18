@@ -97,18 +97,27 @@ function base64urlString(str: string): string {
   return base64url(new TextEncoder().encode(str));
 }
 
+const SECONDS_PER: Record<string, number> = {
+  s: 1,
+  m: 60,
+  h: 60 * 60,
+  d: 60 * 60 * 24,
+  w: 60 * 60 * 24 * 7,
+  y: 60 * 60 * 24 * 365,
+};
+
 function parseTimespan(value: string | number): number {
   if (typeof value === 'number') return value;
   const trimmed = value.trim();
-  const match = /^(\d+)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w)$/.exec(trimmed);
+  const match =
+    /^(\d+)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/.exec(
+      trimmed,
+    );
   if (match) {
     const n = parseInt(match[1]!, 10);
-    const unit = match[2]!;
-    if (unit.startsWith('s')) return n;
-    if (unit.startsWith('m')) return n * 60;
-    if (unit.startsWith('h')) return n * 3600;
-    if (unit.startsWith('d')) return n * 86400;
-    if (unit.startsWith('w')) return n * 604800;
+    const unit = match[2]![0]!;
+    const multiplier = SECONDS_PER[unit];
+    if (multiplier !== undefined) return n * multiplier;
   }
   const num = Number(trimmed);
   if (!isNaN(num)) return num;

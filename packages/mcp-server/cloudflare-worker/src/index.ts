@@ -1,7 +1,17 @@
 import { makeOAuthConsent } from './app';
+// `agents` and `@modelcontextprotocol/sdk` versions must stay in sync with the
+// pins/overrides in package.json. `agents` declares an exact pin on
+// `@modelcontextprotocol/sdk`; if our resolved version drifts, npm installs a
+// second copy under `agents/node_modules/`, and `initMcpServer`'s runtime
+// `instanceof McpServer` check fails because the two `McpServer` classes are
+// distinct constructors.
 import { McpAgent } from 'agents/mcp';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import OAuthProvider from '@cloudflare/workers-oauth-provider';
-import { McpOptions, initMcpServer, server, ClientOptions } from '@mux/mcp/server';
+import { ClientOptions } from '@mux/mux-node';
+import { McpOptions } from '@mux/mcp/options';
+import { initMcpServer, newMcpServer } from '@mux/mcp/server';
+import { configureLogger } from '@mux/mcp/logger';
 import type { ExportedHandler } from '@cloudflare/workers-types';
 
 type MCPProps = {
@@ -74,15 +84,74 @@ const serverConfig: ServerConfig = {
   ],
 };
 
+// `newMcpServer` fetches MCP server instructions from the Stainless API. In a
+// Durable Object, that fetch happens inside `blockConcurrencyWhile`; if it
+// hangs the DO is reset, and if it rejects the same thing happens. Race
+// against a short timeout and catch any rejection so any failure mode lands
+// on a fallback server constructed without instructions (the `initialize`
+// response simply omits the `instructions` field, which is spec-allowed).
+const INSTRUCTIONS_FETCH_TIMEOUT_MS = 5000;
+
+function fallbackMcpServer(): McpServer {
+  return new McpServer(
+    { name: 'mux_mux_node_api', version: '14.0.1' },
+    { capabilities: { tools: {}, logging: {} } },
+  );
+}
+
+async function buildMcpServer(stainlessApiKey?: string): Promise<McpServer> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const fetched = newMcpServer({ stainlessApiKey });
+    const timeout = new Promise<null>((resolve) => {
+      timeoutId = setTimeout(() => resolve(null), INSTRUCTIONS_FETCH_TIMEOUT_MS);
+    });
+
+    const result = await Promise.race([fetched, timeout]);
+
+    if (result != null) {
+      return result;
+    }
+  } catch (error) {
+    console.error('Failed to build MCP server from upstream instructions; using fallback', error);
+  } finally {
+    if (timeoutId != null) {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  return fallbackMcpServer();
+}
+
 export class MyMCP extends McpAgent<Env, unknown, MCPProps> {
-  server = server;
+  #resolveServer!: (server: McpServer) => void;
+  #rejectServer!: (error: unknown) => void;
+  server: Promise<McpServer> = new Promise<McpServer>((resolve, reject) => {
+    this.#resolveServer = resolve;
+    this.#rejectServer = reject;
+  });
 
   async init() {
-    initMcpServer({
-      server: this.server,
-      clientOptions: this.props.clientProps,
-      mcpOptions: this.props.clientConfig,
-    });
+    try {
+      if (this.props == null) {
+        throw new Error('MCP props are not initialized');
+      }
+
+      configureLogger({ level: 'info', pretty: false });
+
+      const server = await buildMcpServer(this.props.clientConfig?.stainlessApiKey);
+
+      await initMcpServer({
+        server,
+        clientOptions: this.props.clientProps,
+        mcpOptions: this.props.clientConfig,
+      });
+
+      this.#resolveServer(server);
+    } catch (error) {
+      this.#rejectServer(error);
+      throw error;
+    }
   }
 }
 

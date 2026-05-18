@@ -109,7 +109,9 @@ const statsToken = mux.jwt.signViewerCounts('some-live-stream-id', {
 ```
 
 ### Signing multiple JWTs at once
+
 In cases you need multiple tokens, like when using Mux Player, things can get unwieldy pretty quickly. For example,
+
 ```tsx
 const playbackToken = await mux.jwt.signPlaybackId(id, {
   expiration: "1d",
@@ -138,6 +140,7 @@ const drmToken = await mux.jwt.signPlaybackId(id, {
 ```
 
 To simplify this use-case, you can provide multiple types to `signPlaybackId` to recieve multiple tokens. These tokens are provided in a format that Mux Player can take as props:
+
 ```tsx
 // { "playback-token", "thumbnail-token", "storyboard-token", "drm-token" }
 const tokens = await mux.jwt.signPlaybackId(id, {
@@ -152,11 +155,12 @@ const tokens = await mux.jwt.signPlaybackId(id, {
 ```
 
 If you would like to provide params to a single token (e.g., if you would like to have a thumbnail `time`), you can provide `[type, typeParams]` instead of `type`:
+
 ```tsx
 const tokens = await mux.jwt.signPlaybackId(id, {
-  expiration: "1d",
-  type: ["playback", ["thumbnail", { time: 2 }], "storyboard", "drm_license"]
-})
+  expiration: '1d',
+  type: ['playback', ['thumbnail', { time: 2 }], 'storyboard', 'drm_license'],
+});
 ```
 
 ## Parsing Webhook payloads
