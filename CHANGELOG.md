@@ -1,5 +1,45 @@
 # Changelog
 
+## 14.1.0 (2026-05-18)
+
+Full Changelog: [v14.0.1...v14.1.0](https://github.com/muxinc/mux-node-sdk/compare/v14.0.1...v14.1.0)
+
+### Features
+
+* Add edit-captions beta, examples, and loosen ID validation ([#414](https://github.com/muxinc/mux-node-sdk/issues/414)) ([eec5ff1](https://github.com/muxinc/mux-node-sdk/commit/eec5ff14f89e48d801bd19b94fe4abd33539c638))
+* Robots: Add freeform option to ask-questions ([#413](https://github.com/muxinc/mux-node-sdk/issues/413)) ([e0e0ddb](https://github.com/muxinc/mux-node-sdk/commit/e0e0ddb2ed37a1fde05f113cf8fc01a4761df32a))
+* support setting headers via env ([39c9a46](https://github.com/muxinc/mux-node-sdk/commit/39c9a460c517fd1cd14c6eac874fd684b1f640df))
+
+
+### Bug Fixes
+
+* support years in jwt expirations ([#622](https://github.com/muxinc/mux-node-sdk/issues/622)) ([9637b78](https://github.com/muxinc/mux-node-sdk/commit/9637b78af53ddcdc81d94491c1584096d26077c2))
+
+
+### Chores
+
+* avoid formatting file that gets changed during releases ([7f0ba51](https://github.com/muxinc/mux-node-sdk/commit/7f0ba515ed66e8c42a07a7f5d4d34cfcc15d128b))
+* fix formatting ([1bffd6c](https://github.com/muxinc/mux-node-sdk/commit/1bffd6c7a3bf355b726baa3e41efa46f360b4885))
+* fix naming of mcpb file ([#621](https://github.com/muxinc/mux-node-sdk/issues/621)) ([82e3c03](https://github.com/muxinc/mux-node-sdk/commit/82e3c03c15462609c63af38c3f9b11b481cbe09a))
+* **format:** run eslint and prettier separately ([073dc3d](https://github.com/muxinc/mux-node-sdk/commit/073dc3de0c14102342f35ab0610c633661d53fe9))
+* **formatter:** run prettier and eslint separately ([c9751c7](https://github.com/muxinc/mux-node-sdk/commit/c9751c71b8c350b68f92f20157d40e8c3c91a79a))
+* **internal:** codegen related update ([69b49ec](https://github.com/muxinc/mux-node-sdk/commit/69b49ec9595df6de8f40446e3faabea29f8d5840))
+* **internal:** codegen related update ([d01b4ba](https://github.com/muxinc/mux-node-sdk/commit/d01b4bafa9c5a3344c46a43ceadc88960e6efb90))
+* **internal:** fix MCP cloudflare worker builds ([42982d4](https://github.com/muxinc/mux-node-sdk/commit/42982d47a63272df80d7ac846063d4181469310a))
+* **internal:** fix MCP cloudflare worker initialization ([2f836ee](https://github.com/muxinc/mux-node-sdk/commit/2f836eee76546c4483e0c0b2c976befd485b6cf0))
+* **internal:** more robust bootstrap script ([6b8de5a](https://github.com/muxinc/mux-node-sdk/commit/6b8de5af6fcda143d3e26dd94aafe11afb355f2a))
+* **internal:** update docs ordering ([53fba06](https://github.com/muxinc/mux-node-sdk/commit/53fba06e3d6e41c704e492319eb2dca9dcf0efb9))
+* redact api-key headers in debug logs ([8cbd26c](https://github.com/muxinc/mux-node-sdk/commit/8cbd26c66dc9a1c5ab53bbb4f2f7b5be0601cda9))
+* restructure docs search code ([4191d7b](https://github.com/muxinc/mux-node-sdk/commit/4191d7bea19dafc1870997fd7e06a262a3a43af9))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([29ee4d8](https://github.com/muxinc/mux-node-sdk/commit/29ee4d84bcab46ae246edd1f5458bc9dcb9dd198))
+* update http mcp docs ([00785ec](https://github.com/muxinc/mux-node-sdk/commit/00785ec5fefcf60e35b53768e32322fc9121d97a))
+* update logging docs ([5ee4c64](https://github.com/muxinc/mux-node-sdk/commit/5ee4c64e1553797aced31217f2f33e162f910ce1))
+* update with proxy auth info ([a72ca69](https://github.com/muxinc/mux-node-sdk/commit/a72ca6986d407ba953cb5bb7bc54bd5ef264e6d9))
+
 ## 14.0.1 (2026-04-20)
 
 Full Changelog: [v14.0.0...v14.0.1](https://github.com/muxinc/mux-node-sdk/compare/v14.0.0...v14.0.1)
