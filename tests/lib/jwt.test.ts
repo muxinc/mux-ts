@@ -1,5 +1,7 @@
 import { sign, isMuxJWTSignOptionsMultiple } from '@mux/mux-node/lib/jwt';
 
+type CryptoKey = Awaited<ReturnType<typeof globalThis.crypto.subtle.importKey>>;
+
 function decodeJwtPart(b64url: string): Record<string, any> {
   const decoded = Buffer.from(b64url.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf-8');
   return JSON.parse(decoded);
@@ -59,8 +61,8 @@ describe('jwt', () => {
         const after = Math.floor(Date.now() / 1000);
         const [, payloadB64] = token.split('.');
         const payload = decodeJwtPart(payloadB64!);
-        expect(payload.exp).toBeGreaterThanOrEqual(before + (expectedSeconds as number));
-        expect(payload.exp).toBeLessThanOrEqual(after + (expectedSeconds as number));
+        expect(payload['exp']).toBeGreaterThanOrEqual(before + (expectedSeconds as number));
+        expect(payload['exp']).toBeLessThanOrEqual(after + (expectedSeconds as number));
       });
 
       test('invalid timespan throws', async () => {
@@ -75,45 +77,45 @@ describe('jwt', () => {
         const after = Math.floor(Date.now() / 1000);
         const [, payloadB64] = token.split('.');
         const payload = decodeJwtPart(payloadB64!);
-        expect(payload.iat).toBeGreaterThanOrEqual(before);
-        expect(payload.iat).toBeLessThanOrEqual(after);
+        expect(payload['iat']).toBeGreaterThanOrEqual(before);
+        expect(payload['iat']).toBeLessThanOrEqual(after);
       });
 
       test('noTimestamp omits iat', async () => {
         const token = await sign({}, privateKey, { noTimestamp: true });
         const [, payloadB64] = token.split('.');
         const payload = decodeJwtPart(payloadB64!);
-        expect(payload.iat).toBeUndefined();
+        expect(payload['iat']).toBeUndefined();
       });
 
       test('issuer sets iss', async () => {
         const token = await sign({}, privateKey, { issuer: 'test-issuer' });
         const [, payloadB64] = token.split('.');
-        expect(decodeJwtPart(payloadB64!).iss).toBe('test-issuer');
+        expect(decodeJwtPart(payloadB64!)['iss']).toBe('test-issuer');
       });
 
       test('subject sets sub', async () => {
         const token = await sign({}, privateKey, { subject: 'test-subject' });
         const [, payloadB64] = token.split('.');
-        expect(decodeJwtPart(payloadB64!).sub).toBe('test-subject');
+        expect(decodeJwtPart(payloadB64!)['sub']).toBe('test-subject');
       });
 
       test('audience sets aud (string)', async () => {
         const token = await sign({}, privateKey, { audience: 'test-audience' });
         const [, payloadB64] = token.split('.');
-        expect(decodeJwtPart(payloadB64!).aud).toBe('test-audience');
+        expect(decodeJwtPart(payloadB64!)['aud']).toBe('test-audience');
       });
 
       test('audience sets aud (array)', async () => {
         const token = await sign({}, privateKey, { audience: ['aud1', 'aud2'] });
         const [, payloadB64] = token.split('.');
-        expect(decodeJwtPart(payloadB64!).aud).toEqual(['aud1', 'aud2']);
+        expect(decodeJwtPart(payloadB64!)['aud']).toEqual(['aud1', 'aud2']);
       });
 
       test('keyid sets kid in payload', async () => {
         const token = await sign({}, privateKey, { keyid: 'my-key-id' });
         const [, payloadB64] = token.split('.');
-        expect(decodeJwtPart(payloadB64!).kid).toBe('my-key-id');
+        expect(decodeJwtPart(payloadB64!)['kid']).toBe('my-key-id');
       });
 
       test('notBefore sets nbf', async () => {
@@ -122,23 +124,23 @@ describe('jwt', () => {
         const after = Math.floor(Date.now() / 1000);
         const [, payloadB64] = token.split('.');
         const payload = decodeJwtPart(payloadB64!);
-        expect(payload.nbf).toBeGreaterThanOrEqual(before + 300);
-        expect(payload.nbf).toBeLessThanOrEqual(after + 300);
+        expect(payload['nbf']).toBeGreaterThanOrEqual(before + 300);
+        expect(payload['nbf']).toBeLessThanOrEqual(after + 300);
       });
 
       test('header has RS256 algorithm and JWT type', async () => {
         const token = await sign({}, privateKey, {});
         const [headerB64] = token.split('.');
         const header = decodeJwtPart(headerB64!);
-        expect(header.alg).toBe('RS256');
-        expect(header.typ).toBe('JWT');
+        expect(header['alg']).toBe('RS256');
+        expect(header['typ']).toBe('JWT');
       });
 
       test('payload fields are forwarded', async () => {
         const token = await sign({ sub: 'override', custom: 'value' }, privateKey, {});
         const [, payloadB64] = token.split('.');
         const payload = decodeJwtPart(payloadB64!);
-        expect(payload.custom).toBe('value');
+        expect(payload['custom']).toBe('value');
       });
     });
   });
