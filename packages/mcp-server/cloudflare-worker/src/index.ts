@@ -94,7 +94,7 @@ const INSTRUCTIONS_FETCH_TIMEOUT_MS = 5000;
 
 function fallbackMcpServer(): McpServer {
   return new McpServer(
-    { name: 'mux_mux_node_api', version: '14.0.1' },
+    { name: 'mux_mux_node_api', version: '14.1.0' },
     { capabilities: { tools: {}, logging: {} } },
   );
 }
