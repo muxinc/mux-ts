@@ -43,9 +43,7 @@ export class Summarize extends APIResource {
    * @example
    * ```ts
    * const summarizeJob =
-   *   await client.robotsPreview.jobs.summarize.retrieve(
-   *     'rjob_lK9w2kI5J1',
-   *   );
+   *   await client.robotsPreview.jobs.summarize.retrieve('x');
    * ```
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<SummarizeJob> {

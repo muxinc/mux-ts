@@ -59,7 +59,7 @@ export class AskQuestions extends APIResource {
    * ```ts
    * const askQuestionsJob =
    *   await client.robotsPreview.jobs.askQuestions.retrieve(
-   *     'rjob_lK9w2kI5J1',
+   *     'x',
    *   );
    * ```
    */
