@@ -109,7 +109,10 @@ const SECONDS_PER: Record<string, number> = {
 function parseTimespan(value: string | number): number {
   if (typeof value === 'number') return value;
   const trimmed = value.trim();
-  const match = /^(\d+)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/.exec(trimmed);
+  const match =
+    /^(\d+)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/.exec(
+      trimmed,
+    );
   if (match) {
     const n = parseInt(match[1]!, 10);
     const unit = match[2]![0]!;
