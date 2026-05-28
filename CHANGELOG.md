@@ -1,5 +1,24 @@
 # Changelog
 
+## 14.1.1 (2026-05-28)
+
+Full Changelog: [v14.1.0...v14.1.1](https://github.com/muxinc/mux-node-sdk/compare/v14.1.0...v14.1.1)
+
+### Bug Fixes
+
+* **mcp:** use `pure-lockfile` when building mcp server ([daf8547](https://github.com/muxinc/mux-node-sdk/commit/daf85471234ecfbcb08308cd584502c4efbb26c7))
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([67195ce](https://github.com/muxinc/mux-node-sdk/commit/67195ce7fa3381b63f4eb133cfb9ab00954741e6))
+
+
+### Chores
+
+* **tests:** remove redundant File import ([337704a](https://github.com/muxinc/mux-node-sdk/commit/337704a0386923bb8f23a7dc699e276880c1bda6))
+
+
+### Documentation
+
+* Latest Robots OpenAPI spec ([#415](https://github.com/muxinc/mux-node-sdk/issues/415)) ([241cfa3](https://github.com/muxinc/mux-node-sdk/commit/241cfa3d942b07ab09174ee94929d479f30a2f2f))
+
 ## 14.1.0 (2026-05-18)
 
 Full Changelog: [v14.0.1...v14.1.0](https://github.com/muxinc/mux-node-sdk/compare/v14.0.1...v14.1.0)
