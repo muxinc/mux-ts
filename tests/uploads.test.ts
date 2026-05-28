@@ -1,7 +1,6 @@
 import fs from 'fs';
 import type { ResponseLike } from '@mux/mux-node/internal/to-file';
 import { toFile } from '@mux/mux-node/core/uploads';
-import { File } from 'node:buffer';
 
 class MyClass {
   name: string = 'foo';
