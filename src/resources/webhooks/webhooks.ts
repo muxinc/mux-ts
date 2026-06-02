@@ -299,6 +299,11 @@ export namespace VideoAssetCreatedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -484,6 +489,16 @@ export namespace VideoAssetCreatedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -990,6 +1005,11 @@ export namespace VideoAssetReadyWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -1175,6 +1195,16 @@ export namespace VideoAssetReadyWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -1681,6 +1711,11 @@ export namespace VideoAssetErroredWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -1866,6 +1901,16 @@ export namespace VideoAssetErroredWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -2372,6 +2417,11 @@ export namespace VideoAssetUpdatedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -2557,6 +2607,16 @@ export namespace VideoAssetUpdatedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -3063,6 +3123,11 @@ export namespace VideoAssetDeletedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -3248,6 +3313,16 @@ export namespace VideoAssetDeletedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -3754,6 +3829,11 @@ export namespace VideoAssetLiveStreamCompletedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -3939,6 +4019,16 @@ export namespace VideoAssetLiveStreamCompletedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -4445,6 +4535,11 @@ export namespace VideoAssetStaticRenditionsReadyWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -4630,6 +4725,16 @@ export namespace VideoAssetStaticRenditionsReadyWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -5136,6 +5241,11 @@ export namespace VideoAssetStaticRenditionsPreparingWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -5321,6 +5431,16 @@ export namespace VideoAssetStaticRenditionsPreparingWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -5827,6 +5947,11 @@ export namespace VideoAssetStaticRenditionsDeletedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -6012,6 +6137,16 @@ export namespace VideoAssetStaticRenditionsDeletedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -6518,6 +6653,11 @@ export namespace VideoAssetStaticRenditionsErroredWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -6703,6 +6843,16 @@ export namespace VideoAssetStaticRenditionsErroredWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -7209,6 +7359,11 @@ export namespace VideoAssetMasterReadyWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -7394,6 +7549,16 @@ export namespace VideoAssetMasterReadyWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -7900,6 +8065,11 @@ export namespace VideoAssetMasterPreparingWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -8085,6 +8255,16 @@ export namespace VideoAssetMasterPreparingWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -8591,6 +8771,11 @@ export namespace VideoAssetMasterDeletedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -8776,6 +8961,16 @@ export namespace VideoAssetMasterDeletedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -9282,6 +9477,11 @@ export namespace VideoAssetMasterErroredWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -9467,6 +9667,16 @@ export namespace VideoAssetMasterErroredWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -11352,6 +11562,11 @@ export namespace VideoAssetNonStandardInputDetectedWebhookEvent {
     aspect_ratio?: string;
 
     /**
+     * The Mux Robots directives applied to the asset.
+     */
+    directives?: Array<Data.Directive>;
+
+    /**
      * The duration of the asset in seconds (max duration for a single asset is 12
      * hours).
      */
@@ -11537,6 +11752,16 @@ export namespace VideoAssetNonStandardInputDetectedWebhookEvent {
        *   this state, the `progress` percentage will be -1.
        */
       state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+    }
+
+    /**
+     * A Mux Robots directive to apply to the asset.
+     */
+    export interface Directive {
+      /**
+       * The Mux Robots directive identifier.
+       */
+      id: string;
     }
 
     /**
@@ -12059,6 +12284,11 @@ export namespace VideoUploadAssetCreatedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -12205,6 +12435,16 @@ export namespace VideoUploadAssetCreatedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -12533,6 +12773,11 @@ export namespace VideoUploadCancelledWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -12679,6 +12924,16 @@ export namespace VideoUploadCancelledWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -13007,6 +13262,11 @@ export namespace VideoUploadCreatedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -13153,6 +13413,16 @@ export namespace VideoUploadCreatedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -13481,6 +13751,11 @@ export namespace VideoUploadErroredWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -13627,6 +13902,16 @@ export namespace VideoUploadErroredWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -14156,6 +14441,11 @@ export namespace VideoLiveStreamCreatedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -14302,6 +14592,16 @@ export namespace VideoLiveStreamCreatedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -14924,6 +15224,11 @@ export namespace VideoLiveStreamConnectedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -15070,6 +15375,16 @@ export namespace VideoLiveStreamConnectedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -15692,6 +16007,11 @@ export namespace VideoLiveStreamRecordingWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -15838,6 +16158,16 @@ export namespace VideoLiveStreamRecordingWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -16460,6 +16790,11 @@ export namespace VideoLiveStreamActiveWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -16606,6 +16941,16 @@ export namespace VideoLiveStreamActiveWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -17228,6 +17573,11 @@ export namespace VideoLiveStreamDisconnectedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -17374,6 +17724,16 @@ export namespace VideoLiveStreamDisconnectedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -17996,6 +18356,11 @@ export namespace VideoLiveStreamIdleWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -18142,6 +18507,16 @@ export namespace VideoLiveStreamIdleWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -18764,6 +19139,11 @@ export namespace VideoLiveStreamUpdatedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -18910,6 +19290,16 @@ export namespace VideoLiveStreamUpdatedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -19532,6 +19922,11 @@ export namespace VideoLiveStreamEnabledWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -19678,6 +20073,16 @@ export namespace VideoLiveStreamEnabledWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -20300,6 +20705,11 @@ export namespace VideoLiveStreamDisabledWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -20446,6 +20856,16 @@ export namespace VideoLiveStreamDisabledWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
@@ -21068,6 +21488,11 @@ export namespace VideoLiveStreamDeletedWebhookEvent {
       copy_overlays?: boolean;
 
       /**
+       * An array of Mux Robots directives to apply to the asset.
+       */
+      directives?: Array<NewAssetSettings.Directive>;
+
+      /**
        * @deprecated This field is deprecated. Please use `video_quality` instead. The
        * encoding tier informs the cost, quality, and available platform features for the
        * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -21214,6 +21639,16 @@ export namespace VideoLiveStreamDeletedWebhookEvent {
          *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
          */
         policy?: 'public' | 'signed' | 'drm';
+      }
+
+      /**
+       * A Mux Robots directive to apply to the asset.
+       */
+      export interface Directive {
+        /**
+         * The Mux Robots directive identifier.
+         */
+        id: string;
       }
 
       /**
