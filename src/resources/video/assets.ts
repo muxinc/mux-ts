@@ -445,6 +445,11 @@ export interface Asset {
   aspect_ratio?: string;
 
   /**
+   * The Mux Robots directives applied to the asset.
+   */
+  directives?: Array<Asset.Directive>;
+
+  /**
    * The duration of the asset in seconds (max duration for a single asset is 12
    * hours).
    */
@@ -630,6 +635,16 @@ export namespace Asset {
      *   this state, the `progress` percentage will be -1.
      */
     state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+  }
+
+  /**
+   * A Mux Robots directive to apply to the asset.
+   */
+  export interface Directive {
+    /**
+     * The Mux Robots directive identifier.
+     */
+    id: string;
   }
 
   /**
@@ -922,6 +937,11 @@ export interface AssetOptions {
   copy_overlays?: boolean;
 
   /**
+   * An array of Mux Robots directives to apply to the asset.
+   */
+  directives?: Array<AssetOptions.Directive>;
+
+  /**
    * @deprecated This field is deprecated. Please use `video_quality` instead. The
    * encoding tier informs the cost, quality, and available platform features for the
    * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -1079,6 +1099,16 @@ export namespace AssetOptions {
      *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
      */
     policy?: Shared.PlaybackPolicy;
+  }
+
+  /**
+   * A Mux Robots directive to apply to the asset.
+   */
+  export interface Directive {
+    /**
+     * The Mux Robots directive identifier.
+     */
+    id: string;
   }
 
   /**
@@ -2070,6 +2100,11 @@ export interface AssetCreateParams {
   copy_overlays?: boolean;
 
   /**
+   * An array of Mux Robots directives to apply to the asset.
+   */
+  directives?: Array<AssetCreateParams.Directive>;
+
+  /**
    * @deprecated This field is deprecated. Please use `video_quality` instead. The
    * encoding tier informs the cost, quality, and available platform features for the
    * asset. The default encoding tier for an account can be set in the Mux Dashboard.
@@ -2435,6 +2470,16 @@ export namespace AssetCreateParams {
      *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
      */
     policy?: Shared.PlaybackPolicy;
+  }
+
+  /**
+   * A Mux Robots directive to apply to the asset.
+   */
+  export interface Directive {
+    /**
+     * The Mux Robots directive identifier.
+     */
+    id: string;
   }
 
   /**

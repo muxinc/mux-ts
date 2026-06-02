@@ -53,6 +53,7 @@ describe('resource assets', () => {
       ],
       advanced_playback_policies: [{ drm_configuration_id: 'drm_configuration_id', policy: 'public' }],
       copy_overlays: true,
+      directives: [{ id: 'id' }],
       encoding_tier: 'smart',
       input: [
         {
