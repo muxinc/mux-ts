@@ -12,7 +12,8 @@ import { path } from '../../../internal/utils/path';
 export class Summarize extends APIResource {
   /**
    * Creates a new job that uses AI to generate a title, description, and tags for a
-   * Mux Video asset.
+   * Mux Video asset. Optional output steering can guide summary style, audience,
+   * brand terms, and tag taxonomy without changing the response schema.
    *
    * @example
    * ```ts
@@ -22,6 +23,11 @@ export class Summarize extends APIResource {
    *       asset_id: 'mux_asset_123abc',
    *       tone: 'neutral',
    *       tag_count: 10,
+   *       output_steering: {
+   *         summary_style: 'concise',
+   *         audience: 'Product marketers',
+   *         brand_terms: ['Mux', 'Robots'],
+   *       },
    *     },
    *   });
    * ```
@@ -87,6 +93,12 @@ export interface SummarizeJob {
   workflow: 'summarize';
 
   /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: SummarizeJob.Directive;
+
+  /**
    * Error details. Present when status is 'errored'.
    */
   errors?: Array<JobsAPI.JobError>;
@@ -108,6 +120,22 @@ export interface SummarizeJob {
 }
 
 export namespace SummarizeJob {
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
   /**
    * Related Mux resources linked to this job.
    */
@@ -225,7 +253,15 @@ export interface SummarizeJobParameters {
   output_language_code?: string;
 
   /**
-   * Override specific sections of the summarization prompt.
+   * Curated output_steering controls for summary style, audience, brand terminology,
+   * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+   * output.
+   */
+  output_steering?: SummarizeJobParameters.OutputSteering;
+
+  /**
+   * Legacy/internal prompt-section overrides. Prefer output_steering for new
+   * integrations.
    */
   prompt_overrides?: SummarizeJobParameters.PromptOverrides;
 
@@ -249,7 +285,83 @@ export interface SummarizeJobParameters {
 
 export namespace SummarizeJobParameters {
   /**
-   * Override specific sections of the summarization prompt.
+   * Curated output_steering controls for summary style, audience, brand terminology,
+   * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+   * output.
+   */
+  export interface OutputSteering {
+    /**
+     * Intended audience used as best-effort model guidance. Does not change the output
+     * schema.
+     */
+    audience?: string;
+
+    /**
+     * Preferred brand or domain terms to use when supported by the source content.
+     */
+    brand_terms?: Array<string>;
+
+    /**
+     * Best-effort style guidance for the generated title and description.
+     */
+    summary_style?: 'concise' | 'detailed' | 'editorial';
+
+    /**
+     * Controlled vocabulary for tag generation. This steers tags and may be
+     * deterministically filtered after generation. Supports up to 50 values and 2000
+     * serialized characters.
+     */
+    tag_taxonomy?: OutputSteering.TagTaxonomy;
+  }
+
+  export namespace OutputSteering {
+    /**
+     * Controlled vocabulary for tag generation. This steers tags and may be
+     * deterministically filtered after generation. Supports up to 50 values and 2000
+     * serialized characters.
+     */
+    export interface TagTaxonomy {
+      /**
+       * When false, generated tags are filtered to taxonomy labels and aliases. When
+       * true, unmatched tags may remain.
+       */
+      allow_other: boolean;
+
+      /**
+       * Controlled vocabulary values for generated tags. Supports 1-50 values.
+       */
+      values: Array<TagTaxonomy.Value>;
+
+      /**
+       * Optional customer-facing name for the taxonomy, up to 100 characters.
+       */
+      name?: string;
+    }
+
+    export namespace TagTaxonomy {
+      export interface Value {
+        /**
+         * Canonical tag value to prefer in generated tags, up to 100 characters.
+         */
+        label: string;
+
+        /**
+         * Accepted alternate names that should normalize to the canonical label. Up to 10
+         * aliases, each up to 100 characters.
+         */
+        aliases?: Array<string>;
+
+        /**
+         * Short explanation of when this tag applies, up to 300 characters.
+         */
+        description?: string;
+      }
+    }
+  }
+
+  /**
+   * Legacy/internal prompt-section overrides. Prefer output_steering for new
+   * integrations.
    */
   export interface PromptOverrides {
     /**

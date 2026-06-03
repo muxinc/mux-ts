@@ -27,6 +27,24 @@ describe('resource findKeyMoments', () => {
       parameters: {
         asset_id: 'mux_asset_123abc',
         max_moments: 5,
+        output_steering: {
+          audience: 'Developer advocates',
+          brand_terms: ['x'],
+          rubric_priorities: ['clarity_in_isolation', 'soundbite_quality'],
+          selection_strategy: 'educational_takeaways',
+          title_style: 'punchy',
+          topic_taxonomy: {
+            allow_other: true,
+            values: [
+              {
+                label: 'x',
+                aliases: ['x'],
+                description: 'x',
+              },
+            ],
+            name: 'x',
+          },
+        },
         target_duration_ms: { max: 45000, min: 15000 },
       },
       passthrough: 'passthrough',

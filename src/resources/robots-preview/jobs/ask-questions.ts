@@ -104,6 +104,12 @@ export interface AskQuestionsJob {
   workflow: 'ask-questions';
 
   /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: AskQuestionsJob.Directive;
+
+  /**
    * Error details. Present when status is 'errored'.
    */
   errors?: Array<JobsAPI.JobError>;
@@ -125,6 +131,22 @@ export interface AskQuestionsJob {
 }
 
 export namespace AskQuestionsJob {
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
   /**
    * Related Mux resources linked to this job.
    */

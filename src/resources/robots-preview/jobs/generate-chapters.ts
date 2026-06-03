@@ -12,12 +12,21 @@ import { path } from '../../../internal/utils/path';
 export class GenerateChapters extends APIResource {
   /**
    * Creates a new job that uses AI to generate chapters for a Mux Video asset.
+   * Optional output steering can guide chapter style, granularity, audience, and
+   * brand terms without changing the response schema.
    *
    * @example
    * ```ts
    * const generateChaptersJob =
    *   await client.robotsPreview.jobs.generateChapters.create({
-   *     parameters: { asset_id: 'mux_asset_123abc' },
+   *     parameters: {
+   *       asset_id: 'mux_asset_123abc',
+   *       output_steering: {
+   *         chapter_style: 'descriptive',
+   *         chapter_granularity: 'balanced',
+   *         audience: 'Developers',
+   *       },
+   *     },
    *   });
    * ```
    */
@@ -84,6 +93,12 @@ export interface GenerateChaptersJob {
   workflow: 'generate-chapters';
 
   /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: GenerateChaptersJob.Directive;
+
+  /**
    * Error details. Present when status is 'errored'.
    */
   errors?: Array<JobsAPI.JobError>;
@@ -105,6 +120,22 @@ export interface GenerateChaptersJob {
 }
 
 export namespace GenerateChaptersJob {
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
   /**
    * Related Mux resources linked to this job.
    */
@@ -221,14 +252,51 @@ export interface GenerateChaptersJobParameters {
   output_language_code?: string;
 
   /**
-   * Override specific sections of the chapter generation prompt.
+   * Curated output_steering controls for chapter style, granularity, audience, and
+   * brand terminology. These controls guide model behavior but do not guarantee
+   * exact output.
+   */
+  output_steering?: GenerateChaptersJobParameters.OutputSteering;
+
+  /**
+   * Legacy/internal prompt-section overrides. Prefer output_steering for new
+   * integrations.
    */
   prompt_overrides?: GenerateChaptersJobParameters.PromptOverrides;
 }
 
 export namespace GenerateChaptersJobParameters {
   /**
-   * Override specific sections of the chapter generation prompt.
+   * Curated output_steering controls for chapter style, granularity, audience, and
+   * brand terminology. These controls guide model behavior but do not guarantee
+   * exact output.
+   */
+  export interface OutputSteering {
+    /**
+     * Intended audience used as best-effort model guidance. Does not change the output
+     * schema.
+     */
+    audience?: string;
+
+    /**
+     * Preferred brand or domain terms to use when supported by the source content.
+     */
+    brand_terms?: Array<string>;
+
+    /**
+     * Best-effort guidance for how coarse or fine chapter boundaries should be.
+     */
+    chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+    /**
+     * Best-effort style guidance for generated chapter titles.
+     */
+    chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+  }
+
+  /**
+   * Legacy/internal prompt-section overrides. Prefer output_steering for new
+   * integrations.
    */
   export interface PromptOverrides {
     /**
