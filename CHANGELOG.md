@@ -1,5 +1,14 @@
 # Changelog
 
+## 14.2.0 (2026-06-03)
+
+Full Changelog: [v14.1.1...v14.2.0](https://github.com/muxinc/mux-node-sdk/compare/v14.1.1...v14.2.0)
+
+### Features
+
+* Adding Directives to video api model ([#412](https://github.com/muxinc/mux-node-sdk/issues/412)) ([e9d640d](https://github.com/muxinc/mux-node-sdk/commit/e9d640db04607dd0a0f4e68690c9acc086597e55))
+* Latest Robots Spec ([#416](https://github.com/muxinc/mux-node-sdk/issues/416)) ([df4508f](https://github.com/muxinc/mux-node-sdk/commit/df4508f3c316b662512100a3d82d4c584d4c75d5))
+
 ## 14.1.1 (2026-05-28)
 
 Full Changelog: [v14.1.0...v14.1.1](https://github.com/muxinc/mux-node-sdk/compare/v14.1.0...v14.1.1)
