@@ -86,6 +86,12 @@ export interface ModerateJob {
   workflow: 'moderate';
 
   /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: ModerateJob.Directive;
+
+  /**
    * Error details. Present when status is 'errored'.
    */
   errors?: Array<JobsAPI.JobError>;
@@ -107,6 +113,22 @@ export interface ModerateJob {
 }
 
 export namespace ModerateJob {
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
   /**
    * Related Mux resources linked to this job.
    */

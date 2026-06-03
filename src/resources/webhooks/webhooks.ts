@@ -22650,6 +22650,12 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
     workflow: 'ask-questions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -22717,6 +22723,22 @@ export namespace RobotsJobAskQuestionsCancelledWebhookEvent {
          */
         free_form_reply?: boolean;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -22903,6 +22925,12 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
     workflow: 'ask-questions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -22970,6 +22998,22 @@ export namespace RobotsJobAskQuestionsCompletedWebhookEvent {
          */
         free_form_reply?: boolean;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -23156,6 +23200,12 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
     workflow: 'ask-questions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -23223,6 +23273,22 @@ export namespace RobotsJobAskQuestionsErroredWebhookEvent {
          */
         free_form_reply?: boolean;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -23409,6 +23475,12 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
     workflow: 'ask-questions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -23476,6 +23548,22 @@ export namespace RobotsJobAskQuestionsPendingWebhookEvent {
          */
         free_form_reply?: boolean;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -23662,6 +23750,12 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
     workflow: 'ask-questions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -23729,6 +23823,22 @@ export namespace RobotsJobAskQuestionsProcessingWebhookEvent {
          */
         free_form_reply?: boolean;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -23915,6 +24025,12 @@ export namespace RobotsJobEditCaptionsCancelledWebhookEvent {
     workflow: 'edit-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -24028,6 +24144,22 @@ export namespace RobotsJobEditCaptionsCancelledWebhookEvent {
       }
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -24055,7 +24187,8 @@ export namespace RobotsJobEditCaptionsCancelledWebhookEvent {
       total_replacement_count: number;
 
       /**
-       * Temporary pre-signed URL for downloading the edited VTT file.
+       * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
+       * after the job completes.
        */
       temporary_vtt_url?: string;
 
@@ -24188,6 +24321,12 @@ export namespace RobotsJobEditCaptionsCompletedWebhookEvent {
     workflow: 'edit-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -24301,6 +24440,22 @@ export namespace RobotsJobEditCaptionsCompletedWebhookEvent {
       }
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -24328,7 +24483,8 @@ export namespace RobotsJobEditCaptionsCompletedWebhookEvent {
       total_replacement_count: number;
 
       /**
-       * Temporary pre-signed URL for downloading the edited VTT file.
+       * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
+       * after the job completes.
        */
       temporary_vtt_url?: string;
 
@@ -24461,6 +24617,12 @@ export namespace RobotsJobEditCaptionsErroredWebhookEvent {
     workflow: 'edit-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -24574,6 +24736,22 @@ export namespace RobotsJobEditCaptionsErroredWebhookEvent {
       }
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -24601,7 +24779,8 @@ export namespace RobotsJobEditCaptionsErroredWebhookEvent {
       total_replacement_count: number;
 
       /**
-       * Temporary pre-signed URL for downloading the edited VTT file.
+       * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
+       * after the job completes.
        */
       temporary_vtt_url?: string;
 
@@ -24734,6 +24913,12 @@ export namespace RobotsJobEditCaptionsPendingWebhookEvent {
     workflow: 'edit-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -24847,6 +25032,22 @@ export namespace RobotsJobEditCaptionsPendingWebhookEvent {
       }
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -24874,7 +25075,8 @@ export namespace RobotsJobEditCaptionsPendingWebhookEvent {
       total_replacement_count: number;
 
       /**
-       * Temporary pre-signed URL for downloading the edited VTT file.
+       * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
+       * after the job completes.
        */
       temporary_vtt_url?: string;
 
@@ -25007,6 +25209,12 @@ export namespace RobotsJobEditCaptionsProcessingWebhookEvent {
     workflow: 'edit-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -25120,6 +25328,22 @@ export namespace RobotsJobEditCaptionsProcessingWebhookEvent {
       }
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -25147,7 +25371,8 @@ export namespace RobotsJobEditCaptionsProcessingWebhookEvent {
       total_replacement_count: number;
 
       /**
-       * Temporary pre-signed URL for downloading the edited VTT file.
+       * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
+       * after the job completes.
        */
       temporary_vtt_url?: string;
 
@@ -25280,6 +25505,12 @@ export namespace RobotsJobFindKeyMomentsCancelledWebhookEvent {
     workflow: 'find-key-moments';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -25313,6 +25544,13 @@ export namespace RobotsJobFindKeyMomentsCancelledWebhookEvent {
       max_moments?: number;
 
       /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
        */
@@ -25320,6 +25558,96 @@ export namespace RobotsJobFindKeyMomentsCancelledWebhookEvent {
     }
 
     export namespace Parameters {
+      /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Rubric dimensions to use as tie-breakers after applying selection strategy.
+         * Best-effort guidance only.
+         */
+        rubric_priorities?: Array<
+          'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'
+        >;
+
+        /**
+         * Best-effort guidance for what qualifies as a strong standalone key moment.
+         */
+        selection_strategy?:
+          | 'standalone_hooks'
+          | 'educational_takeaways'
+          | 'story_beats'
+          | 'product_moments'
+          | 'speaker_highlights';
+
+        /**
+         * Best-effort title style guidance for generated moment titles.
+         */
+        title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+
       /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
@@ -25335,6 +25663,22 @@ export namespace RobotsJobFindKeyMomentsCancelledWebhookEvent {
          */
         min: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -25575,6 +25919,12 @@ export namespace RobotsJobFindKeyMomentsCompletedWebhookEvent {
     workflow: 'find-key-moments';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -25608,6 +25958,13 @@ export namespace RobotsJobFindKeyMomentsCompletedWebhookEvent {
       max_moments?: number;
 
       /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
        */
@@ -25615,6 +25972,96 @@ export namespace RobotsJobFindKeyMomentsCompletedWebhookEvent {
     }
 
     export namespace Parameters {
+      /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Rubric dimensions to use as tie-breakers after applying selection strategy.
+         * Best-effort guidance only.
+         */
+        rubric_priorities?: Array<
+          'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'
+        >;
+
+        /**
+         * Best-effort guidance for what qualifies as a strong standalone key moment.
+         */
+        selection_strategy?:
+          | 'standalone_hooks'
+          | 'educational_takeaways'
+          | 'story_beats'
+          | 'product_moments'
+          | 'speaker_highlights';
+
+        /**
+         * Best-effort title style guidance for generated moment titles.
+         */
+        title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+
       /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
@@ -25630,6 +26077,22 @@ export namespace RobotsJobFindKeyMomentsCompletedWebhookEvent {
          */
         min: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -25870,6 +26333,12 @@ export namespace RobotsJobFindKeyMomentsErroredWebhookEvent {
     workflow: 'find-key-moments';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -25903,6 +26372,13 @@ export namespace RobotsJobFindKeyMomentsErroredWebhookEvent {
       max_moments?: number;
 
       /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
        */
@@ -25910,6 +26386,96 @@ export namespace RobotsJobFindKeyMomentsErroredWebhookEvent {
     }
 
     export namespace Parameters {
+      /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Rubric dimensions to use as tie-breakers after applying selection strategy.
+         * Best-effort guidance only.
+         */
+        rubric_priorities?: Array<
+          'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'
+        >;
+
+        /**
+         * Best-effort guidance for what qualifies as a strong standalone key moment.
+         */
+        selection_strategy?:
+          | 'standalone_hooks'
+          | 'educational_takeaways'
+          | 'story_beats'
+          | 'product_moments'
+          | 'speaker_highlights';
+
+        /**
+         * Best-effort title style guidance for generated moment titles.
+         */
+        title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+
       /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
@@ -25925,6 +26491,22 @@ export namespace RobotsJobFindKeyMomentsErroredWebhookEvent {
          */
         min: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -26165,6 +26747,12 @@ export namespace RobotsJobFindKeyMomentsPendingWebhookEvent {
     workflow: 'find-key-moments';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -26198,6 +26786,13 @@ export namespace RobotsJobFindKeyMomentsPendingWebhookEvent {
       max_moments?: number;
 
       /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
        */
@@ -26205,6 +26800,96 @@ export namespace RobotsJobFindKeyMomentsPendingWebhookEvent {
     }
 
     export namespace Parameters {
+      /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Rubric dimensions to use as tie-breakers after applying selection strategy.
+         * Best-effort guidance only.
+         */
+        rubric_priorities?: Array<
+          'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'
+        >;
+
+        /**
+         * Best-effort guidance for what qualifies as a strong standalone key moment.
+         */
+        selection_strategy?:
+          | 'standalone_hooks'
+          | 'educational_takeaways'
+          | 'story_beats'
+          | 'product_moments'
+          | 'speaker_highlights';
+
+        /**
+         * Best-effort title style guidance for generated moment titles.
+         */
+        title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+
       /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
@@ -26220,6 +26905,22 @@ export namespace RobotsJobFindKeyMomentsPendingWebhookEvent {
          */
         min: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -26460,6 +27161,12 @@ export namespace RobotsJobFindKeyMomentsProcessingWebhookEvent {
     workflow: 'find-key-moments';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -26493,6 +27200,13 @@ export namespace RobotsJobFindKeyMomentsProcessingWebhookEvent {
       max_moments?: number;
 
       /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
        */
@@ -26500,6 +27214,96 @@ export namespace RobotsJobFindKeyMomentsProcessingWebhookEvent {
     }
 
     export namespace Parameters {
+      /**
+       * Curated output_steering controls for selection strategy, title style, audience,
+       * taxonomy, and rubric tie-breakers. These controls guide model behavior but do
+       * not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Rubric dimensions to use as tie-breakers after applying selection strategy.
+         * Best-effort guidance only.
+         */
+        rubric_priorities?: Array<
+          'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'
+        >;
+
+        /**
+         * Best-effort guidance for what qualifies as a strong standalone key moment.
+         */
+        selection_strategy?:
+          | 'standalone_hooks'
+          | 'educational_takeaways'
+          | 'story_beats'
+          | 'product_moments'
+          | 'speaker_highlights';
+
+        /**
+         * Best-effort title style guidance for generated moment titles.
+         */
+        title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+
       /**
        * Preferred highlight duration range in milliseconds. When provided, the model
        * will aim to select moments within this range.
@@ -26515,6 +27319,22 @@ export namespace RobotsJobFindKeyMomentsProcessingWebhookEvent {
          */
         min: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -26707,6 +27527,2191 @@ export namespace RobotsJobFindKeyMomentsProcessingWebhookEvent {
   }
 }
 
+export interface RobotsJobFindScenesCancelledWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobFindScenesCancelledWebhookEvent.Data;
+
+  type: 'robots.job.find_scenes.cancelled';
+}
+
+export namespace RobotsJobFindScenesCancelledWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'find-scenes';
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+       * are not supported.
+       */
+      asset_id: string;
+
+      /**
+       * Preferred transcript language code to analyze when a matching transcript track
+       * is available. Defaults to the first ready transcript track on the asset.
+       */
+      language_code?: string;
+
+      /**
+       * Preferred minimum scene duration in milliseconds for scaffolded transcript
+       * chunking. Defaults to 15000.
+       */
+      min_scene_duration_ms?: number;
+
+      /**
+       * Optional lower-bound hint for scene segmentation. When provided, the model
+       * should avoid collapsing clearly distinct beats below this count when the content
+       * supports more granular scene boundaries.
+       */
+      min_scenes?: number;
+
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+    }
+
+    export namespace Parameters {
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how much detail scene narratives should include.
+         */
+        narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+        /**
+         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+         */
+        segmentation_strategy?:
+          | 'editorial_beats'
+          | 'topic_changes'
+          | 'visual_transitions'
+          | 'action_progression'
+          | 'instructional_steps';
+
+        /**
+         * Best-effort title style guidance for generated scene titles.
+         */
+        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Ordered scene segments extracted from the asset using shot boundaries plus any
+       * available transcript context.
+       */
+      scenes: Array<Outputs.Scene>;
+    }
+
+    export namespace Outputs {
+      export interface Scene {
+        /**
+         * Transcript cues that overlap the scene. Can be empty when no usable transcript
+         * is available.
+         */
+        cues: Array<Scene.Cue>;
+
+        /**
+         * Scene end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * How many timed shot or beat entries make up the scene. When shots is present,
+         * this equals shots.length.
+         */
+        shot_count: number;
+
+        /**
+         * Scene start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Short human-readable title for the scene.
+         */
+        title: string;
+
+        /**
+         * One-sentence summary of what is being said during the scene. Present only when
+         * transcript cues are available.
+         */
+        audible_narrative?: string;
+
+        /**
+         * Combined audible and visual narrative for the scene when both signals are
+         * meaningfully available. Omit when no transcript-backed audible signal exists.
+         */
+        blended_narrative?: string;
+
+        /**
+         * Multi-word descriptive phrases capturing key audible concepts in the scene.
+         * Present only when transcript cues are available.
+         */
+        notable_audible_concepts?: Array<string>;
+
+        /**
+         * Scored visual concepts extracted from sampled scene frames. Present for video
+         * assets when visual enrichment succeeds.
+         */
+        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+        /**
+         * Optional ordered shot or beat breakdown within the scene, including timings and
+         * short visual descriptions.
+         */
+        shots?: Array<Scene.Shot>;
+
+        /**
+         * One-sentence summary of what is visually happening during the scene. Present for
+         * video assets when visual enrichment succeeds.
+         */
+        visual_narrative?: string;
+      }
+
+      export namespace Scene {
+        export interface Cue {
+          /**
+           * Cue end time in milliseconds.
+           */
+          end_ms: number;
+
+          /**
+           * Cue start time in milliseconds.
+           */
+          start_ms: number;
+
+          /**
+           * Transcript text for this cue.
+           */
+          text: string;
+        }
+
+        export interface NotableVisualConcept {
+          /**
+           * Multi-word visual concept (2-5 words).
+           */
+          concept: string;
+
+          /**
+           * Brief explanation of why the concept is visually important for the scene.
+           */
+          rationale: string;
+
+          /**
+           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+           * within the scene.
+           */
+          score: number;
+        }
+
+        export interface Shot {
+          /**
+           * Shot or beat end time in milliseconds within the scene.
+           */
+          end_ms: number;
+
+          /**
+           * Shot or beat start time in milliseconds within the scene.
+           */
+          start_ms: number;
+
+          /**
+           * Short visual description of what happens during this shot or beat.
+           */
+          visual_description: string;
+        }
+      }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobFindScenesCompletedWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobFindScenesCompletedWebhookEvent.Data;
+
+  type: 'robots.job.find_scenes.completed';
+}
+
+export namespace RobotsJobFindScenesCompletedWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'find-scenes';
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+       * are not supported.
+       */
+      asset_id: string;
+
+      /**
+       * Preferred transcript language code to analyze when a matching transcript track
+       * is available. Defaults to the first ready transcript track on the asset.
+       */
+      language_code?: string;
+
+      /**
+       * Preferred minimum scene duration in milliseconds for scaffolded transcript
+       * chunking. Defaults to 15000.
+       */
+      min_scene_duration_ms?: number;
+
+      /**
+       * Optional lower-bound hint for scene segmentation. When provided, the model
+       * should avoid collapsing clearly distinct beats below this count when the content
+       * supports more granular scene boundaries.
+       */
+      min_scenes?: number;
+
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+    }
+
+    export namespace Parameters {
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how much detail scene narratives should include.
+         */
+        narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+        /**
+         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+         */
+        segmentation_strategy?:
+          | 'editorial_beats'
+          | 'topic_changes'
+          | 'visual_transitions'
+          | 'action_progression'
+          | 'instructional_steps';
+
+        /**
+         * Best-effort title style guidance for generated scene titles.
+         */
+        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Ordered scene segments extracted from the asset using shot boundaries plus any
+       * available transcript context.
+       */
+      scenes: Array<Outputs.Scene>;
+    }
+
+    export namespace Outputs {
+      export interface Scene {
+        /**
+         * Transcript cues that overlap the scene. Can be empty when no usable transcript
+         * is available.
+         */
+        cues: Array<Scene.Cue>;
+
+        /**
+         * Scene end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * How many timed shot or beat entries make up the scene. When shots is present,
+         * this equals shots.length.
+         */
+        shot_count: number;
+
+        /**
+         * Scene start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Short human-readable title for the scene.
+         */
+        title: string;
+
+        /**
+         * One-sentence summary of what is being said during the scene. Present only when
+         * transcript cues are available.
+         */
+        audible_narrative?: string;
+
+        /**
+         * Combined audible and visual narrative for the scene when both signals are
+         * meaningfully available. Omit when no transcript-backed audible signal exists.
+         */
+        blended_narrative?: string;
+
+        /**
+         * Multi-word descriptive phrases capturing key audible concepts in the scene.
+         * Present only when transcript cues are available.
+         */
+        notable_audible_concepts?: Array<string>;
+
+        /**
+         * Scored visual concepts extracted from sampled scene frames. Present for video
+         * assets when visual enrichment succeeds.
+         */
+        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+        /**
+         * Optional ordered shot or beat breakdown within the scene, including timings and
+         * short visual descriptions.
+         */
+        shots?: Array<Scene.Shot>;
+
+        /**
+         * One-sentence summary of what is visually happening during the scene. Present for
+         * video assets when visual enrichment succeeds.
+         */
+        visual_narrative?: string;
+      }
+
+      export namespace Scene {
+        export interface Cue {
+          /**
+           * Cue end time in milliseconds.
+           */
+          end_ms: number;
+
+          /**
+           * Cue start time in milliseconds.
+           */
+          start_ms: number;
+
+          /**
+           * Transcript text for this cue.
+           */
+          text: string;
+        }
+
+        export interface NotableVisualConcept {
+          /**
+           * Multi-word visual concept (2-5 words).
+           */
+          concept: string;
+
+          /**
+           * Brief explanation of why the concept is visually important for the scene.
+           */
+          rationale: string;
+
+          /**
+           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+           * within the scene.
+           */
+          score: number;
+        }
+
+        export interface Shot {
+          /**
+           * Shot or beat end time in milliseconds within the scene.
+           */
+          end_ms: number;
+
+          /**
+           * Shot or beat start time in milliseconds within the scene.
+           */
+          start_ms: number;
+
+          /**
+           * Short visual description of what happens during this shot or beat.
+           */
+          visual_description: string;
+        }
+      }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobFindScenesErroredWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobFindScenesErroredWebhookEvent.Data;
+
+  type: 'robots.job.find_scenes.errored';
+}
+
+export namespace RobotsJobFindScenesErroredWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'find-scenes';
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+       * are not supported.
+       */
+      asset_id: string;
+
+      /**
+       * Preferred transcript language code to analyze when a matching transcript track
+       * is available. Defaults to the first ready transcript track on the asset.
+       */
+      language_code?: string;
+
+      /**
+       * Preferred minimum scene duration in milliseconds for scaffolded transcript
+       * chunking. Defaults to 15000.
+       */
+      min_scene_duration_ms?: number;
+
+      /**
+       * Optional lower-bound hint for scene segmentation. When provided, the model
+       * should avoid collapsing clearly distinct beats below this count when the content
+       * supports more granular scene boundaries.
+       */
+      min_scenes?: number;
+
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+    }
+
+    export namespace Parameters {
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how much detail scene narratives should include.
+         */
+        narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+        /**
+         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+         */
+        segmentation_strategy?:
+          | 'editorial_beats'
+          | 'topic_changes'
+          | 'visual_transitions'
+          | 'action_progression'
+          | 'instructional_steps';
+
+        /**
+         * Best-effort title style guidance for generated scene titles.
+         */
+        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Ordered scene segments extracted from the asset using shot boundaries plus any
+       * available transcript context.
+       */
+      scenes: Array<Outputs.Scene>;
+    }
+
+    export namespace Outputs {
+      export interface Scene {
+        /**
+         * Transcript cues that overlap the scene. Can be empty when no usable transcript
+         * is available.
+         */
+        cues: Array<Scene.Cue>;
+
+        /**
+         * Scene end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * How many timed shot or beat entries make up the scene. When shots is present,
+         * this equals shots.length.
+         */
+        shot_count: number;
+
+        /**
+         * Scene start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Short human-readable title for the scene.
+         */
+        title: string;
+
+        /**
+         * One-sentence summary of what is being said during the scene. Present only when
+         * transcript cues are available.
+         */
+        audible_narrative?: string;
+
+        /**
+         * Combined audible and visual narrative for the scene when both signals are
+         * meaningfully available. Omit when no transcript-backed audible signal exists.
+         */
+        blended_narrative?: string;
+
+        /**
+         * Multi-word descriptive phrases capturing key audible concepts in the scene.
+         * Present only when transcript cues are available.
+         */
+        notable_audible_concepts?: Array<string>;
+
+        /**
+         * Scored visual concepts extracted from sampled scene frames. Present for video
+         * assets when visual enrichment succeeds.
+         */
+        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+        /**
+         * Optional ordered shot or beat breakdown within the scene, including timings and
+         * short visual descriptions.
+         */
+        shots?: Array<Scene.Shot>;
+
+        /**
+         * One-sentence summary of what is visually happening during the scene. Present for
+         * video assets when visual enrichment succeeds.
+         */
+        visual_narrative?: string;
+      }
+
+      export namespace Scene {
+        export interface Cue {
+          /**
+           * Cue end time in milliseconds.
+           */
+          end_ms: number;
+
+          /**
+           * Cue start time in milliseconds.
+           */
+          start_ms: number;
+
+          /**
+           * Transcript text for this cue.
+           */
+          text: string;
+        }
+
+        export interface NotableVisualConcept {
+          /**
+           * Multi-word visual concept (2-5 words).
+           */
+          concept: string;
+
+          /**
+           * Brief explanation of why the concept is visually important for the scene.
+           */
+          rationale: string;
+
+          /**
+           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+           * within the scene.
+           */
+          score: number;
+        }
+
+        export interface Shot {
+          /**
+           * Shot or beat end time in milliseconds within the scene.
+           */
+          end_ms: number;
+
+          /**
+           * Shot or beat start time in milliseconds within the scene.
+           */
+          start_ms: number;
+
+          /**
+           * Short visual description of what happens during this shot or beat.
+           */
+          visual_description: string;
+        }
+      }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobFindScenesPendingWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobFindScenesPendingWebhookEvent.Data;
+
+  type: 'robots.job.find_scenes.pending';
+}
+
+export namespace RobotsJobFindScenesPendingWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'find-scenes';
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+       * are not supported.
+       */
+      asset_id: string;
+
+      /**
+       * Preferred transcript language code to analyze when a matching transcript track
+       * is available. Defaults to the first ready transcript track on the asset.
+       */
+      language_code?: string;
+
+      /**
+       * Preferred minimum scene duration in milliseconds for scaffolded transcript
+       * chunking. Defaults to 15000.
+       */
+      min_scene_duration_ms?: number;
+
+      /**
+       * Optional lower-bound hint for scene segmentation. When provided, the model
+       * should avoid collapsing clearly distinct beats below this count when the content
+       * supports more granular scene boundaries.
+       */
+      min_scenes?: number;
+
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+    }
+
+    export namespace Parameters {
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how much detail scene narratives should include.
+         */
+        narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+        /**
+         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+         */
+        segmentation_strategy?:
+          | 'editorial_beats'
+          | 'topic_changes'
+          | 'visual_transitions'
+          | 'action_progression'
+          | 'instructional_steps';
+
+        /**
+         * Best-effort title style guidance for generated scene titles.
+         */
+        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Ordered scene segments extracted from the asset using shot boundaries plus any
+       * available transcript context.
+       */
+      scenes: Array<Outputs.Scene>;
+    }
+
+    export namespace Outputs {
+      export interface Scene {
+        /**
+         * Transcript cues that overlap the scene. Can be empty when no usable transcript
+         * is available.
+         */
+        cues: Array<Scene.Cue>;
+
+        /**
+         * Scene end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * How many timed shot or beat entries make up the scene. When shots is present,
+         * this equals shots.length.
+         */
+        shot_count: number;
+
+        /**
+         * Scene start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Short human-readable title for the scene.
+         */
+        title: string;
+
+        /**
+         * One-sentence summary of what is being said during the scene. Present only when
+         * transcript cues are available.
+         */
+        audible_narrative?: string;
+
+        /**
+         * Combined audible and visual narrative for the scene when both signals are
+         * meaningfully available. Omit when no transcript-backed audible signal exists.
+         */
+        blended_narrative?: string;
+
+        /**
+         * Multi-word descriptive phrases capturing key audible concepts in the scene.
+         * Present only when transcript cues are available.
+         */
+        notable_audible_concepts?: Array<string>;
+
+        /**
+         * Scored visual concepts extracted from sampled scene frames. Present for video
+         * assets when visual enrichment succeeds.
+         */
+        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+        /**
+         * Optional ordered shot or beat breakdown within the scene, including timings and
+         * short visual descriptions.
+         */
+        shots?: Array<Scene.Shot>;
+
+        /**
+         * One-sentence summary of what is visually happening during the scene. Present for
+         * video assets when visual enrichment succeeds.
+         */
+        visual_narrative?: string;
+      }
+
+      export namespace Scene {
+        export interface Cue {
+          /**
+           * Cue end time in milliseconds.
+           */
+          end_ms: number;
+
+          /**
+           * Cue start time in milliseconds.
+           */
+          start_ms: number;
+
+          /**
+           * Transcript text for this cue.
+           */
+          text: string;
+        }
+
+        export interface NotableVisualConcept {
+          /**
+           * Multi-word visual concept (2-5 words).
+           */
+          concept: string;
+
+          /**
+           * Brief explanation of why the concept is visually important for the scene.
+           */
+          rationale: string;
+
+          /**
+           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+           * within the scene.
+           */
+          score: number;
+        }
+
+        export interface Shot {
+          /**
+           * Shot or beat end time in milliseconds within the scene.
+           */
+          end_ms: number;
+
+          /**
+           * Shot or beat start time in milliseconds within the scene.
+           */
+          start_ms: number;
+
+          /**
+           * Short visual description of what happens during this shot or beat.
+           */
+          visual_description: string;
+        }
+      }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
+export interface RobotsJobFindScenesProcessingWebhookEvent extends BaseWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  data: RobotsJobFindScenesProcessingWebhookEvent.Data;
+
+  type: 'robots.job.find_scenes.processing';
+}
+
+export namespace RobotsJobFindScenesProcessingWebhookEvent {
+  /**
+   * The job that triggered the webhook event. In the actual payload this is nested
+   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
+   * the top level.
+   */
+  export interface Data {
+    /**
+     * Unique job identifier.
+     */
+    id: string;
+
+    /**
+     * Unix timestamp (seconds) when the job was created.
+     */
+    created_at: number;
+
+    parameters: Data.Parameters;
+
+    /**
+     * Current job status.
+     */
+    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+    /**
+     * Number of Mux AI units consumed by this job.
+     */
+    units_consumed: number;
+
+    /**
+     * Unix timestamp (seconds) when the job was last updated.
+     */
+    updated_at: number;
+
+    workflow: 'find-scenes';
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
+     * Error details. Present when status is 'errored'.
+     */
+    errors?: Array<Data.Error>;
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    outputs?: Data.Outputs;
+
+    /**
+     * Arbitrary string supplied at creation, returned as-is.
+     */
+    passthrough?: string;
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    resources?: Data.Resources;
+  }
+
+  export namespace Data {
+    export interface Parameters {
+      /**
+       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+       * are not supported.
+       */
+      asset_id: string;
+
+      /**
+       * Preferred transcript language code to analyze when a matching transcript track
+       * is available. Defaults to the first ready transcript track on the asset.
+       */
+      language_code?: string;
+
+      /**
+       * Preferred minimum scene duration in milliseconds for scaffolded transcript
+       * chunking. Defaults to 15000.
+       */
+      min_scene_duration_ms?: number;
+
+      /**
+       * Optional lower-bound hint for scene segmentation. When provided, the model
+       * should avoid collapsing clearly distinct beats below this count when the content
+       * supports more granular scene boundaries.
+       */
+      min_scenes?: number;
+
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+    }
+
+    export namespace Parameters {
+      /**
+       * Curated output_steering controls for segmentation strategy, title style,
+       * narration detail, audience, brand terms, and topic taxonomy. These controls
+       * guide model behavior but do not guarantee exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how much detail scene narratives should include.
+         */
+        narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+        /**
+         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+         */
+        segmentation_strategy?:
+          | 'editorial_beats'
+          | 'topic_changes'
+          | 'visual_transitions'
+          | 'action_progression'
+          | 'instructional_steps';
+
+        /**
+         * Best-effort title style guidance for generated scene titles.
+         */
+        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        topic_taxonomy?: OutputSteering.TopicTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary used to steer scene concepts without changing the response
+         * schema.
+         */
+        export interface TopicTaxonomy {
+          /**
+           * When false, the model should prefer values from the taxonomy. When true,
+           * non-taxonomy values may be used when no taxonomy value applies.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values used as best-effort model guidance.
+           */
+          values: Array<TopicTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy.
+           */
+          name?: string;
+        }
+
+        export namespace TopicTaxonomy {
+          export interface Value {
+            /**
+             * Canonical taxonomy value to prefer when supported by the source content.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this value applies.
+             */
+            description?: string;
+          }
+        }
+      }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
+    export interface Error {
+      /**
+       * Human-readable public error message.
+       */
+      message: string;
+
+      /**
+       * Stable public error category identifier.
+       */
+      type: string;
+
+      /**
+       * Whether retrying this job may resolve the error.
+       */
+      retryable?: boolean;
+    }
+
+    /**
+     * Workflow results. Present when status is 'completed'.
+     */
+    export interface Outputs {
+      /**
+       * Ordered scene segments extracted from the asset using shot boundaries plus any
+       * available transcript context.
+       */
+      scenes: Array<Outputs.Scene>;
+    }
+
+    export namespace Outputs {
+      export interface Scene {
+        /**
+         * Transcript cues that overlap the scene. Can be empty when no usable transcript
+         * is available.
+         */
+        cues: Array<Scene.Cue>;
+
+        /**
+         * Scene end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * How many timed shot or beat entries make up the scene. When shots is present,
+         * this equals shots.length.
+         */
+        shot_count: number;
+
+        /**
+         * Scene start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Short human-readable title for the scene.
+         */
+        title: string;
+
+        /**
+         * One-sentence summary of what is being said during the scene. Present only when
+         * transcript cues are available.
+         */
+        audible_narrative?: string;
+
+        /**
+         * Combined audible and visual narrative for the scene when both signals are
+         * meaningfully available. Omit when no transcript-backed audible signal exists.
+         */
+        blended_narrative?: string;
+
+        /**
+         * Multi-word descriptive phrases capturing key audible concepts in the scene.
+         * Present only when transcript cues are available.
+         */
+        notable_audible_concepts?: Array<string>;
+
+        /**
+         * Scored visual concepts extracted from sampled scene frames. Present for video
+         * assets when visual enrichment succeeds.
+         */
+        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+        /**
+         * Optional ordered shot or beat breakdown within the scene, including timings and
+         * short visual descriptions.
+         */
+        shots?: Array<Scene.Shot>;
+
+        /**
+         * One-sentence summary of what is visually happening during the scene. Present for
+         * video assets when visual enrichment succeeds.
+         */
+        visual_narrative?: string;
+      }
+
+      export namespace Scene {
+        export interface Cue {
+          /**
+           * Cue end time in milliseconds.
+           */
+          end_ms: number;
+
+          /**
+           * Cue start time in milliseconds.
+           */
+          start_ms: number;
+
+          /**
+           * Transcript text for this cue.
+           */
+          text: string;
+        }
+
+        export interface NotableVisualConcept {
+          /**
+           * Multi-word visual concept (2-5 words).
+           */
+          concept: string;
+
+          /**
+           * Brief explanation of why the concept is visually important for the scene.
+           */
+          rationale: string;
+
+          /**
+           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+           * within the scene.
+           */
+          score: number;
+        }
+
+        export interface Shot {
+          /**
+           * Shot or beat end time in milliseconds within the scene.
+           */
+          end_ms: number;
+
+          /**
+           * Shot or beat start time in milliseconds within the scene.
+           */
+          start_ms: number;
+
+          /**
+           * Short visual description of what happens during this shot or beat.
+           */
+          visual_description: string;
+        }
+      }
+    }
+
+    /**
+     * Related Mux resources linked to this job.
+     */
+    export interface Resources {
+      /**
+       * Mux assets associated with this job.
+       */
+      assets: Array<Resources.Asset>;
+    }
+
+    export namespace Resources {
+      export interface Asset {
+        /**
+         * Mux asset ID.
+         */
+        id: string;
+
+        /**
+         * Hypermedia links for the asset.
+         */
+        _links: Asset._Links;
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        meta?: Asset.Meta;
+
+        /**
+         * Passthrough string from the Mux asset.
+         */
+        passthrough?: string;
+      }
+
+      export namespace Asset {
+        /**
+         * Hypermedia links for the asset.
+         */
+        export interface _Links {
+          self: _Links.Self;
+        }
+
+        export namespace _Links {
+          export interface Self {
+            /**
+             * URL to the Mux asset resource.
+             */
+            href: string;
+          }
+        }
+
+        /**
+         * Mux asset metadata, if available.
+         */
+        export interface Meta {
+          /**
+           * Creator identifier from Mux metadata.
+           */
+          creator_id?: string;
+
+          /**
+           * External identifier from Mux metadata.
+           */
+          external_id?: string;
+
+          /**
+           * Asset title from Mux metadata.
+           */
+          title?: string;
+        }
+      }
+    }
+  }
+}
+
 export interface RobotsJobGenerateChaptersCancelledWebhookEvent extends BaseWebhookEvent {
   /**
    * The job that triggered the webhook event. In the actual payload this is nested
@@ -26755,6 +29760,12 @@ export namespace RobotsJobGenerateChaptersCancelledWebhookEvent {
     workflow: 'generate-chapters';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -26795,14 +29806,51 @@ export namespace RobotsJobGenerateChaptersCancelledWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
     }
 
     export namespace Parameters {
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how coarse or fine chapter boundaries should be.
+         */
+        chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+        /**
+         * Best-effort style guidance for generated chapter titles.
+         */
+        chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -26825,6 +29873,22 @@ export namespace RobotsJobGenerateChaptersCancelledWebhookEvent {
          */
         title_guidelines?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -26990,6 +30054,12 @@ export namespace RobotsJobGenerateChaptersCompletedWebhookEvent {
     workflow: 'generate-chapters';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -27030,14 +30100,51 @@ export namespace RobotsJobGenerateChaptersCompletedWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
     }
 
     export namespace Parameters {
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how coarse or fine chapter boundaries should be.
+         */
+        chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+        /**
+         * Best-effort style guidance for generated chapter titles.
+         */
+        chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -27060,6 +30167,22 @@ export namespace RobotsJobGenerateChaptersCompletedWebhookEvent {
          */
         title_guidelines?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -27225,6 +30348,12 @@ export namespace RobotsJobGenerateChaptersErroredWebhookEvent {
     workflow: 'generate-chapters';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -27265,14 +30394,51 @@ export namespace RobotsJobGenerateChaptersErroredWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
     }
 
     export namespace Parameters {
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how coarse or fine chapter boundaries should be.
+         */
+        chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+        /**
+         * Best-effort style guidance for generated chapter titles.
+         */
+        chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -27295,6 +30461,22 @@ export namespace RobotsJobGenerateChaptersErroredWebhookEvent {
          */
         title_guidelines?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -27460,6 +30642,12 @@ export namespace RobotsJobGenerateChaptersPendingWebhookEvent {
     workflow: 'generate-chapters';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -27500,14 +30688,51 @@ export namespace RobotsJobGenerateChaptersPendingWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
     }
 
     export namespace Parameters {
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how coarse or fine chapter boundaries should be.
+         */
+        chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+        /**
+         * Best-effort style guidance for generated chapter titles.
+         */
+        chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -27530,6 +30755,22 @@ export namespace RobotsJobGenerateChaptersPendingWebhookEvent {
          */
         title_guidelines?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -27695,6 +30936,12 @@ export namespace RobotsJobGenerateChaptersProcessingWebhookEvent {
     workflow: 'generate-chapters';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -27735,14 +30982,51 @@ export namespace RobotsJobGenerateChaptersProcessingWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
     }
 
     export namespace Parameters {
       /**
-       * Override specific sections of the chapter generation prompt.
+       * Curated output_steering controls for chapter style, granularity, audience, and
+       * brand terminology. These controls guide model behavior but do not guarantee
+       * exact output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort guidance for how coarse or fine chapter boundaries should be.
+         */
+        chapter_granularity?: 'coarse' | 'balanced' | 'fine';
+
+        /**
+         * Best-effort style guidance for generated chapter titles.
+         */
+        chapter_style?: 'descriptive' | 'punchy' | 'educational' | 'seo' | 'platform_neutral';
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -27765,6 +31049,22 @@ export namespace RobotsJobGenerateChaptersProcessingWebhookEvent {
          */
         title_guidelines?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -27930,6 +31230,12 @@ export namespace RobotsJobModerateCancelledWebhookEvent {
     workflow: 'moderate';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -28007,6 +31313,22 @@ export namespace RobotsJobModerateCancelledWebhookEvent {
          */
         violence?: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -28197,6 +31519,12 @@ export namespace RobotsJobModerateCompletedWebhookEvent {
     workflow: 'moderate';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -28274,6 +31602,22 @@ export namespace RobotsJobModerateCompletedWebhookEvent {
          */
         violence?: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -28464,6 +31808,12 @@ export namespace RobotsJobModerateErroredWebhookEvent {
     workflow: 'moderate';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -28541,6 +31891,22 @@ export namespace RobotsJobModerateErroredWebhookEvent {
          */
         violence?: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -28731,6 +32097,12 @@ export namespace RobotsJobModeratePendingWebhookEvent {
     workflow: 'moderate';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -28808,6 +32180,22 @@ export namespace RobotsJobModeratePendingWebhookEvent {
          */
         violence?: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -28998,6 +32386,12 @@ export namespace RobotsJobModerateProcessingWebhookEvent {
     workflow: 'moderate';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -29075,6 +32469,22 @@ export namespace RobotsJobModerateProcessingWebhookEvent {
          */
         violence?: number;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -29265,6 +32675,12 @@ export namespace RobotsJobSummarizeCancelledWebhookEvent {
     workflow: 'summarize';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -29310,7 +32726,15 @@ export namespace RobotsJobSummarizeCancelledWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
 
@@ -29334,7 +32758,83 @@ export namespace RobotsJobSummarizeCancelledWebhookEvent {
 
     export namespace Parameters {
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort style guidance for the generated title and description.
+         */
+        summary_style?: 'concise' | 'detailed' | 'editorial';
+
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        tag_taxonomy?: OutputSteering.TagTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        export interface TagTaxonomy {
+          /**
+           * When false, generated tags are filtered to taxonomy labels and aliases. When
+           * true, unmatched tags may remain.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values for generated tags. Supports 1-50 values.
+           */
+          values: Array<TagTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy, up to 100 characters.
+           */
+          name?: string;
+        }
+
+        export namespace TagTaxonomy {
+          export interface Value {
+            /**
+             * Canonical tag value to prefer in generated tags, up to 100 characters.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label. Up to 10
+             * aliases, each up to 100 characters.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this tag applies, up to 300 characters.
+             */
+            description?: string;
+          }
+        }
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -29362,6 +32862,22 @@ export namespace RobotsJobSummarizeCancelledWebhookEvent {
          */
         title?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -29523,6 +33039,12 @@ export namespace RobotsJobSummarizeCompletedWebhookEvent {
     workflow: 'summarize';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -29568,7 +33090,15 @@ export namespace RobotsJobSummarizeCompletedWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
 
@@ -29592,7 +33122,83 @@ export namespace RobotsJobSummarizeCompletedWebhookEvent {
 
     export namespace Parameters {
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort style guidance for the generated title and description.
+         */
+        summary_style?: 'concise' | 'detailed' | 'editorial';
+
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        tag_taxonomy?: OutputSteering.TagTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        export interface TagTaxonomy {
+          /**
+           * When false, generated tags are filtered to taxonomy labels and aliases. When
+           * true, unmatched tags may remain.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values for generated tags. Supports 1-50 values.
+           */
+          values: Array<TagTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy, up to 100 characters.
+           */
+          name?: string;
+        }
+
+        export namespace TagTaxonomy {
+          export interface Value {
+            /**
+             * Canonical tag value to prefer in generated tags, up to 100 characters.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label. Up to 10
+             * aliases, each up to 100 characters.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this tag applies, up to 300 characters.
+             */
+            description?: string;
+          }
+        }
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -29620,6 +33226,22 @@ export namespace RobotsJobSummarizeCompletedWebhookEvent {
          */
         title?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -29781,6 +33403,12 @@ export namespace RobotsJobSummarizeErroredWebhookEvent {
     workflow: 'summarize';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -29826,7 +33454,15 @@ export namespace RobotsJobSummarizeErroredWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
 
@@ -29850,7 +33486,83 @@ export namespace RobotsJobSummarizeErroredWebhookEvent {
 
     export namespace Parameters {
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort style guidance for the generated title and description.
+         */
+        summary_style?: 'concise' | 'detailed' | 'editorial';
+
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        tag_taxonomy?: OutputSteering.TagTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        export interface TagTaxonomy {
+          /**
+           * When false, generated tags are filtered to taxonomy labels and aliases. When
+           * true, unmatched tags may remain.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values for generated tags. Supports 1-50 values.
+           */
+          values: Array<TagTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy, up to 100 characters.
+           */
+          name?: string;
+        }
+
+        export namespace TagTaxonomy {
+          export interface Value {
+            /**
+             * Canonical tag value to prefer in generated tags, up to 100 characters.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label. Up to 10
+             * aliases, each up to 100 characters.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this tag applies, up to 300 characters.
+             */
+            description?: string;
+          }
+        }
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -29878,6 +33590,22 @@ export namespace RobotsJobSummarizeErroredWebhookEvent {
          */
         title?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -30039,6 +33767,12 @@ export namespace RobotsJobSummarizePendingWebhookEvent {
     workflow: 'summarize';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -30084,7 +33818,15 @@ export namespace RobotsJobSummarizePendingWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
 
@@ -30108,7 +33850,83 @@ export namespace RobotsJobSummarizePendingWebhookEvent {
 
     export namespace Parameters {
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort style guidance for the generated title and description.
+         */
+        summary_style?: 'concise' | 'detailed' | 'editorial';
+
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        tag_taxonomy?: OutputSteering.TagTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        export interface TagTaxonomy {
+          /**
+           * When false, generated tags are filtered to taxonomy labels and aliases. When
+           * true, unmatched tags may remain.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values for generated tags. Supports 1-50 values.
+           */
+          values: Array<TagTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy, up to 100 characters.
+           */
+          name?: string;
+        }
+
+        export namespace TagTaxonomy {
+          export interface Value {
+            /**
+             * Canonical tag value to prefer in generated tags, up to 100 characters.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label. Up to 10
+             * aliases, each up to 100 characters.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this tag applies, up to 300 characters.
+             */
+            description?: string;
+          }
+        }
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -30136,6 +33954,22 @@ export namespace RobotsJobSummarizePendingWebhookEvent {
          */
         title?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -30297,6 +34131,12 @@ export namespace RobotsJobSummarizeProcessingWebhookEvent {
     workflow: 'summarize';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -30342,7 +34182,15 @@ export namespace RobotsJobSummarizeProcessingWebhookEvent {
       output_language_code?: string;
 
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      output_steering?: Parameters.OutputSteering;
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       prompt_overrides?: Parameters.PromptOverrides;
 
@@ -30366,7 +34214,83 @@ export namespace RobotsJobSummarizeProcessingWebhookEvent {
 
     export namespace Parameters {
       /**
-       * Override specific sections of the summarization prompt.
+       * Curated output_steering controls for summary style, audience, brand terminology,
+       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
+       * output.
+       */
+      export interface OutputSteering {
+        /**
+         * Intended audience used as best-effort model guidance. Does not change the output
+         * schema.
+         */
+        audience?: string;
+
+        /**
+         * Preferred brand or domain terms to use when supported by the source content.
+         */
+        brand_terms?: Array<string>;
+
+        /**
+         * Best-effort style guidance for the generated title and description.
+         */
+        summary_style?: 'concise' | 'detailed' | 'editorial';
+
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        tag_taxonomy?: OutputSteering.TagTaxonomy;
+      }
+
+      export namespace OutputSteering {
+        /**
+         * Controlled vocabulary for tag generation. This steers tags and may be
+         * deterministically filtered after generation. Supports up to 50 values and 2000
+         * serialized characters.
+         */
+        export interface TagTaxonomy {
+          /**
+           * When false, generated tags are filtered to taxonomy labels and aliases. When
+           * true, unmatched tags may remain.
+           */
+          allow_other: boolean;
+
+          /**
+           * Controlled vocabulary values for generated tags. Supports 1-50 values.
+           */
+          values: Array<TagTaxonomy.Value>;
+
+          /**
+           * Optional customer-facing name for the taxonomy, up to 100 characters.
+           */
+          name?: string;
+        }
+
+        export namespace TagTaxonomy {
+          export interface Value {
+            /**
+             * Canonical tag value to prefer in generated tags, up to 100 characters.
+             */
+            label: string;
+
+            /**
+             * Accepted alternate names that should normalize to the canonical label. Up to 10
+             * aliases, each up to 100 characters.
+             */
+            aliases?: Array<string>;
+
+            /**
+             * Short explanation of when this tag applies, up to 300 characters.
+             */
+            description?: string;
+          }
+        }
+      }
+
+      /**
+       * Legacy/internal prompt-section overrides. Prefer output_steering for new
+       * integrations.
        */
       export interface PromptOverrides {
         /**
@@ -30394,6 +34318,22 @@ export namespace RobotsJobSummarizeProcessingWebhookEvent {
          */
         title?: string;
       }
+    }
+
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
     }
 
     export interface Error {
@@ -30555,6 +34495,12 @@ export namespace RobotsJobTranslateCaptionsCancelledWebhookEvent {
     workflow: 'translate-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -30601,6 +34547,22 @@ export namespace RobotsJobTranslateCaptionsCancelledWebhookEvent {
       upload_to_mux?: boolean;
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -30624,14 +34586,9 @@ export namespace RobotsJobTranslateCaptionsCancelledWebhookEvent {
     export interface Outputs {
       /**
        * Temporary pre-signed URL to download the translated VTT file. Present when
-       * upload_to_mux is true.
+       * upload_to_mux is true. Expires 7 days after the job completes.
        */
       temporary_vtt_url?: string;
-
-      /**
-       * The Mux text track ID of the source caption track that was translated.
-       */
-      track_id?: string;
 
       /**
        * Mux text track ID of the uploaded translated captions. Present when
@@ -30762,6 +34719,12 @@ export namespace RobotsJobTranslateCaptionsCompletedWebhookEvent {
     workflow: 'translate-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -30808,6 +34771,22 @@ export namespace RobotsJobTranslateCaptionsCompletedWebhookEvent {
       upload_to_mux?: boolean;
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -30831,14 +34810,9 @@ export namespace RobotsJobTranslateCaptionsCompletedWebhookEvent {
     export interface Outputs {
       /**
        * Temporary pre-signed URL to download the translated VTT file. Present when
-       * upload_to_mux is true.
+       * upload_to_mux is true. Expires 7 days after the job completes.
        */
       temporary_vtt_url?: string;
-
-      /**
-       * The Mux text track ID of the source caption track that was translated.
-       */
-      track_id?: string;
 
       /**
        * Mux text track ID of the uploaded translated captions. Present when
@@ -30969,6 +34943,12 @@ export namespace RobotsJobTranslateCaptionsErroredWebhookEvent {
     workflow: 'translate-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -31015,6 +34995,22 @@ export namespace RobotsJobTranslateCaptionsErroredWebhookEvent {
       upload_to_mux?: boolean;
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -31038,14 +35034,9 @@ export namespace RobotsJobTranslateCaptionsErroredWebhookEvent {
     export interface Outputs {
       /**
        * Temporary pre-signed URL to download the translated VTT file. Present when
-       * upload_to_mux is true.
+       * upload_to_mux is true. Expires 7 days after the job completes.
        */
       temporary_vtt_url?: string;
-
-      /**
-       * The Mux text track ID of the source caption track that was translated.
-       */
-      track_id?: string;
 
       /**
        * Mux text track ID of the uploaded translated captions. Present when
@@ -31176,6 +35167,12 @@ export namespace RobotsJobTranslateCaptionsPendingWebhookEvent {
     workflow: 'translate-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -31222,6 +35219,22 @@ export namespace RobotsJobTranslateCaptionsPendingWebhookEvent {
       upload_to_mux?: boolean;
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -31245,14 +35258,9 @@ export namespace RobotsJobTranslateCaptionsPendingWebhookEvent {
     export interface Outputs {
       /**
        * Temporary pre-signed URL to download the translated VTT file. Present when
-       * upload_to_mux is true.
+       * upload_to_mux is true. Expires 7 days after the job completes.
        */
       temporary_vtt_url?: string;
-
-      /**
-       * The Mux text track ID of the source caption track that was translated.
-       */
-      track_id?: string;
 
       /**
        * Mux text track ID of the uploaded translated captions. Present when
@@ -31383,6 +35391,12 @@ export namespace RobotsJobTranslateCaptionsProcessingWebhookEvent {
     workflow: 'translate-captions';
 
     /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    directive?: Data.Directive;
+
+    /**
      * Error details. Present when status is 'errored'.
      */
     errors?: Array<Data.Error>;
@@ -31429,6 +35443,22 @@ export namespace RobotsJobTranslateCaptionsProcessingWebhookEvent {
       upload_to_mux?: boolean;
     }
 
+    /**
+     * The directive run that dispatched this job. Absent for jobs created via direct
+     * API POST.
+     */
+    export interface Directive {
+      /**
+       * ID of the directive that dispatched this job.
+       */
+      id: string;
+
+      /**
+       * ID of the specific directive run that dispatched this job.
+       */
+      run_id: string;
+    }
+
     export interface Error {
       /**
        * Human-readable public error message.
@@ -31452,14 +35482,9 @@ export namespace RobotsJobTranslateCaptionsProcessingWebhookEvent {
     export interface Outputs {
       /**
        * Temporary pre-signed URL to download the translated VTT file. Present when
-       * upload_to_mux is true.
+       * upload_to_mux is true. Expires 7 days after the job completes.
        */
       temporary_vtt_url?: string;
-
-      /**
-       * The Mux text track ID of the source caption track that was translated.
-       */
-      track_id?: string;
 
       /**
        * Mux text track ID of the uploaded translated captions. Present when
@@ -31606,6 +35631,11 @@ export type UnwrapWebhookEvent =
   | RobotsJobFindKeyMomentsErroredWebhookEvent
   | RobotsJobFindKeyMomentsPendingWebhookEvent
   | RobotsJobFindKeyMomentsProcessingWebhookEvent
+  | RobotsJobFindScenesCancelledWebhookEvent
+  | RobotsJobFindScenesCompletedWebhookEvent
+  | RobotsJobFindScenesErroredWebhookEvent
+  | RobotsJobFindScenesPendingWebhookEvent
+  | RobotsJobFindScenesProcessingWebhookEvent
   | RobotsJobGenerateChaptersCancelledWebhookEvent
   | RobotsJobGenerateChaptersCompletedWebhookEvent
   | RobotsJobGenerateChaptersErroredWebhookEvent
@@ -31693,6 +35723,11 @@ export declare namespace Webhooks {
     type RobotsJobFindKeyMomentsErroredWebhookEvent as RobotsJobFindKeyMomentsErroredWebhookEvent,
     type RobotsJobFindKeyMomentsPendingWebhookEvent as RobotsJobFindKeyMomentsPendingWebhookEvent,
     type RobotsJobFindKeyMomentsProcessingWebhookEvent as RobotsJobFindKeyMomentsProcessingWebhookEvent,
+    type RobotsJobFindScenesCancelledWebhookEvent as RobotsJobFindScenesCancelledWebhookEvent,
+    type RobotsJobFindScenesCompletedWebhookEvent as RobotsJobFindScenesCompletedWebhookEvent,
+    type RobotsJobFindScenesErroredWebhookEvent as RobotsJobFindScenesErroredWebhookEvent,
+    type RobotsJobFindScenesPendingWebhookEvent as RobotsJobFindScenesPendingWebhookEvent,
+    type RobotsJobFindScenesProcessingWebhookEvent as RobotsJobFindScenesProcessingWebhookEvent,
     type RobotsJobGenerateChaptersCancelledWebhookEvent as RobotsJobGenerateChaptersCancelledWebhookEvent,
     type RobotsJobGenerateChaptersCompletedWebhookEvent as RobotsJobGenerateChaptersCompletedWebhookEvent,
     type RobotsJobGenerateChaptersErroredWebhookEvent as RobotsJobGenerateChaptersErroredWebhookEvent,

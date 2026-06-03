@@ -66,6 +66,11 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsErroredWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsPendingWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobFindKeyMomentsProcessingWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobFindScenesCancelledWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobFindScenesCompletedWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobFindScenesErroredWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobFindScenesPendingWebhookEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">RobotsJobFindScenesProcessingWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobGenerateChaptersCancelledWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobGenerateChaptersCompletedWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">RobotsJobGenerateChaptersErroredWebhookEvent</a></code>

@@ -28,6 +28,12 @@ describe('resource generateChapters', () => {
         asset_id: 'mux_asset_123abc',
         language_code: 'x',
         output_language_code: 'x',
+        output_steering: {
+          audience: 'Developers',
+          brand_terms: ['x'],
+          chapter_granularity: 'balanced',
+          chapter_style: 'descriptive',
+        },
         prompt_overrides: {
           chapter_guidelines: 'x',
           output_format: 'x',

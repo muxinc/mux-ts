@@ -90,6 +90,12 @@ export interface TranslateCaptionsJob {
   workflow: 'translate-captions';
 
   /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: TranslateCaptionsJob.Directive;
+
+  /**
    * Error details. Present when status is 'errored'.
    */
   errors?: Array<JobsAPI.JobError>;
@@ -111,6 +117,22 @@ export interface TranslateCaptionsJob {
 }
 
 export namespace TranslateCaptionsJob {
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
   /**
    * Related Mux resources linked to this job.
    */
@@ -190,14 +212,9 @@ export namespace TranslateCaptionsJob {
 export interface TranslateCaptionsJobOutputs {
   /**
    * Temporary pre-signed URL to download the translated VTT file. Present when
-   * upload_to_mux is true.
+   * upload_to_mux is true. Expires 7 days after the job completes.
    */
   temporary_vtt_url?: string;
-
-  /**
-   * The Mux text track ID of the source caption track that was translated.
-   */
-  track_id?: string;
 
   /**
    * Mux text track ID of the uploaded translated captions. Present when

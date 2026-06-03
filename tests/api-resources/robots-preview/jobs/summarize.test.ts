@@ -29,6 +29,22 @@ describe('resource summarize', () => {
         description_length: 1,
         language_code: 'x',
         output_language_code: 'x',
+        output_steering: {
+          audience: 'Product marketers',
+          brand_terms: ['Mux', 'Robots'],
+          summary_style: 'concise',
+          tag_taxonomy: {
+            allow_other: true,
+            values: [
+              {
+                label: 'x',
+                aliases: ['x'],
+                description: 'x',
+              },
+            ],
+            name: 'x',
+          },
+        },
         prompt_overrides: {
           description: 'x',
           keywords: 'x',
