@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { ResponseLike } from '@mux/mux-node/internal/to-file';
-import { toFile } from '@mux/mux-node/core/uploads';
+import type { ResponseLike } from '@mux/ts/internal/to-file';
+import { toFile } from '@mux/ts/core/uploads';
 
 class MyClass {
   name: string = 'foo';
@@ -96,7 +96,7 @@ describe('missing File error message', () => {
   });
 
   test('is thrown', async () => {
-    const uploads = await import('@mux/mux-node/core/uploads');
+    const uploads = await import('@mux/ts/core/uploads');
     await expect(
       uploads.toFile(mockResponse({ url: 'https://example.com/my/audio.mp3' })),
     ).rejects.toMatchInlineSnapshot(

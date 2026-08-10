@@ -1,5 +1,5 @@
-import { multipartFormRequestOptions, createForm } from '@mux/mux-node/internal/uploads';
-import { toFile } from '@mux/mux-node/core/uploads';
+import { multipartFormRequestOptions, createForm } from '@mux/ts/internal/uploads';
+import { toFile } from '@mux/ts/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {

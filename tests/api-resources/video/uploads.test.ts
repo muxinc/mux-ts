@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -26,7 +26,9 @@ describe('resource uploads', () => {
       new_asset_settings: {
         advanced_playback_policies: [{ drm_configuration_id: 'drm_configuration_id', policy: 'public' }],
         copy_overlays: true,
+        directives: [{ id: 'id' }],
         encoding_tier: 'smart',
+        generate_shots: true,
         input: [
           {
             closed_captions: true,
@@ -95,7 +97,6 @@ describe('resource uploads', () => {
         mp4_support: 'none',
         normalize_audio: true,
         passthrough: 'passthrough',
-        per_title_encode: true,
         playback_policies: ['public'],
         playback_policy: ['public'],
         static_renditions: [{ resolution: 'highest', passthrough: 'passthrough' }],
@@ -109,6 +110,17 @@ describe('resource uploads', () => {
 
   test('retrieve', async () => {
     const responsePromise = client.video.uploads.retrieve('abcd1234');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('cancel', async () => {
+    const responsePromise = client.video.uploads.cancel('abcd1234');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -134,16 +146,5 @@ describe('resource uploads', () => {
     await expect(
       client.video.uploads.list({ limit: 0, page: 0 }, { path: '/_stainless_unknown_path' }),
     ).rejects.toThrow(Mux.NotFoundError);
-  });
-
-  test('cancel', async () => {
-    const responsePromise = client.video.uploads.cancel('abcd1234');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

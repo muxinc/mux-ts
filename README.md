@@ -1,6 +1,6 @@
 # Mux TypeScript API Library
 
-[![NPM version](<https://img.shields.io/npm/v/@mux/mux-node.svg?label=npm%20(stable)>)](https://npmjs.org/package/@mux/mux-node) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@mux/mux-node)
+[![NPM version](<https://img.shields.io/npm/v/@mux/ts.svg?label=npm%20(stable)>)](https://npmjs.org/package/@mux/ts) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/@mux/ts)
 
 This library provides convenient access to the Mux REST API from server-side TypeScript or JavaScript.
 
@@ -20,7 +20,7 @@ Use the Mux MCP Server to enable AI assistants to interact with this API, allowi
 ## Installation
 
 ```sh
-npm install @mux/mux-node
+npm install @mux/ts
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ The full API of this library can be found in [api.md](api.md).
 
 <!-- prettier-ignore -->
 ```js
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted
@@ -50,7 +50,7 @@ This library includes TypeScript definitions for all request params and response
 
 <!-- prettier-ignore -->
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted
@@ -66,7 +66,7 @@ const asset: Mux.Video.Asset = await client.video.assets.create(params);
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
 
-## JWT Helpers ([API Reference](https://github.com/muxinc/mux-node-sdk/blob/master/api.md#jwt))
+## JWT Helpers ([API Reference](https://github.com/muxinc/mux-ts/blob/main/api.md#jwt))
 
 You can use any JWT-compatible library, but we've included some light helpers in the SDK to make it easier to get up and running.
 
@@ -178,7 +178,7 @@ The following example shows how you can handle a webhook using a Next.js app dir
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const mux = new Mux({
   webhookSecret: process.env.MUX_WEBHOOK_SECRET,
@@ -246,7 +246,7 @@ mux.webhooks.verifySignature(body, headers, secret);
 Note that when passing in the payload (body) you want to pass in the raw un-parsed request body, not the parsed JSON. Here's an example if you are using express.
 
 ```js
-const Mux = require('@mux/mux-node');
+const Mux = require('@mux/ts');
 const mux = new Mux();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -433,7 +433,7 @@ The log level can be configured in two ways:
 2. Using the `logLevel` client option (overrides the environment variable if set)
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   logLevel: 'debug', // Show all log messages
@@ -461,7 +461,7 @@ When providing a custom logger, the `logLevel` option still controls which messa
 below the configured level will not be sent to your logger.
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import pino from 'pino';
 
 const logger = pino();
@@ -530,7 +530,7 @@ globalThis.fetch = fetch;
 Or pass it to the client:
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import fetch from 'my-fetch';
 
 const client = new Mux({ fetch });
@@ -541,7 +541,7 @@ const client = new Mux({ fetch });
 If you want to set custom `fetch` options without overriding the `fetch` function, you can provide a `fetchOptions` object when instantiating the client or making a request. (Request-specific options override client options.)
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   fetchOptions: {
@@ -558,7 +558,7 @@ options to requests:
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/node.svg" align="top" width="18" height="21"> **Node** <sup>[[docs](https://github.com/nodejs/undici/blob/main/docs/docs/api/ProxyAgent.md#example---proxyagent-with-fetch)]</sup>
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import * as undici from 'undici';
 
 const proxyAgent = new undici.ProxyAgent('http://localhost:8888');
@@ -572,7 +572,7 @@ const client = new Mux({
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/bun.svg" align="top" width="18" height="21"> **Bun** <sup>[[docs](https://bun.sh/guides/http/proxy)]</sup>
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   fetchOptions: {
@@ -584,7 +584,7 @@ const client = new Mux({
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/deno.svg" align="top" width="18" height="21"> **Deno** <sup>[[docs](https://docs.deno.com/api/deno/~/Deno.createHttpClient)]</sup>
 
 ```ts
-import Mux from 'npm:@mux/mux-node';
+import Mux from 'npm:@mux/ts';
 
 const httpClient = Deno.createHttpClient({ proxy: { url: 'http://localhost:8888' } });
 const client = new Mux({
@@ -606,7 +606,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/muxinc/mux-node-sdk/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/muxinc/mux-ts/issues) with questions, bugs, or suggestions.
 
 ## Requirements
 

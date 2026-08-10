@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',

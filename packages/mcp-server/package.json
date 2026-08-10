@@ -8,10 +8,10 @@
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muxinc/mux-node-sdk.git",
+    "url": "git+https://github.com/muxinc/mux-ts.git",
     "directory": "packages/mcp-server"
   },
-  "homepage": "https://github.com/muxinc/mux-node-sdk/tree/main/packages/mcp-server#readme",
+  "homepage": "https://github.com/muxinc/mux-ts/tree/main/packages/mcp-server#readme",
   "license": "Apache-2.0",
   "packageManager": "yarn@1.22.22",
   "private": false,
@@ -30,7 +30,7 @@
     "fix": "eslint --fix ."
   },
   "dependencies": {
-    "@mux/mux-node": "link:../../dist/",
+    "@mux/ts": "link:../../dist/",
     "ajv": "^8.18.0",
     "@cloudflare/cabidela": "^0.2.4",
     "@hono/node-server": "^1.19.10",
@@ -76,6 +76,9 @@
     "ts-node": "^10.5.0",
     "tsc-multi": "https://github.com/stainless-api/tsc-multi/releases/download/v1.1.11/tsc-multi.tgz",
     "tsconfig-paths": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "deno": "^2.6.8"
   },
   "imports": {
     "@mux/mcp": ".",

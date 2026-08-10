@@ -22,7 +22,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: '^@mux/mux-node(/.*)?',
+              regex: '^@mux/ts(/.*)?',
               message: 'Use a relative import, not a package import.',
             },
           ],

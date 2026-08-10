@@ -27,28 +27,6 @@ export class Incidents extends APIResource {
   }
 
   /**
-   * Returns a list of incidents.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const incident of client.data.incidents.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(
-    query: IncidentListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<IncidentsBasePage, Incident> {
-    return this._client.getAPIList('/data/v1/incidents', BasePage<Incident>, {
-      query,
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
    * Returns all the incidents that seem related to a specific incident.
    *
    * @example
@@ -72,6 +50,28 @@ export class Incidents extends APIResource {
       ...options,
     });
   }
+
+  /**
+   * Returns a list of incidents.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const incident of client.data.incidents.list()) {
+   *   // ...
+   * }
+   * ```
+   */
+  list(
+    query: IncidentListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<IncidentsBasePage, Incident> {
+    return this._client.getAPIList('/data/v1/incidents', BasePage<Incident>, {
+      query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
 }
 
 export type IncidentsBasePage = BasePage<Incident>;
@@ -85,7 +85,7 @@ export interface Incident {
 
   affected_views_per_hour_on_open: number;
 
-  breakdowns: Array<Incident.Breakdown>;
+  breakdowns: Array<IncidentBreakdown>;
 
   description: string;
 
@@ -101,9 +101,9 @@ export interface Incident {
 
   measurement: string;
 
-  notification_rules: Array<Incident.NotificationRule>;
+  notification_rules: Array<IncidentNotificationRule>;
 
-  notifications: Array<Incident.Notification>;
+  notifications: Array<IncidentNotification>;
 
   resolved_at: string | null;
 
@@ -120,44 +120,32 @@ export interface Incident {
   threshold: number;
 }
 
-export namespace Incident {
-  export interface Breakdown {
-    id: string;
+export interface IncidentBreakdown {
+  id: string;
 
-    name: string;
+  name: string;
 
-    value: string;
-  }
+  value: string;
+}
 
-  export interface NotificationRule {
-    id: string;
+export interface IncidentNotification {
+  id: number;
 
-    action: string;
+  attempted_at: string;
 
-    property_id: string;
+  queued_at: string;
+}
 
-    rules: Array<NotificationRule.Rule>;
+export interface IncidentNotificationRule {
+  id: string;
 
-    status: string;
-  }
+  action: string;
 
-  export namespace NotificationRule {
-    export interface Rule {
-      id: string;
+  property_id: string;
 
-      name: string;
+  rules: Array<NotificationRule>;
 
-      value: string;
-    }
-  }
-
-  export interface Notification {
-    id: number;
-
-    attempted_at: string;
-
-    queued_at: string;
-  }
+  status: string;
 }
 
 export interface IncidentResponse {
@@ -166,6 +154,26 @@ export interface IncidentResponse {
   timeframe: Array<number>;
 
   total_row_count: number | null;
+}
+
+export interface NotificationRule {
+  id: string;
+
+  name: string;
+
+  value: string;
+}
+
+export interface IncidentListRelatedParams extends BasePageParams {
+  /**
+   * Value to order the results by
+   */
+  order_by?: 'negative_impact' | 'value' | 'views' | 'field';
+
+  /**
+   * Sort order.
+   */
+  order_direction?: 'asc' | 'desc';
 }
 
 export interface IncidentListParams extends BasePageParams {
@@ -190,24 +198,16 @@ export interface IncidentListParams extends BasePageParams {
   status?: 'open' | 'closed' | 'expired';
 }
 
-export interface IncidentListRelatedParams extends BasePageParams {
-  /**
-   * Value to order the results by
-   */
-  order_by?: 'negative_impact' | 'value' | 'views' | 'field';
-
-  /**
-   * Sort order.
-   */
-  order_direction?: 'asc' | 'desc';
-}
-
 export declare namespace Incidents {
   export {
     type Incident as Incident,
+    type IncidentBreakdown as IncidentBreakdown,
+    type IncidentNotification as IncidentNotification,
+    type IncidentNotificationRule as IncidentNotificationRule,
     type IncidentResponse as IncidentResponse,
+    type NotificationRule as NotificationRule,
     type IncidentsBasePage as IncidentsBasePage,
-    type IncidentListParams as IncidentListParams,
     type IncidentListRelatedParams as IncidentListRelatedParams,
+    type IncidentListParams as IncidentListParams,
   };
 }

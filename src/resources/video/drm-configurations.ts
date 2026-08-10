@@ -11,26 +11,6 @@ import { path } from '../../internal/utils/path';
  */
 export class DRMConfigurations extends APIResource {
   /**
-   * Retrieves a single DRM Configuration.
-   *
-   * @example
-   * ```ts
-   * const drmConfiguration =
-   *   await client.video.drmConfigurations.retrieve(
-   *     'DRM_CONFIGURATION_ID',
-   *   );
-   * ```
-   */
-  retrieve(drmConfigurationID: string, options?: RequestOptions): APIPromise<DRMConfiguration> {
-    return (
-      this._client.get(path`/video/v1/drm-configurations/${drmConfigurationID}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: DRMConfiguration }>
-    )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
    * Returns a list of DRM Configurations
    *
    * @example
@@ -50,6 +30,26 @@ export class DRMConfigurations extends APIResource {
       defaultBaseURL: 'https://api.mux.com',
       ...options,
     });
+  }
+
+  /**
+   * Retrieves a single DRM Configuration.
+   *
+   * @example
+   * ```ts
+   * const drmConfiguration =
+   *   await client.video.drmConfigurations.retrieve(
+   *     'DRM_CONFIGURATION_ID',
+   *   );
+   * ```
+   */
+  retrieve(drmConfigurationID: string, options?: RequestOptions): APIPromise<DRMConfiguration> {
+    return (
+      this._client.get(path`/video/v1/drm-configurations/${drmConfigurationID}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: DRMConfiguration }>
+    )._thenUnwrap((obj) => obj.data);
   }
 }
 

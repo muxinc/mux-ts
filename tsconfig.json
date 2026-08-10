@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "@mux/mux-node/*": ["./src/*"],
-      "@mux/mux-node": ["./src/index.ts"]
+      "@mux/ts/*": ["./src/*"],
+      "@mux/ts": ["./src/index.ts"]
     },
     "noEmit": true,
 

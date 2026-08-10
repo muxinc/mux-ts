@@ -1,4 +1,4 @@
-import { sign, isMuxJWTSignOptionsMultiple } from '@mux/mux-node/lib/jwt';
+import { sign, isMuxJWTSignOptionsMultiple } from '@mux/ts/lib/jwt';
 
 type CryptoKey = Awaited<ReturnType<typeof globalThis.crypto.subtle.importKey>>;
 

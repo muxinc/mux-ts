@@ -12,6 +12,29 @@ import { path } from '../../internal/utils/path';
  */
 export class TranscriptionVocabularies extends APIResource {
   /**
+   * Retrieves the details of a Transcription Vocabulary that has previously been
+   * created. Supply the unique Transcription Vocabulary ID and Mux will return the
+   * corresponding Transcription Vocabulary information. The same information is
+   * returned when creating a Transcription Vocabulary.
+   *
+   * @example
+   * ```ts
+   * const transcriptionVocabulary =
+   *   await client.video.transcriptionVocabularies.retrieve(
+   *     'TRANSCRIPTION_VOCABULARY_ID',
+   *   );
+   * ```
+   */
+  retrieve(transcriptionVocabularyID: string, options?: RequestOptions): APIPromise<TranscriptionVocabulary> {
+    return (
+      this._client.get(path`/video/v1/transcription-vocabularies/${transcriptionVocabularyID}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: TranscriptionVocabulary }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
    * Create a new Transcription Vocabulary.
    *
    * @example
@@ -42,26 +65,25 @@ export class TranscriptionVocabularies extends APIResource {
   }
 
   /**
-   * Retrieves the details of a Transcription Vocabulary that has previously been
-   * created. Supply the unique Transcription Vocabulary ID and Mux will return the
-   * corresponding Transcription Vocabulary information. The same information is
-   * returned when creating a Transcription Vocabulary.
+   * Deletes a Transcription Vocabulary. The Transcription Vocabulary's ID will be
+   * disassociated from any live streams using it. Transcription Vocabularies can be
+   * deleted while associated live streams are active. However, the words and phrases
+   * in the deleted Transcription Vocabulary will remain attached to those streams
+   * while they are active.
    *
    * @example
    * ```ts
-   * const transcriptionVocabulary =
-   *   await client.video.transcriptionVocabularies.retrieve(
-   *     'TRANSCRIPTION_VOCABULARY_ID',
-   *   );
+   * await client.video.transcriptionVocabularies.delete(
+   *   'TRANSCRIPTION_VOCABULARY_ID',
+   * );
    * ```
    */
-  retrieve(transcriptionVocabularyID: string, options?: RequestOptions): APIPromise<TranscriptionVocabulary> {
-    return (
-      this._client.get(path`/video/v1/transcription-vocabularies/${transcriptionVocabularyID}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: TranscriptionVocabulary }>
-    )._thenUnwrap((obj) => obj.data);
+  delete(transcriptionVocabularyID: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.delete(path`/video/v1/transcription-vocabularies/${transcriptionVocabularyID}`, {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
@@ -115,28 +137,6 @@ export class TranscriptionVocabularies extends APIResource {
       BasePage<TranscriptionVocabulary>,
       { query, defaultBaseURL: 'https://api.mux.com', ...options },
     );
-  }
-
-  /**
-   * Deletes a Transcription Vocabulary. The Transcription Vocabulary's ID will be
-   * disassociated from any live streams using it. Transcription Vocabularies can be
-   * deleted while associated live streams are active. However, the words and phrases
-   * in the deleted Transcription Vocabulary will remain attached to those streams
-   * while they are active.
-   *
-   * @example
-   * ```ts
-   * await client.video.transcriptionVocabularies.delete(
-   *   'TRANSCRIPTION_VOCABULARY_ID',
-   * );
-   * ```
-   */
-  delete(transcriptionVocabularyID: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(path`/video/v1/transcription-vocabularies/${transcriptionVocabularyID}`, {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
   }
 }
 

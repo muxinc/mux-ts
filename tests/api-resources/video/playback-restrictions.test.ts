@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -30,17 +30,6 @@ describe('resource playbackRestrictions', () => {
     });
   });
 
-  test('retrieve', async () => {
-    const responsePromise = client.video.playbackRestrictions.retrieve('PLAYBACK_RESTRICTION_ID');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
   test('list', async () => {
     const responsePromise = client.video.playbackRestrictions.list();
     const rawResponse = await responsePromise.asResponse();
@@ -61,6 +50,17 @@ describe('resource playbackRestrictions', () => {
 
   test('delete', async () => {
     const responsePromise = client.video.playbackRestrictions.delete('PLAYBACK_RESTRICTION_ID');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('retrieve', async () => {
+    const responsePromise = client.video.playbackRestrictions.retrieve('PLAYBACK_RESTRICTION_ID');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

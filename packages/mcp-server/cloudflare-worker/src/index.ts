@@ -8,7 +8,7 @@ import { makeOAuthConsent } from './app';
 import { McpAgent } from 'agents/mcp';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import OAuthProvider from '@cloudflare/workers-oauth-provider';
-import { ClientOptions } from '@mux/mux-node';
+import { ClientOptions } from '@mux/ts';
 import { McpOptions } from '@mux/mcp/options';
 import { initMcpServer, newMcpServer } from '@mux/mcp/server';
 import { configureLogger } from '@mux/mcp/logger';
@@ -94,7 +94,7 @@ const INSTRUCTIONS_FETCH_TIMEOUT_MS = 5000;
 
 function fallbackMcpServer(): McpServer {
   return new McpServer(
-    { name: 'mux_mux_node_api', version: '14.0.1' },
+    { name: 'mux_ts_api', version: '14.1.1' },
     { capabilities: { tools: {}, logging: {} } },
   );
 }

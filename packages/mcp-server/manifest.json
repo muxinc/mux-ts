@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muxinc/mux-node-sdk.git"
+    "url": "git+https://github.com/muxinc/mux-ts.git"
   },
-  "homepage": "https://github.com/muxinc/mux-node-sdk/tree/main/packages/mcp-server#readme",
+  "homepage": "https://github.com/muxinc/mux-ts/tree/main/packages/mcp-server#readme",
   "documentation": "https://docs.mux.com",
   "server": {
     "type": "node",

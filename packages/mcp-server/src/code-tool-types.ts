@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { ClientOptions } from '@mux/mux-node';
+import { ClientOptions } from '@mux/ts';
 
 export type WorkerInput = {
   project_name: string;

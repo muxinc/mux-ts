@@ -1,11 +1,8 @@
 #!/usr/bin/env -S npm run tsn -T
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
-const mux = new Mux({
-  // These are dev env values
-  tokenId: 'b5a8e345-c160-4481-8d83-cf32d0ed1683',
-  tokenSecret: 'DVCYh4ijEQDob+5ZW6BOweLvyDDpCi+r4T/6dcf+K8YylZduiOAK2eS6vdTfauFXg6rldRKSofe',
-});
+// Reads MUX_TOKEN_ID and MUX_TOKEN_SECRET from the environment
+const mux = new Mux();
 
 async function main() {
   const asset = await mux.video.assets.create({

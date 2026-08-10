@@ -1,4 +1,4 @@
-import { createPathTagFunction, encodeURIPath } from '@mux/mux-node/internal/utils/path';
+import { createPathTagFunction, encodeURIPath } from '@mux/ts/internal/utils/path';
 import { inspect } from 'node:util';
 import { runInNewContext } from 'node:vm';
 

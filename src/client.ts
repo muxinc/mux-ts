@@ -21,6 +21,8 @@ import {
   BasePageResponse,
   type CursorPageParams,
   CursorPageResponse,
+  type PageWithTimeframeParams,
+  PageWithTimeframeResponse,
   type PageWithTotalParams,
   PageWithTotalResponse,
 } from './core/pagination';
@@ -28,7 +30,7 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import { Data } from './resources/data/data';
-import { RobotsPreview } from './resources/robots-preview/robots-preview';
+import { Robots } from './resources/robots/robots';
 import { System } from './resources/system/system';
 import { Video } from './resources/video/video';
 import { Webhooks } from './resources/webhooks/webhooks';
@@ -789,11 +791,19 @@ export class Mux {
     return () => controller.abort();
   }
 
-  private buildBody({ options: { body, headers: rawHeaders } }: { options: FinalRequestOptions }): {
+  private buildBody({ options }: { options: FinalRequestOptions }): {
     bodyHeaders: HeadersLike;
     body: BodyInit | undefined;
   } {
+    const { body, headers: rawHeaders } = options;
     if (!body) {
+      // A resource method always passes a `body` key when its operation defines a
+      // request body, even if the caller omitted an optional body param. Keep the
+      // content-type for those, and only elide it for operations with no body at
+      // all (e.g. GET/DELETE).
+      if (body == null && 'body' in options) {
+        return this.#encoder({ body, headers: buildHeaders([rawHeaders]) });
+      }
       return { bodyHeaders: undefined, body: undefined };
     }
     const headers = buildHeaders([rawHeaders]);
@@ -854,7 +864,7 @@ export class Mux {
   static toFile = Uploads.toFile;
 
   video: API.Video = new API.Video(this);
-  robotsPreview: API.RobotsPreview = new API.RobotsPreview(this);
+  robots: API.Robots = new API.Robots(this);
   data: API.Data = new API.Data(this);
   system: API.System = new API.System(this);
   webhooks: API.Webhooks = new API.Webhooks(this);
@@ -862,7 +872,7 @@ export class Mux {
 }
 
 Mux.Video = Video;
-Mux.RobotsPreview = RobotsPreview;
+Mux.Robots = Robots;
 Mux.Data = Data;
 Mux.System = System;
 Mux.Webhooks = Webhooks;
@@ -876,6 +886,12 @@ export declare namespace Mux {
     type PageWithTotalResponse as PageWithTotalResponse,
   };
 
+  export import PageWithTimeframe = Pagination.PageWithTimeframe;
+  export {
+    type PageWithTimeframeParams as PageWithTimeframeParams,
+    type PageWithTimeframeResponse as PageWithTimeframeResponse,
+  };
+
   export import BasePage = Pagination.BasePage;
   export { type BasePageParams as BasePageParams, type BasePageResponse as BasePageResponse };
 
@@ -884,7 +900,7 @@ export declare namespace Mux {
 
   export { Video as Video };
 
-  export { RobotsPreview as RobotsPreview };
+  export { Robots as Robots };
 
   export { Data as Data };
 
@@ -894,6 +910,7 @@ export declare namespace Mux {
 
   export import Jwt = API.Jwt;
 
+  export type CreatePlaybackIdRequest = API.CreatePlaybackIdRequest;
   export type PlaybackId = API.PlaybackId;
   export type PlaybackPolicy = API.PlaybackPolicy;
 }

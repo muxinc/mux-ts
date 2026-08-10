@@ -7,7 +7,7 @@ The main changes are that the SDK now relies on the [builtin Web fetch API](http
 ## Migration CLI
 
 Most programs will only need minimal changes, but to assist there is a migration tool that will automatically update your code for the new version.
-To use it, upgrade the `@mux/mux-node` package, then run `./node_modules/.bin/mux-mux-node migrate ./your/src/folders` to update your code.
+To use it, upgrade the `@mux/ts` package, then run `./node_modules/.bin/mux-ts migrate ./your/src/folders` to update your code.
 To preview the changes without writing them to disk, run the tool with `--dry`.
 
 ## Environment requirements
@@ -76,51 +76,59 @@ client.example.list(undefined, { headers: { ... } });
 - `client.video.transcriptionVocabularies.list()`
 - `client.video.uploads.list()`
 - `client.video.drmConfigurations.list()`
+- `client.video.playback.thumbnail()`
 - `client.video.playback.animated()`
+- `client.video.playback.storyboard()`
+- `client.video.playback.storyboardVtt()`
+- `client.video.playback.storyboardMeta()`
 - `client.video.playback.hls()`
 - `client.video.playback.staticRendition()`
-- `client.video.playback.storyboard()`
-- `client.video.playback.storyboardMeta()`
-- `client.video.playback.storyboardVtt()`
-- `client.video.playback.thumbnail()`
 - `client.video.playback.track()`
 - `client.video.playback.transcript()`
-- `client.robotsPreview.jobs.list()`
-- `client.data.dimensions.listTraceElements()`
+- `client.robots.jobs.list()`
+- `client.robots.directives.list()`
+- `client.robots.directives.runs.list()`
 - `client.data.dimensions.listValues()`
+- `client.data.dimensions.listTraceElements()`
 - `client.data.monitoring.metrics.getBreakdown()`
+- `client.data.monitoring.metrics.getTimeseries()`
 - `client.data.monitoring.metrics.getBreakdownTimeseries()`
 - `client.data.monitoring.metrics.getHistogramTimeseries()`
-- `client.data.monitoring.metrics.getTimeseries()`
 - `client.data.errors.list()`
-- `client.data.filters.listValues()`
-- `client.data.incidents.list()`
 - `client.data.incidents.listRelated()`
+- `client.data.incidents.list()`
 - `client.data.metrics.list()`
-- `client.data.metrics.getInsights()`
-- `client.data.metrics.getOverallValues()`
-- `client.data.metrics.getTimeseries()`
 - `client.data.metrics.listBreakdownValues()`
+- `client.data.metrics.getOverallValues()`
+- `client.data.metrics.getInsights()`
+- `client.data.metrics.getTimeseries()`
 - `client.data.realTime.retrieveBreakdown()`
-- `client.data.realTime.retrieveHistogramTimeseries()`
 - `client.data.realTime.retrieveTimeseries()`
+- `client.data.realTime.retrieveHistogramTimeseries()`
 - `client.data.videoViews.list()`
 - `client.data.annotations.list()`
+- `client.data.engagement.assets.heatmap()`
+- `client.data.engagement.assets.hotspots()`
+- `client.data.engagement.playbackIds.heatmap()`
+- `client.data.engagement.playbackIds.hotspots()`
+- `client.data.engagement.videos.heatmap()`
+- `client.data.engagement.videos.hotspots()`
 - `client.system.signingKeys.list()`
+- `client.system.usageExports.list()`
 
 </details>
 
 ### Removed `httpAgent` in favor of `fetchOptions`
 
-The `httpAgent` client option has been removed in favor of a [platform-specific `fetchOptions` property](https://github.com/muxinc/mux-node-sdk#fetch-options).
+The `httpAgent` client option has been removed in favor of a [platform-specific `fetchOptions` property](https://github.com/muxinc/mux-ts#fetch-options).
 This change was made as `httpAgent` relied on `node:http` agents which are not supported by any runtime's builtin fetch implementation.
 
-If you were using `httpAgent` for proxy support, check out the [new proxy documentation](https://github.com/muxinc/mux-node-sdk#configuring-proxies).
+If you were using `httpAgent` for proxy support, check out the [new proxy documentation](https://github.com/muxinc/mux-ts#configuring-proxies).
 
 Before:
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import http from 'http';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
@@ -133,7 +141,7 @@ const client = new Mux({
 After:
 
 ```ts
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 import * as undici from 'undici';
 
 const proxyAgent = new undici.ProxyAgent(process.env.PROXY_URL);
@@ -146,27 +154,27 @@ const client = new Mux({
 
 ### Changed exports
 
-#### Refactor of `@mux/mux-node/core`, `error`, `pagination`, `resource` and `uploads`
+#### Refactor of `@mux/ts/core`, `error`, `pagination`, `resource` and `uploads`
 
-Much of the `@mux/mux-node/core` file was intended to be internal-only but it was publicly accessible, as such it has been refactored and split up into internal and public files, with public-facing code moved to a new `core` folder and internal code moving to the private `internal` folder.
+Much of the `@mux/ts/core` file was intended to be internal-only but it was publicly accessible, as such it has been refactored and split up into internal and public files, with public-facing code moved to a new `core` folder and internal code moving to the private `internal` folder.
 
 At the same time, we moved some public-facing files which were previously at the top level into `core` to make the file structure cleaner and more clear:
 
 ```typescript
 // Before
-import '@mux/mux-node/error';
-import '@mux/mux-node/pagination';
-import '@mux/mux-node/resource';
-import '@mux/mux-node/uploads';
+import '@mux/ts/error';
+import '@mux/ts/pagination';
+import '@mux/ts/resource';
+import '@mux/ts/uploads';
 
 // After
-import '@mux/mux-node/core/error';
-import '@mux/mux-node/core/pagination';
-import '@mux/mux-node/core/resource';
-import '@mux/mux-node/core/uploads';
+import '@mux/ts/core/error';
+import '@mux/ts/core/pagination';
+import '@mux/ts/core/resource';
+import '@mux/ts/core/uploads';
 ```
 
-If you were relying on anything that was only exported from `@mux/mux-node/core` and is also not accessible anywhere else, please open an issue and we'll consider adding it to the public API.
+If you were relying on anything that was only exported from `@mux/ts/core` and is also not accessible anywhere else, please open an issue and we'll consider adding it to the public API.
 
 #### Resource classes
 
@@ -175,16 +183,16 @@ Now you must always either reference them as static class properties or import t
 
 ```typescript
 // Before
-const { Video } = require('@mux/mux-node');
+const { Video } = require('@mux/ts');
 
 // After
-const { Mux } = require('@mux/mux-node');
-Mux.Video; // or import directly from @mux/mux-node/resources/video/video
+const { Mux } = require('@mux/ts');
+Mux.Video; // or import directly from @mux/ts/resources/video/video
 ```
 
 #### Cleaned up `uploads` exports
 
-As part of the `core` refactor, `@mux/mux-node/uploads` was moved to `@mux/mux-node/core/uploads`
+As part of the `core` refactor, `@mux/ts/uploads` was moved to `@mux/ts/core/uploads`
 and the following exports were removed, as they were not intended to be a part of the public API:
 
 - `fileFromPath`
@@ -204,7 +212,7 @@ and the following exports were removed, as they were not intended to be a part o
 Note that `Uploadable` & `toFile` **are** still exported:
 
 ```typescript
-import { type Uploadable, toFile } from '@mux/mux-node/core/uploads';
+import { type Uploadable, toFile } from '@mux/ts/core/uploads';
 ```
 
 #### `APIClient`
@@ -213,10 +221,10 @@ The `APIClient` base client class has been removed as it is no longer needed. If
 
 ```typescript
 // Before
-import { APIClient } from '@mux/mux-node/core';
+import { APIClient } from '@mux/ts/core';
 
 // After
-import { Mux } from '@mux/mux-node';
+import { Mux } from '@mux/ts';
 ```
 
 ### File handling
@@ -240,11 +248,11 @@ Previously you could configure the types that the SDK used like this:
 
 ```ts
 // Tell TypeScript and the package to use the global Web fetch instead of node-fetch.
-import '@mux/mux-node/shims/web';
-import Mux from '@mux/mux-node';
+import '@mux/ts/shims/web';
+import Mux from '@mux/ts';
 ```
 
-The `@mux/mux-node/shims` imports have been removed. Your global types must now be [correctly configured](#minimum-types-requirements).
+The `@mux/ts/shims` imports have been removed. Your global types must now be [correctly configured](#minimum-types-requirements).
 
 ### Pagination changes
 
@@ -275,27 +283,27 @@ Page classes for individual methods are now type aliases:
 
 ```ts
 // Before
-export class DeliveryReportsPageWithTotal extends PageWithTotal<DeliveryReport> {}
+export class DeliveryReportsPageWithTimeframe extends PageWithTimeframe<DeliveryReport> {}
 
 // After
-export type DeliveryReportsPageWithTotal = PageWithTotal<DeliveryReport>;
+export type DeliveryReportsPageWithTimeframe = PageWithTimeframe<DeliveryReport>;
 ```
 
 If you were importing these classes at runtime, you'll need to switch to importing the base class or only import them at the type-level.
 
-### `@mux/mux-node/src` directory removed
+### `@mux/ts/src` directory removed
 
-Previously IDEs may have auto-completed imports from the `@mux/mux-node/src` directory, however this
+Previously IDEs may have auto-completed imports from the `@mux/ts/src` directory, however this
 directory was only included for an improved go-to-definition experience and should not have been used at runtime.
 
-If you have any `@mux/mux-node/src/*` imports, you will need to replace them with `@mux/mux-node/*`.
+If you have any `@mux/ts/src/*` imports, you will need to replace them with `@mux/ts/*`.
 
 ```ts
 // Before
-import Mux from '@mux/mux-node/src';
+import Mux from '@mux/ts/src';
 
 // After
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 ```
 
 ## TypeScript troubleshooting

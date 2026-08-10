@@ -12,32 +12,6 @@ import { path } from '../../internal/utils/path';
  */
 export class RealTime extends APIResource {
   /**
-   * Lists available real-time dimensions. This API is now deprecated, please use the
-   * `List Monitoring Dimensions` API.
-   *
-   * @deprecated
-   */
-  listDimensions(options?: RequestOptions): APIPromise<RealTimeDimensionsResponse> {
-    return this._client.get('/data/v1/realtime/dimensions', {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
-   * Lists available real-time metrics. This API is now deprecated, please use the
-   * `List Monitoring Metrics` API.
-   *
-   * @deprecated
-   */
-  listMetrics(options?: RequestOptions): APIPromise<RealTimeMetricsResponse> {
-    return this._client.get('/data/v1/realtime/metrics', {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
    * Gets breakdown information for a specific dimension and metric along with the
    * number of concurrent viewers and negative impact score. This API is now
    * deprecated, please use the `Get Monitoring Breakdown` API.
@@ -62,23 +36,6 @@ export class RealTime extends APIResource {
   }
 
   /**
-   * Gets histogram timeseries information for a specific metric. This API is now
-   * deprecated, please use the `Get Monitoring Histogram Timeseries` API.
-   *
-   * @deprecated
-   */
-  retrieveHistogramTimeseries(
-    realtimeHistogramMetricID: 'video-startup-time',
-    query: RealTimeRetrieveHistogramTimeseriesParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<RealTimeHistogramTimeseriesResponse> {
-    return this._client.get(
-      path`/data/v1/realtime/metrics/${realtimeHistogramMetricID}/histogram-timeseries`,
-      { query, defaultBaseURL: 'https://api.mux.com', ...options },
-    );
-  }
-
-  /**
    * Gets Time series information for a specific metric along with the number of
    * concurrent viewers. This API is now deprecated, please use the
    * `Get Monitoring Timeseries` API.
@@ -97,6 +54,49 @@ export class RealTime extends APIResource {
   ): APIPromise<RealTimeTimeseriesResponse> {
     return this._client.get(path`/data/v1/realtime/metrics/${realtimeMetricID}/timeseries`, {
       query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
+   * Lists available real-time metrics. This API is now deprecated, please use the
+   * `List Monitoring Metrics` API.
+   *
+   * @deprecated
+   */
+  listMetrics(options?: RequestOptions): APIPromise<RealTimeMetricsResponse> {
+    return this._client.get('/data/v1/realtime/metrics', {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
+   * Gets histogram timeseries information for a specific metric. This API is now
+   * deprecated, please use the `Get Monitoring Histogram Timeseries` API.
+   *
+   * @deprecated
+   */
+  retrieveHistogramTimeseries(
+    realtimeHistogramMetricID: 'video-startup-time',
+    query: RealTimeRetrieveHistogramTimeseriesParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<RealTimeHistogramTimeseriesResponse> {
+    return this._client.get(
+      path`/data/v1/realtime/metrics/${realtimeHistogramMetricID}/histogram-timeseries`,
+      { query, defaultBaseURL: 'https://api.mux.com', ...options },
+    );
+  }
+
+  /**
+   * Lists available real-time dimensions. This API is now deprecated, please use the
+   * `List Monitoring Dimensions` API.
+   *
+   * @deprecated
+   */
+  listDimensions(options?: RequestOptions): APIPromise<RealTimeDimensionsResponse> {
+    return this._client.get('/data/v1/realtime/dimensions', {
       defaultBaseURL: 'https://api.mux.com',
       ...options,
     });
@@ -276,24 +276,6 @@ export interface RealTimeRetrieveBreakdownParams {
   timestamp?: number;
 }
 
-export interface RealTimeRetrieveHistogramTimeseriesParams {
-  /**
-   * Limit the results to rows that match conditions from provided key:value pairs.
-   * Must be provided as an array query string parameter.
-   *
-   * To exclude rows that match a certain condition, prepend a `!` character to the
-   * dimension.
-   *
-   * Possible filter names are the same as returned by the List Monitoring Dimensions
-   * endpoint.
-   *
-   * Example:
-   *
-   * - `filters[]=operating_system:windows&filters[]=!country:US`
-   */
-  filters?: Array<string>;
-}
-
 export interface RealTimeRetrieveTimeseriesParams {
   /**
    * Limit the results to rows that match conditions from provided key:value pairs.
@@ -318,6 +300,24 @@ export interface RealTimeRetrieveTimeseriesParams {
   timestamp?: number;
 }
 
+export interface RealTimeRetrieveHistogramTimeseriesParams {
+  /**
+   * Limit the results to rows that match conditions from provided key:value pairs.
+   * Must be provided as an array query string parameter.
+   *
+   * To exclude rows that match a certain condition, prepend a `!` character to the
+   * dimension.
+   *
+   * Possible filter names are the same as returned by the List Monitoring Dimensions
+   * endpoint.
+   *
+   * Example:
+   *
+   * - `filters[]=operating_system:windows&filters[]=!country:US`
+   */
+  filters?: Array<string>;
+}
+
 export declare namespace RealTime {
   export {
     type RealTimeBreakdownResponse as RealTimeBreakdownResponse,
@@ -326,7 +326,7 @@ export declare namespace RealTime {
     type RealTimeMetricsResponse as RealTimeMetricsResponse,
     type RealTimeTimeseriesResponse as RealTimeTimeseriesResponse,
     type RealTimeRetrieveBreakdownParams as RealTimeRetrieveBreakdownParams,
-    type RealTimeRetrieveHistogramTimeseriesParams as RealTimeRetrieveHistogramTimeseriesParams,
     type RealTimeRetrieveTimeseriesParams as RealTimeRetrieveTimeseriesParams,
+    type RealTimeRetrieveHistogramTimeseriesParams as RealTimeRetrieveHistogramTimeseriesParams,
   };
 }

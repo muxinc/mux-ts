@@ -7,7 +7,7 @@ API token and any other client configuration options that you'd need to instanti
 
 The recommended way to use this project is to use the below "deploy to cloudflare" button to use this repo as a template for generating a server.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/muxinc/mux-node-sdk/tree/main/packages/mcp-server/cloudflare-worker)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/muxinc/mux-ts/tree/main/packages/mcp-server/cloudflare-worker)
 
 ## Develop locally
 

@@ -804,7 +804,7 @@
     zod "^3.25 || ^4.0"
     zod-to-json-schema "^3.25.1"
 
-"@mux/mux-node@link:../../dist":
+"@mux/ts@link:../../dist":
   version "0.0.0"
   uid ""
 

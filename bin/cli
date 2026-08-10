@@ -4,8 +4,7 @@ const { spawnSync } = require('child_process');
 
 const commands = {
   migrate: {
-    description:
-      'Run migrations to update your code using @mux/mux-node@13 to be compatible with @mux/mux-node@14',
+    description: 'Run migrations to update your code using @mux/ts@13 to be compatible with @mux/ts@14',
     fn: () => {
       const result = spawnSync(
         'npx',
@@ -26,7 +25,7 @@ const commands = {
 };
 
 function exitWithHelp() {
-  console.log(`Usage: mux-mux-node <subcommand>`);
+  console.log(`Usage: mux-ts <subcommand>`);
   console.log();
   console.log('Subcommands:');
 

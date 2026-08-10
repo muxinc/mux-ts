@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import { buildHeaders, type HeadersLike, type NullableHeaders } from '@mux/mux-node/internal/headers';
+import { buildHeaders, type HeadersLike, type NullableHeaders } from '@mux/ts/internal/headers';
 
 function inspectNullableHeaders(headers: NullableHeaders) {
   return `NullableHeaders {${[

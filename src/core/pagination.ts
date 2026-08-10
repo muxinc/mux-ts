@@ -170,6 +170,68 @@ export class PageWithTotal<Item> extends AbstractPage<Item> implements PageWithT
   }
 }
 
+export interface PageWithTimeframeResponse<Item> {
+  data: Array<Item>;
+
+  timeframe: Array<number>;
+
+  page: number;
+
+  /**
+   * Number of items returned in this response.
+   */
+  limit: number;
+}
+
+export interface PageWithTimeframeParams {
+  page?: number;
+
+  limit?: number;
+}
+
+export class PageWithTimeframe<Item> extends AbstractPage<Item> implements PageWithTimeframeResponse<Item> {
+  data: Array<Item>;
+
+  timeframe: Array<number>;
+
+  page: number;
+
+  /**
+   * Number of items returned in this response.
+   */
+  limit: number;
+
+  constructor(
+    client: Mux,
+    response: Response,
+    body: PageWithTimeframeResponse<Item>,
+    options: FinalRequestOptions,
+  ) {
+    super(client, response, body, options);
+
+    this.data = body.data || [];
+    this.timeframe = body.timeframe || [];
+    this.page = body.page || 0;
+    this.limit = body.limit || 0;
+  }
+
+  getPaginatedItems(): Item[] {
+    return this.data ?? [];
+  }
+
+  nextPageRequestOptions(): PageRequestOptions | null {
+    const currentPage = this.page;
+
+    return {
+      ...this.options,
+      query: {
+        ...maybeObj(this.options.query),
+        page: currentPage + 1,
+      },
+    };
+  }
+}
+
 export interface BasePageResponse<Item> {
   data: Array<Item>;
 }

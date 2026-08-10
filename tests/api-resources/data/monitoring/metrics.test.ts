@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -43,6 +43,28 @@ describe('resource metrics', () => {
           order_direction: 'asc',
           timestamp: 0,
         },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Mux.NotFoundError);
+  });
+
+  test('getTimeseries', async () => {
+    const responsePromise = client.data.monitoring.metrics.getTimeseries('current-concurrent-viewers');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('getTimeseries: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.data.monitoring.metrics.getTimeseries(
+        'current-concurrent-viewers',
+        { filters: ['string'], timestamp: 0 },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Mux.NotFoundError);
@@ -96,28 +118,6 @@ describe('resource metrics', () => {
       client.data.monitoring.metrics.getHistogramTimeseries(
         'video-startup-time',
         { filters: ['string'] },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Mux.NotFoundError);
-  });
-
-  test('getTimeseries', async () => {
-    const responsePromise = client.data.monitoring.metrics.getTimeseries('current-concurrent-viewers');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('getTimeseries: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.data.monitoring.metrics.getTimeseries(
-        'current-concurrent-viewers',
-        { filters: ['string'], timestamp: 0 },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Mux.NotFoundError);

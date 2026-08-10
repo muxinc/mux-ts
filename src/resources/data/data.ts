@@ -25,23 +25,19 @@ import {
 import * as ErrorsAPI from './errors';
 import { ErrorListParams, Errors, ErrorsResponse } from './errors';
 import * as ExportsAPI from './exports';
-import { Exports, ExportsResponse, VideoViewExportsResponse } from './exports';
-import * as FiltersAPI from './filters';
-import {
-  FilterListValuesParams,
-  FilterValue,
-  FilterValuesBasePage,
-  Filters,
-  FiltersResponse,
-} from './filters';
+import { Exports, VideoViewExportsResponse } from './exports';
 import * as IncidentsAPI from './incidents';
 import {
   Incident,
+  IncidentBreakdown,
   IncidentListParams,
   IncidentListRelatedParams,
+  IncidentNotification,
+  IncidentNotificationRule,
   IncidentResponse,
   Incidents,
   IncidentsBasePage,
+  NotificationRule,
 } from './incidents';
 import * as MetricsAPI from './metrics';
 import {
@@ -78,6 +74,8 @@ import {
   VideoViewResponse,
   VideoViews,
 } from './video-views';
+import * as EngagementAPI from './engagement/engagement';
+import { Engagement, EngagementHeatmap, EngagementHotspots, Hotspot } from './engagement/engagement';
 import * as MonitoringAPI from './monitoring/monitoring';
 import { Monitoring, MonitoringListDimensionsResponse } from './monitoring/monitoring';
 
@@ -86,24 +84,24 @@ export class Data extends APIResource {
   monitoring: MonitoringAPI.Monitoring = new MonitoringAPI.Monitoring(this._client);
   errors: ErrorsAPI.Errors = new ErrorsAPI.Errors(this._client);
   exports: ExportsAPI.Exports = new ExportsAPI.Exports(this._client);
-  filters: FiltersAPI.Filters = new FiltersAPI.Filters(this._client);
   incidents: IncidentsAPI.Incidents = new IncidentsAPI.Incidents(this._client);
   metrics: MetricsAPI.Metrics = new MetricsAPI.Metrics(this._client);
   realTime: RealTimeAPI.RealTime = new RealTimeAPI.RealTime(this._client);
   videoViews: VideoViewsAPI.VideoViews = new VideoViewsAPI.VideoViews(this._client);
   annotations: AnnotationsAPI.Annotations = new AnnotationsAPI.Annotations(this._client);
+  engagement: EngagementAPI.Engagement = new EngagementAPI.Engagement(this._client);
 }
 
 Data.Dimensions = Dimensions;
 Data.Monitoring = Monitoring;
 Data.Errors = Errors;
 Data.Exports = Exports;
-Data.Filters = Filters;
 Data.Incidents = Incidents;
 Data.Metrics = Metrics;
 Data.RealTime = RealTime;
 Data.VideoViews = VideoViews;
 Data.Annotations = Annotations;
+Data.Engagement = Engagement;
 
 export declare namespace Data {
   export {
@@ -111,8 +109,8 @@ export declare namespace Data {
     type DimensionValue as DimensionValue,
     type DimensionsResponse as DimensionsResponse,
     type DimensionValuesBasePage as DimensionValuesBasePage,
-    type DimensionListTraceElementsParams as DimensionListTraceElementsParams,
     type DimensionListValuesParams as DimensionListValuesParams,
+    type DimensionListTraceElementsParams as DimensionListTraceElementsParams,
   };
 
   export {
@@ -122,27 +120,19 @@ export declare namespace Data {
 
   export { Errors as Errors, type ErrorsResponse as ErrorsResponse, type ErrorListParams as ErrorListParams };
 
-  export {
-    Exports as Exports,
-    type ExportsResponse as ExportsResponse,
-    type VideoViewExportsResponse as VideoViewExportsResponse,
-  };
-
-  export {
-    Filters as Filters,
-    type FilterValue as FilterValue,
-    type FiltersResponse as FiltersResponse,
-    type FilterValuesBasePage as FilterValuesBasePage,
-    type FilterListValuesParams as FilterListValuesParams,
-  };
+  export { Exports as Exports, type VideoViewExportsResponse as VideoViewExportsResponse };
 
   export {
     Incidents as Incidents,
     type Incident as Incident,
+    type IncidentBreakdown as IncidentBreakdown,
+    type IncidentNotification as IncidentNotification,
+    type IncidentNotificationRule as IncidentNotificationRule,
     type IncidentResponse as IncidentResponse,
+    type NotificationRule as NotificationRule,
     type IncidentsBasePage as IncidentsBasePage,
-    type IncidentListParams as IncidentListParams,
     type IncidentListRelatedParams as IncidentListRelatedParams,
+    type IncidentListParams as IncidentListParams,
   };
 
   export {
@@ -154,10 +144,10 @@ export declare namespace Data {
     type OverallValuesResponse as OverallValuesResponse,
     type BreakdownValuesBasePage as BreakdownValuesBasePage,
     type MetricListParams as MetricListParams,
-    type MetricGetInsightsParams as MetricGetInsightsParams,
-    type MetricGetOverallValuesParams as MetricGetOverallValuesParams,
-    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
     type MetricListBreakdownValuesParams as MetricListBreakdownValuesParams,
+    type MetricGetOverallValuesParams as MetricGetOverallValuesParams,
+    type MetricGetInsightsParams as MetricGetInsightsParams,
+    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
   };
 
   export {
@@ -168,8 +158,8 @@ export declare namespace Data {
     type RealTimeMetricsResponse as RealTimeMetricsResponse,
     type RealTimeTimeseriesResponse as RealTimeTimeseriesResponse,
     type RealTimeRetrieveBreakdownParams as RealTimeRetrieveBreakdownParams,
-    type RealTimeRetrieveHistogramTimeseriesParams as RealTimeRetrieveHistogramTimeseriesParams,
     type RealTimeRetrieveTimeseriesParams as RealTimeRetrieveTimeseriesParams,
+    type RealTimeRetrieveHistogramTimeseriesParams as RealTimeRetrieveHistogramTimeseriesParams,
   };
 
   export {
@@ -187,8 +177,15 @@ export declare namespace Data {
     type AnnotationResponse as AnnotationResponse,
     type ListAnnotationsResponse as ListAnnotationsResponse,
     type AnnotationsBasePage as AnnotationsBasePage,
+    type AnnotationListParams as AnnotationListParams,
     type AnnotationCreateParams as AnnotationCreateParams,
     type AnnotationUpdateParams as AnnotationUpdateParams,
-    type AnnotationListParams as AnnotationListParams,
+  };
+
+  export {
+    Engagement as Engagement,
+    type EngagementHeatmap as EngagementHeatmap,
+    type EngagementHotspots as EngagementHotspots,
+    type Hotspot as Hotspot,
   };
 }

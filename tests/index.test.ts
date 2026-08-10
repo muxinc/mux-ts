@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from '@mux/mux-node/core/api-promise';
+import { APIPromise } from '@mux/ts/core/api-promise';
 
 import util from 'node:util';
-import Mux from '@mux/mux-node';
-import { APIUserAbortError } from '@mux/mux-node';
+import Mux from '@mux/ts';
+import { APIUserAbortError } from '@mux/ts';
 const defaultFetch = fetch;
 
 describe('instantiate client', () => {

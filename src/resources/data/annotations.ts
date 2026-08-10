@@ -12,6 +12,47 @@ import { path } from '../../internal/utils/path';
  */
 export class Annotations extends APIResource {
   /**
+   * Returns a list of annotations.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const annotation of client.data.annotations.list()) {
+   *   // ...
+   * }
+   * ```
+   */
+  list(
+    query: AnnotationListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<AnnotationsBasePage, Annotation> {
+    return this._client.getAPIList('/data/v1/annotations', BasePage<Annotation>, {
+      query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
+   * Returns the details of a specific annotation.
+   *
+   * @example
+   * ```ts
+   * const annotation = await client.data.annotations.retrieve(
+   *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+   * );
+   * ```
+   */
+  retrieve(annotationID: string, options?: RequestOptions): APIPromise<Annotation> {
+    return (
+      this._client.get(path`/data/v1/annotations/${annotationID}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: Annotation }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
    * Creates a new annotation.
    *
    * @example
@@ -34,22 +75,21 @@ export class Annotations extends APIResource {
   }
 
   /**
-   * Returns the details of a specific annotation.
+   * Deletes an annotation.
    *
    * @example
    * ```ts
-   * const annotation = await client.data.annotations.retrieve(
+   * await client.data.annotations.delete(
    *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
    * );
    * ```
    */
-  retrieve(annotationID: string, options?: RequestOptions): APIPromise<Annotation> {
-    return (
-      this._client.get(path`/data/v1/annotations/${annotationID}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: Annotation }>
-    )._thenUnwrap((obj) => obj.data);
+  delete(annotationID: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.delete(path`/data/v1/annotations/${annotationID}`, {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
@@ -79,46 +119,6 @@ export class Annotations extends APIResource {
         ...options,
       }) as APIPromise<{ data: Annotation }>
     )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
-   * Returns a list of annotations.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const annotation of client.data.annotations.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(
-    query: AnnotationListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<AnnotationsBasePage, Annotation> {
-    return this._client.getAPIList('/data/v1/annotations', BasePage<Annotation>, {
-      query,
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
-   * Deletes an annotation.
-   *
-   * @example
-   * ```ts
-   * await client.data.annotations.delete(
-   *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-   * );
-   * ```
-   */
-  delete(annotationID: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(path`/data/v1/annotations/${annotationID}`, {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
   }
 }
 
@@ -181,6 +181,24 @@ export interface ListAnnotationsResponse {
   timeframe?: Array<number>;
 }
 
+export interface AnnotationListParams extends BasePageParams {
+  /**
+   * Sort order.
+   */
+  order_direction?: 'asc' | 'desc';
+
+  /**
+   * Timeframe window to limit results by. Must be provided as an array query string
+   * parameter (e.g. timeframe[]=).
+   *
+   * Accepted formats are...
+   *
+   * - array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`
+   * - duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`
+   */
+  timeframe?: Array<string>;
+}
+
 export interface AnnotationCreateParams {
   /**
    * Datetime when the annotation applies (Unix timestamp)
@@ -215,24 +233,6 @@ export interface AnnotationUpdateParams {
   sub_property_id?: string;
 }
 
-export interface AnnotationListParams extends BasePageParams {
-  /**
-   * Sort order.
-   */
-  order_direction?: 'asc' | 'desc';
-
-  /**
-   * Timeframe window to limit results by. Must be provided as an array query string
-   * parameter (e.g. timeframe[]=).
-   *
-   * Accepted formats are...
-   *
-   * - array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`
-   * - duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`
-   */
-  timeframe?: Array<string>;
-}
-
 export declare namespace Annotations {
   export {
     type Annotation as Annotation,
@@ -240,8 +240,8 @@ export declare namespace Annotations {
     type AnnotationResponse as AnnotationResponse,
     type ListAnnotationsResponse as ListAnnotationsResponse,
     type AnnotationsBasePage as AnnotationsBasePage,
+    type AnnotationListParams as AnnotationListParams,
     type AnnotationCreateParams as AnnotationCreateParams,
     type AnnotationUpdateParams as AnnotationUpdateParams,
-    type AnnotationListParams as AnnotationListParams,
   };
 }

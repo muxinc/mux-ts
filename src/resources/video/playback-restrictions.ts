@@ -40,26 +40,6 @@ export class PlaybackRestrictions extends APIResource {
   }
 
   /**
-   * Retrieves a Playback Restriction associated with the unique identifier.
-   *
-   * @example
-   * ```ts
-   * const playbackRestriction =
-   *   await client.video.playbackRestrictions.retrieve(
-   *     'PLAYBACK_RESTRICTION_ID',
-   *   );
-   * ```
-   */
-  retrieve(playbackRestrictionID: string, options?: RequestOptions): APIPromise<PlaybackRestriction> {
-    return (
-      this._client.get(path`/video/v1/playback-restrictions/${playbackRestrictionID}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: PlaybackRestriction }>
-    )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
    * Returns a list of all Playback Restrictions.
    *
    * @example
@@ -97,6 +77,26 @@ export class PlaybackRestrictions extends APIResource {
       ...options,
       headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
     });
+  }
+
+  /**
+   * Retrieves a Playback Restriction associated with the unique identifier.
+   *
+   * @example
+   * ```ts
+   * const playbackRestriction =
+   *   await client.video.playbackRestrictions.retrieve(
+   *     'PLAYBACK_RESTRICTION_ID',
+   *   );
+   * ```
+   */
+  retrieve(playbackRestrictionID: string, options?: RequestOptions): APIPromise<PlaybackRestriction> {
+    return (
+      this._client.get(path`/video/v1/playback-restrictions/${playbackRestrictionID}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: PlaybackRestriction }>
+    )._thenUnwrap((obj) => obj.data);
   }
 
   /**
@@ -180,7 +180,7 @@ export interface PlaybackRestriction {
   /**
    * A list of domains allowed to play your videos.
    */
-  referrer: PlaybackRestriction.Referrer;
+  referrer: ReferrerDomainRestrictionSettings;
 
   /**
    * Time the Playback Restriction was last updated, defined as a Unix timestamp
@@ -193,55 +193,53 @@ export interface PlaybackRestriction {
    * [Using User-Agent HTTP header for validation](https://docs.mux.com/guides/secure-video-playback#using-user-agent-http-header-for-validation)
    * for more details on this feature.
    */
-  user_agent: PlaybackRestriction.UserAgent;
-}
-
-export namespace PlaybackRestriction {
-  /**
-   * A list of domains allowed to play your videos.
-   */
-  export interface Referrer {
-    /**
-     * A boolean to determine whether to allow or deny HTTP requests without `Referer`
-     * HTTP request header. Playback requests coming from non-web/native applications
-     * like iOS, Android or smart TVs will not have a `Referer` HTTP header. Set this
-     * value to `true` to allow these playback requests.
-     */
-    allow_no_referrer?: boolean;
-
-    /**
-     * List of domains allowed to play videos. Possible values are
-     *
-     * - `[]` Empty Array indicates deny video playback requests for all domains
-     * - `["*"]` A Single Wildcard `*` entry means allow video playback requests from
-     *   any domain
-     * - `["*.example.com", "foo.com"]` A list of up to 10 domains or valid dns-style
-     *   wildcards
-     */
-    allowed_domains?: Array<string>;
-  }
-
-  /**
-   * Rules that control what user agents are allowed to play your videos. Please see
-   * [Using User-Agent HTTP header for validation](https://docs.mux.com/guides/secure-video-playback#using-user-agent-http-header-for-validation)
-   * for more details on this feature.
-   */
-  export interface UserAgent {
-    /**
-     * Whether or not to allow high risk user agents. The high risk user agents are
-     * defined by Mux.
-     */
-    allow_high_risk_user_agent?: boolean;
-
-    /**
-     * Whether or not to allow views without a `User-Agent` HTTP request header.
-     */
-    allow_no_user_agent?: boolean;
-  }
+  user_agent: UserAgentRestrictionSettings;
 }
 
 export interface PlaybackRestrictionResponse {
   data: PlaybackRestriction;
+}
+
+/**
+ * A list of domains allowed to play your videos.
+ */
+export interface ReferrerDomainRestrictionSettings {
+  /**
+   * A boolean to determine whether to allow or deny HTTP requests without `Referer`
+   * HTTP request header. Playback requests coming from non-web/native applications
+   * like iOS, Android or smart TVs will not have a `Referer` HTTP header. Set this
+   * value to `true` to allow these playback requests.
+   */
+  allow_no_referrer?: boolean;
+
+  /**
+   * List of domains allowed to play videos. Possible values are
+   *
+   * - `[]` Empty Array indicates deny video playback requests for all domains
+   * - `["*"]` A Single Wildcard `*` entry means allow video playback requests from
+   *   any domain
+   * - `["*.example.com", "foo.com"]` A list of up to 10 domains or valid dns-style
+   *   wildcards
+   */
+  allowed_domains?: Array<string>;
+}
+
+/**
+ * Rules that control what user agents are allowed to play your videos. Please see
+ * [Using User-Agent HTTP header for validation](https://docs.mux.com/guides/secure-video-playback#using-user-agent-http-header-for-validation)
+ * for more details on this feature.
+ */
+export interface UserAgentRestrictionSettings {
+  /**
+   * Whether or not to allow high risk user agents. The high risk user agents are
+   * defined by Mux.
+   */
+  allow_high_risk_user_agent?: boolean;
+
+  /**
+   * Whether or not to allow views without a `User-Agent` HTTP request header.
+   */
+  allow_no_user_agent?: boolean;
 }
 
 export interface PlaybackRestrictionCreateParams {
@@ -342,6 +340,8 @@ export declare namespace PlaybackRestrictions {
   export {
     type PlaybackRestriction as PlaybackRestriction,
     type PlaybackRestrictionResponse as PlaybackRestrictionResponse,
+    type ReferrerDomainRestrictionSettings as ReferrerDomainRestrictionSettings,
+    type UserAgentRestrictionSettings as UserAgentRestrictionSettings,
     type PlaybackRestrictionsBasePage as PlaybackRestrictionsBasePage,
     type PlaybackRestrictionCreateParams as PlaybackRestrictionCreateParams,
     type PlaybackRestrictionListParams as PlaybackRestrictionListParams,

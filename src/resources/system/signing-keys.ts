@@ -26,6 +26,20 @@ export class SigningKeys extends APIResource {
   }
 
   /**
+   * Returns a list of signing keys.
+   */
+  list(
+    query: SigningKeyListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<SigningKeysBasePage, SigningKey> {
+    return this._client.getAPIList('/system/v1/signing-keys', BasePage<SigningKey>, {
+      query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
    * Retrieves the details of a signing key that has previously been created. Supply
    * the unique signing key ID that was returned from your previous request, and Mux
    * will return the corresponding signing key information. **The private key is not
@@ -38,20 +52,6 @@ export class SigningKeys extends APIResource {
         ...options,
       }) as APIPromise<{ data: SigningKey }>
     )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
-   * Returns a list of signing keys.
-   */
-  list(
-    query: SigningKeyListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<SigningKeysBasePage, SigningKey> {
-    return this._client.getAPIList('/system/v1/signing-keys', BasePage<SigningKey>, {
-      query,
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
   }
 
   /**

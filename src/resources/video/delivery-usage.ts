@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import { PagePromise, PageWithTotal, type PageWithTotalParams } from '../../core/pagination';
+import { PagePromise, PageWithTimeframe, type PageWithTimeframeParams } from '../../core/pagination';
 import { RequestOptions } from '../../internal/request-options';
 
 /**
@@ -25,8 +25,8 @@ export class DeliveryUsage extends APIResource {
   list(
     query: DeliveryUsageListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<DeliveryReportsPageWithTotal, DeliveryReport> {
-    return this._client.getAPIList('/video/v1/delivery-usage', PageWithTotal<DeliveryReport>, {
+  ): PagePromise<DeliveryReportsPageWithTimeframe, DeliveryReport> {
+    return this._client.getAPIList('/video/v1/delivery-usage', PageWithTimeframe<DeliveryReport>, {
       query,
       defaultBaseURL: 'https://api.mux.com',
       ...options,
@@ -34,7 +34,7 @@ export class DeliveryUsage extends APIResource {
   }
 }
 
-export type DeliveryReportsPageWithTotal = PageWithTotal<DeliveryReport>;
+export type DeliveryReportsPageWithTimeframe = PageWithTimeframe<DeliveryReport>;
 
 export interface DeliveryReport {
   /**
@@ -43,9 +43,7 @@ export interface DeliveryReport {
   asset_duration: number;
 
   /**
-   * @deprecated This field is deprecated. Please use `asset_video_quality` instead.
-   * The encoding tier that the asset was ingested at.
-   * [See the video quality guide for more details.](https://docs.mux.com/guides/use-video-quality-levels)
+   * @deprecated Use `asset_video_quality` instead.
    */
   asset_encoding_tier: 'smart' | 'baseline' | 'premium';
 
@@ -145,7 +143,7 @@ export namespace DeliveryReport {
   }
 }
 
-export interface DeliveryUsageListParams extends PageWithTotalParams {
+export interface DeliveryUsageListParams extends PageWithTimeframeParams {
   /**
    * Filter response to return delivery usage for this asset only. You cannot specify
    * both the `asset_id` and `live_stream_id` parameters together.
@@ -170,7 +168,7 @@ export interface DeliveryUsageListParams extends PageWithTotalParams {
 export declare namespace DeliveryUsage {
   export {
     type DeliveryReport as DeliveryReport,
-    type DeliveryReportsPageWithTotal as DeliveryReportsPageWithTotal,
+    type DeliveryReportsPageWithTimeframe as DeliveryReportsPageWithTimeframe,
     type DeliveryUsageListParams as DeliveryUsageListParams,
   };
 }

@@ -63,6 +63,36 @@ export class Metrics extends APIResource {
   }
 
   /**
+   * Gets Time series information for a specific metric along with the number of
+   * concurrent viewers.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.data.monitoring.metrics.getTimeseries(
+   *     'current-concurrent-viewers',
+   *   );
+   * ```
+   */
+  getTimeseries(
+    monitoringMetricID:
+      | 'current-concurrent-viewers'
+      | 'current-rebuffering-percentage'
+      | 'exits-before-video-start'
+      | 'playback-failure-percentage'
+      | 'current-average-bitrate'
+      | 'video-startup-failure-percentage',
+    query: MetricGetTimeseriesParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<MetricGetTimeseriesResponse> {
+    return this._client.get(path`/data/v1/monitoring/metrics/${monitoringMetricID}/timeseries`, {
+      query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
    * Gets timeseries of breakdown information for a specific dimension and metric.
    * Each datapoint in the response represents 5 seconds worth of data.
    *
@@ -112,36 +142,6 @@ export class Metrics extends APIResource {
       path`/data/v1/monitoring/metrics/${monitoringHistogramMetricID}/histogram-timeseries`,
       { query, defaultBaseURL: 'https://api.mux.com', ...options },
     );
-  }
-
-  /**
-   * Gets Time series information for a specific metric along with the number of
-   * concurrent viewers.
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.data.monitoring.metrics.getTimeseries(
-   *     'current-concurrent-viewers',
-   *   );
-   * ```
-   */
-  getTimeseries(
-    monitoringMetricID:
-      | 'current-concurrent-viewers'
-      | 'current-rebuffering-percentage'
-      | 'exits-before-video-start'
-      | 'playback-failure-percentage'
-      | 'current-average-bitrate'
-      | 'video-startup-failure-percentage',
-    query: MetricGetTimeseriesParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<MetricGetTimeseriesResponse> {
-    return this._client.get(path`/data/v1/monitoring/metrics/${monitoringMetricID}/timeseries`, {
-      query,
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
   }
 }
 
@@ -331,6 +331,30 @@ export interface MetricGetBreakdownParams {
   timestamp?: number;
 }
 
+export interface MetricGetTimeseriesParams {
+  /**
+   * Limit the results to rows that match conditions from provided key:value pairs.
+   * Must be provided as an array query string parameter.
+   *
+   * To exclude rows that match a certain condition, prepend a `!` character to the
+   * dimension.
+   *
+   * Possible filter names are the same as returned by the List Monitoring Dimensions
+   * endpoint.
+   *
+   * Example:
+   *
+   * - `filters[]=operating_system:windows&filters[]=!country:US`
+   */
+  filters?: Array<string>;
+
+  /**
+   * Timestamp to use as the start of the timeseries data. This value must be
+   * provided as a unix timestamp. Defaults to 30 minutes ago.
+   */
+  timestamp?: number;
+}
+
 export interface MetricGetBreakdownTimeseriesParams {
   /**
    * Dimension the specified value belongs to
@@ -409,30 +433,6 @@ export interface MetricGetHistogramTimeseriesParams {
   filters?: Array<string>;
 }
 
-export interface MetricGetTimeseriesParams {
-  /**
-   * Limit the results to rows that match conditions from provided key:value pairs.
-   * Must be provided as an array query string parameter.
-   *
-   * To exclude rows that match a certain condition, prepend a `!` character to the
-   * dimension.
-   *
-   * Possible filter names are the same as returned by the List Monitoring Dimensions
-   * endpoint.
-   *
-   * Example:
-   *
-   * - `filters[]=operating_system:windows&filters[]=!country:US`
-   */
-  filters?: Array<string>;
-
-  /**
-   * Timestamp to use as the start of the timeseries data. This value must be
-   * provided as a unix timestamp. Defaults to 30 minutes ago.
-   */
-  timestamp?: number;
-}
-
 export declare namespace Metrics {
   export {
     type MetricListResponse as MetricListResponse,
@@ -441,8 +441,8 @@ export declare namespace Metrics {
     type MetricGetHistogramTimeseriesResponse as MetricGetHistogramTimeseriesResponse,
     type MetricGetTimeseriesResponse as MetricGetTimeseriesResponse,
     type MetricGetBreakdownParams as MetricGetBreakdownParams,
+    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
     type MetricGetBreakdownTimeseriesParams as MetricGetBreakdownTimeseriesParams,
     type MetricGetHistogramTimeseriesParams as MetricGetHistogramTimeseriesParams,
-    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
   };
 }

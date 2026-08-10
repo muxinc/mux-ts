@@ -8,8 +8,8 @@ export {
   type MetricGetHistogramTimeseriesResponse,
   type MetricGetTimeseriesResponse,
   type MetricGetBreakdownParams,
+  type MetricGetTimeseriesParams,
   type MetricGetBreakdownTimeseriesParams,
   type MetricGetHistogramTimeseriesParams,
-  type MetricGetTimeseriesParams,
 } from './metrics';
 export { Monitoring, type MonitoringListDimensionsResponse } from './monitoring';

@@ -77,8 +77,8 @@ export declare namespace Monitoring {
     type MetricGetHistogramTimeseriesResponse as MetricGetHistogramTimeseriesResponse,
     type MetricGetTimeseriesResponse as MetricGetTimeseriesResponse,
     type MetricGetBreakdownParams as MetricGetBreakdownParams,
+    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
     type MetricGetBreakdownTimeseriesParams as MetricGetBreakdownTimeseriesParams,
     type MetricGetHistogramTimeseriesParams as MetricGetHistogramTimeseriesParams,
-    type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
   };
 }

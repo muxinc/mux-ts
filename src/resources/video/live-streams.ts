@@ -42,6 +42,28 @@ export class LiveStreams extends APIResource {
   }
 
   /**
+   * Lists the live streams that currently exist in the current environment.
+   *
+   * @example
+   * ```ts
+   * // Automatically fetches more pages as needed.
+   * for await (const liveStream of client.video.liveStreams.list()) {
+   *   // ...
+   * }
+   * ```
+   */
+  list(
+    query: LiveStreamListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<LiveStreamsBasePage, LiveStream> {
+    return this._client.getAPIList('/video/v1/live-streams', BasePage<LiveStream>, {
+      query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
    * Retrieves the details of a live stream that has previously been created. Supply
    * the unique live stream ID that was returned from your previous request, and Mux
    * will return the corresponding live stream information. The same information is
@@ -61,6 +83,24 @@ export class LiveStreams extends APIResource {
         ...options,
       }) as APIPromise<{ data: LiveStream }>
     )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
+   * Deletes a live stream from the current environment. If the live stream is
+   * currently active and being streamed to, ingest will be terminated and the
+   * encoder will be disconnected.
+   *
+   * @example
+   * ```ts
+   * await client.video.liveStreams.delete('LIVE_STREAM_ID');
+   * ```
+   */
+  delete(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.delete(path`/video/v1/live-streams/${liveStreamId}`, {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
@@ -97,70 +137,6 @@ export class LiveStreams extends APIResource {
   }
 
   /**
-   * Lists the live streams that currently exist in the current environment.
-   *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const liveStream of client.video.liveStreams.list()) {
-   *   // ...
-   * }
-   * ```
-   */
-  list(
-    query: LiveStreamListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<LiveStreamsBasePage, LiveStream> {
-    return this._client.getAPIList('/video/v1/live-streams', BasePage<LiveStream>, {
-      query,
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
-   * Deletes a live stream from the current environment. If the live stream is
-   * currently active and being streamed to, ingest will be terminated and the
-   * encoder will be disconnected.
-   *
-   * @example
-   * ```ts
-   * await client.video.liveStreams.delete('LIVE_STREAM_ID');
-   * ```
-   */
-  delete(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(path`/video/v1/live-streams/${liveStreamId}`, {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * (Optional) End the live stream recording immediately instead of waiting for the
-   * reconnect_window. `EXT-X-ENDLIST` tag is added to the HLS manifest which
-   * notifies the player that this live stream is over.
-   *
-   * Mux does not close the encoder connection immediately. Encoders are often
-   * configured to re-establish connections immediately which would result in a new
-   * recorded asset. For this reason, Mux waits for 60s before closing the connection
-   * with the encoder. This 60s timeframe is meant to give encoder operators a chance
-   * to disconnect from their end.
-   *
-   * @example
-   * ```ts
-   * await client.video.liveStreams.complete('LIVE_STREAM_ID');
-   * ```
-   */
-  complete(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.put(path`/video/v1/live-streams/${liveStreamId}/complete`, {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
    * Create a new playback ID for this live stream, through which a viewer can watch
    * the streamed content of the live stream.
    *
@@ -188,58 +164,29 @@ export class LiveStreams extends APIResource {
   }
 
   /**
-   * Create a simulcast target for the parent live stream. Simulcast target can only
-   * be created when the parent live stream is in idle state. Only one simulcast
-   * target can be created at a time with this API.
+   * Fetches information about a live stream's playback ID, through which a viewer
+   * can watch the streamed content from this live stream.
    *
    * @example
    * ```ts
-   * const simulcastTarget =
-   *   await client.video.liveStreams.createSimulcastTarget(
+   * const playbackId =
+   *   await client.video.liveStreams.retrievePlaybackId(
    *     'LIVE_STREAM_ID',
-   *     {
-   *       url: 'rtmp://live.example.com/app',
-   *       passthrough: 'Example',
-   *       stream_key: 'abcdefgh',
-   *     },
+   *     'PLAYBACK_ID',
    *   );
    * ```
    */
-  createSimulcastTarget(
+  retrievePlaybackId(
     liveStreamId: string,
-    body: LiveStreamCreateSimulcastTargetParams,
+    playbackId: string,
     options?: RequestOptions,
-  ): APIPromise<SimulcastTarget> {
+  ): APIPromise<Shared.PlaybackId> {
     return (
-      this._client.post(path`/video/v1/live-streams/${liveStreamId}/simulcast-targets`, {
-        body,
+      this._client.get(path`/video/v1/live-streams/${liveStreamId}/playback-ids/${playbackId}`, {
         defaultBaseURL: 'https://api.mux.com',
         ...options,
-      }) as APIPromise<{ data: SimulcastTarget }>
+      }) as APIPromise<{ data: Shared.PlaybackId }>
     )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
-   * Deletes a live stream's static renditions settings for new assets. Further
-   * assets made via this live stream will not create static renditions unless
-   * re-added.
-   *
-   * @example
-   * ```ts
-   * await client.video.liveStreams.deleteNewAssetSettingsStaticRenditions(
-   *   'LIVE_STREAM_ID',
-   * );
-   * ```
-   */
-  deleteNewAssetSettingsStaticRenditions(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(
-      path`/video/v1/live-streams/${liveStreamId}/new-asset-settings/static-renditions`,
-      {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-        headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-      },
-    );
   }
 
   /**
@@ -265,31 +212,48 @@ export class LiveStreams extends APIResource {
   }
 
   /**
-   * Delete the simulcast target using the simulcast target ID returned when creating
-   * the simulcast target. Simulcast Target can only be deleted when the parent live
-   * stream is in idle state.
+   * Reset a live stream key if you want to immediately stop the current stream key
+   * from working and create a new stream key that can be used for future broadcasts.
    *
    * @example
    * ```ts
-   * await client.video.liveStreams.deleteSimulcastTarget(
-   *   'LIVE_STREAM_ID',
-   *   'SIMULCAST_TARGET_ID',
-   * );
+   * const liveStream =
+   *   await client.video.liveStreams.resetStreamKey(
+   *     'LIVE_STREAM_ID',
+   *   );
    * ```
    */
-  deleteSimulcastTarget(
-    liveStreamId: string,
-    simulcastTargetId: string,
-    options?: RequestOptions,
-  ): APIPromise<void> {
-    return this._client.delete(
-      path`/video/v1/live-streams/${liveStreamId}/simulcast-targets/${simulcastTargetId}`,
-      {
+  resetStreamKey(liveStreamId: string, options?: RequestOptions): APIPromise<LiveStream> {
+    return (
+      this._client.post(path`/video/v1/live-streams/${liveStreamId}/reset-stream-key`, {
         defaultBaseURL: 'https://api.mux.com',
         ...options,
-        headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-      },
-    );
+      }) as APIPromise<{ data: LiveStream }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
+   * (Optional) End the live stream recording immediately instead of waiting for the
+   * reconnect_window. `EXT-X-ENDLIST` tag is added to the HLS manifest which
+   * notifies the player that this live stream is over.
+   *
+   * Mux does not close the encoder connection immediately. Encoders are often
+   * configured to re-establish connections immediately which would result in a new
+   * recorded asset. For this reason, Mux waits for 60s before closing the connection
+   * with the encoder. This 60s timeframe is meant to give encoder operators a chance
+   * to disconnect from their end.
+   *
+   * @example
+   * ```ts
+   * await client.video.liveStreams.complete('LIVE_STREAM_ID');
+   * ```
+   */
+  complete(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.put(path`/video/v1/live-streams/${liveStreamId}/complete`, {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
@@ -328,81 +292,6 @@ export class LiveStreams extends APIResource {
       ...options,
       headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
     });
-  }
-
-  /**
-   * Reset a live stream key if you want to immediately stop the current stream key
-   * from working and create a new stream key that can be used for future broadcasts.
-   *
-   * @example
-   * ```ts
-   * const liveStream =
-   *   await client.video.liveStreams.resetStreamKey(
-   *     'LIVE_STREAM_ID',
-   *   );
-   * ```
-   */
-  resetStreamKey(liveStreamId: string, options?: RequestOptions): APIPromise<LiveStream> {
-    return (
-      this._client.post(path`/video/v1/live-streams/${liveStreamId}/reset-stream-key`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: LiveStream }>
-    )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
-   * Fetches information about a live stream's playback ID, through which a viewer
-   * can watch the streamed content from this live stream.
-   *
-   * @example
-   * ```ts
-   * const playbackId =
-   *   await client.video.liveStreams.retrievePlaybackId(
-   *     'LIVE_STREAM_ID',
-   *     'PLAYBACK_ID',
-   *   );
-   * ```
-   */
-  retrievePlaybackId(
-    liveStreamId: string,
-    playbackId: string,
-    options?: RequestOptions,
-  ): APIPromise<Shared.PlaybackId> {
-    return (
-      this._client.get(path`/video/v1/live-streams/${liveStreamId}/playback-ids/${playbackId}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: Shared.PlaybackId }>
-    )._thenUnwrap((obj) => obj.data);
-  }
-
-  /**
-   * Retrieves the details of the simulcast target created for the parent live
-   * stream. Supply the unique live stream ID and simulcast target ID that was
-   * returned in the response of create simulcast target request, and Mux will return
-   * the corresponding information.
-   *
-   * @example
-   * ```ts
-   * const simulcastTarget =
-   *   await client.video.liveStreams.retrieveSimulcastTarget(
-   *     'LIVE_STREAM_ID',
-   *     'SIMULCAST_TARGET_ID',
-   *   );
-   * ```
-   */
-  retrieveSimulcastTarget(
-    liveStreamId: string,
-    simulcastTargetId: string,
-    options?: RequestOptions,
-  ): APIPromise<SimulcastTarget> {
-    return (
-      this._client.get(path`/video/v1/live-streams/${liveStreamId}/simulcast-targets/${simulcastTargetId}`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: SimulcastTarget }>
-    )._thenUnwrap((obj) => obj.data);
   }
 
   /**
@@ -469,6 +358,94 @@ export class LiveStreams extends APIResource {
   }
 
   /**
+   * Create a simulcast target for the parent live stream. Simulcast target can only
+   * be created when the parent live stream is in idle state. Only one simulcast
+   * target can be created at a time with this API.
+   *
+   * @example
+   * ```ts
+   * const simulcastTarget =
+   *   await client.video.liveStreams.createSimulcastTarget(
+   *     'LIVE_STREAM_ID',
+   *     {
+   *       url: 'rtmp://live.example.com/app',
+   *       passthrough: 'Example',
+   *       stream_key: 'abcdefgh',
+   *     },
+   *   );
+   * ```
+   */
+  createSimulcastTarget(
+    liveStreamId: string,
+    body: LiveStreamCreateSimulcastTargetParams,
+    options?: RequestOptions,
+  ): APIPromise<SimulcastTarget> {
+    return (
+      this._client.post(path`/video/v1/live-streams/${liveStreamId}/simulcast-targets`, {
+        body,
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: SimulcastTarget }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
+   * Delete the simulcast target using the simulcast target ID returned when creating
+   * the simulcast target. Simulcast Target can only be deleted when the parent live
+   * stream is in idle state.
+   *
+   * @example
+   * ```ts
+   * await client.video.liveStreams.deleteSimulcastTarget(
+   *   'LIVE_STREAM_ID',
+   *   'SIMULCAST_TARGET_ID',
+   * );
+   * ```
+   */
+  deleteSimulcastTarget(
+    liveStreamId: string,
+    simulcastTargetId: string,
+    options?: RequestOptions,
+  ): APIPromise<void> {
+    return this._client.delete(
+      path`/video/v1/live-streams/${liveStreamId}/simulcast-targets/${simulcastTargetId}`,
+      {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+        headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      },
+    );
+  }
+
+  /**
+   * Retrieves the details of the simulcast target created for the parent live
+   * stream. Supply the unique live stream ID and simulcast target ID that was
+   * returned in the response of create simulcast target request, and Mux will return
+   * the corresponding information.
+   *
+   * @example
+   * ```ts
+   * const simulcastTarget =
+   *   await client.video.liveStreams.retrieveSimulcastTarget(
+   *     'LIVE_STREAM_ID',
+   *     'SIMULCAST_TARGET_ID',
+   *   );
+   * ```
+   */
+  retrieveSimulcastTarget(
+    liveStreamId: string,
+    simulcastTargetId: string,
+    options?: RequestOptions,
+  ): APIPromise<SimulcastTarget> {
+    return (
+      this._client.get(path`/video/v1/live-streams/${liveStreamId}/simulcast-targets/${simulcastTargetId}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: SimulcastTarget }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
    * Updates a live stream's static renditions settings for new assets. Further
    * assets made via this live stream will create static renditions per the settings
    * provided. You must provide all static renditions desired.
@@ -499,6 +476,29 @@ export class LiveStreams extends APIResource {
         ...options,
       }) as APIPromise<{ data: LiveStream }>
     )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
+   * Deletes a live stream's static renditions settings for new assets. Further
+   * assets made via this live stream will not create static renditions unless
+   * re-added.
+   *
+   * @example
+   * ```ts
+   * await client.video.liveStreams.deleteNewAssetSettingsStaticRenditions(
+   *   'LIVE_STREAM_ID',
+   * );
+   * ```
+   */
+  deleteNewAssetSettingsStaticRenditions(liveStreamId: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.delete(
+      path`/video/v1/live-streams/${liveStreamId}/new-asset-settings/static-renditions`,
+      {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+        headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      },
+    );
   }
 }
 
@@ -563,7 +563,7 @@ export interface LiveStream {
   /**
    * Describes the embedded closed caption configuration of the incoming live stream.
    */
-  embedded_subtitles?: Array<LiveStream.EmbeddedSubtitle>;
+  embedded_subtitles?: Array<LiveStreamEmbeddedSubtitleSettings>;
 
   /**
    * Configure the incoming live stream to include subtitles created with automatic
@@ -578,14 +578,10 @@ export interface LiveStream {
    * `generated_live_final` tracks that are `ready`, then only the
    * `generated_live_final` track will be included during playback.
    */
-  generated_subtitles?: Array<LiveStream.GeneratedSubtitle>;
+  generated_subtitles?: Array<LiveStreamGeneratedSubtitleSettings>;
 
   /**
-   * @deprecated This field is deprecated. Please use `latency_mode` instead. Latency
-   * is the time from when the streamer transmits a frame of video to when you see it
-   * in the player. Setting this option will enable compatibility with the LL-HLS
-   * specification for low-latency streaming. This typically has lower latency than
-   * Reduced Latency streams, and cannot be combined with Reduced Latency.
+   * @deprecated Use `latency_mode` instead.
    */
   low_latency?: boolean;
 
@@ -595,7 +591,7 @@ export interface LiveStream {
    * Note: This metadata may be publicly available via the video player. Do not
    * include PII or sensitive information.
    */
-  meta?: LiveStream.Meta;
+  meta?: LiveStreamMetadata;
 
   new_asset_settings?: AssetsAPI.AssetOptions;
 
@@ -646,11 +642,7 @@ export interface LiveStream {
   reconnect_window?: number;
 
   /**
-   * @deprecated This field is deprecated. Please use `latency_mode` instead. Latency
-   * is the time from when the streamer transmits a frame of video to when you see it
-   * in the player. Set this if you want lower latency for your live stream. See the
-   * [Reduce live stream latency guide](https://docs.mux.com/guides/reduce-live-stream-latency)
-   * to understand the tradeoffs.
+   * @deprecated Use `latency_mode` instead.
    */
   reduced_latency?: boolean;
 
@@ -684,67 +676,65 @@ export interface LiveStream {
   use_slate_for_standard_latency?: boolean;
 }
 
-export namespace LiveStream {
-  export interface EmbeddedSubtitle {
-    /**
-     * CEA-608 caption channel to read data from.
-     */
-    language_channel: 'cc1' | 'cc2' | 'cc3' | 'cc4';
-
-    /**
-     * The language of the closed caption stream. Value must be BCP 47 compliant.
-     */
-    language_code: string;
-
-    /**
-     * A name for this live stream closed caption track.
-     */
-    name: string;
-
-    /**
-     * Arbitrary user-supplied metadata set for the live stream closed caption track.
-     * Max 255 characters.
-     */
-    passthrough?: string;
-  }
-
-  export interface GeneratedSubtitle {
-    /**
-     * The language of the audio from which subtitles are generated.
-     */
-    language_code: 'en' | 'en-US' | 'es' | 'fr' | 'de' | 'pt' | 'it';
-
-    /**
-     * A name for this live stream subtitle track.
-     */
-    name: string;
-
-    /**
-     * Arbitrary metadata set for the live stream subtitle track. Max 255 characters.
-     */
-    passthrough?: string;
-
-    /**
-     * Unique identifiers for existing Transcription Vocabularies to use while
-     * generating subtitles for the live stream. If the Transcription Vocabularies
-     * provided collectively have more than 1000 phrases, only the first 1000 phrases
-     * will be included.
-     */
-    transcription_vocabulary_ids?: Array<string>;
-  }
+export interface LiveStreamEmbeddedSubtitleSettings {
+  /**
+   * CEA-608 caption channel to read data from.
+   */
+  language_channel: 'cc1' | 'cc2' | 'cc3' | 'cc4';
 
   /**
-   * Customer provided metadata about this live stream.
-   *
-   * Note: This metadata may be publicly available via the video player. Do not
-   * include PII or sensitive information.
+   * The language of the closed caption stream. Value must be BCP 47 compliant.
    */
-  export interface Meta {
-    /**
-     * The live stream title. Max 512 code points.
-     */
-    title?: string;
-  }
+  language_code: string;
+
+  /**
+   * A name for this live stream closed caption track.
+   */
+  name: string;
+
+  /**
+   * Arbitrary user-supplied metadata set for the live stream closed caption track.
+   * Max 255 characters.
+   */
+  passthrough?: string;
+}
+
+export interface LiveStreamGeneratedSubtitleSettings {
+  /**
+   * The language of the audio from which subtitles are generated.
+   */
+  language_code: 'en' | 'en-US' | 'es' | 'fr' | 'de' | 'pt' | 'it';
+
+  /**
+   * A name for this live stream subtitle track.
+   */
+  name: string;
+
+  /**
+   * Arbitrary metadata set for the live stream subtitle track. Max 255 characters.
+   */
+  passthrough?: string;
+
+  /**
+   * Unique identifiers for existing Transcription Vocabularies to use while
+   * generating subtitles for the live stream. If the Transcription Vocabularies
+   * provided collectively have more than 1000 phrases, only the first 1000 phrases
+   * will be included.
+   */
+  transcription_vocabulary_ids?: Array<string>;
+}
+
+/**
+ * Customer provided metadata about this live stream.
+ *
+ * Note: This metadata may be publicly available via the video player. Do not
+ * include PII or sensitive information.
+ */
+export interface LiveStreamMetadata {
+  /**
+   * The live stream title. Max 512 code points.
+   */
+  title?: string;
 }
 
 export interface SimulcastTarget {
@@ -819,7 +809,7 @@ export interface LiveStreamCreateParams {
    * and available through `playback_ids`. `advanced_playback_policies` must be used
    * instead of `playback_policies` when creating a DRM playback ID.
    */
-  advanced_playback_policies?: Array<LiveStreamCreateParams.AdvancedPlaybackPolicy>;
+  advanced_playback_policies?: Array<Shared.CreatePlaybackIdRequest>;
 
   /**
    * Force the live stream to only process the audio track when the value is set to
@@ -855,11 +845,7 @@ export interface LiveStreamCreateParams {
   latency_mode?: 'low' | 'reduced' | 'standard';
 
   /**
-   * @deprecated This field is deprecated. Please use `latency_mode` instead. Latency
-   * is the time from when the streamer transmits a frame of video to when you see it
-   * in the player. Setting this option will enable compatibility with the LL-HLS
-   * specification for low-latency streaming. This typically has lower latency than
-   * Reduced Latency streams, and cannot be combined with Reduced Latency.
+   * @deprecated Use `latency_mode` instead.
    */
   low_latency?: boolean;
 
@@ -875,7 +861,7 @@ export interface LiveStreamCreateParams {
    * Note: This metadata may be publicly available via the video player. Do not
    * include PII or sensitive information.
    */
-  meta?: LiveStreamCreateParams.Meta;
+  meta?: LiveStreamMetadata;
 
   new_asset_settings?: AssetsAPI.AssetOptions;
 
@@ -895,8 +881,7 @@ export interface LiveStreamCreateParams {
   playback_policies?: Array<Shared.PlaybackPolicy>;
 
   /**
-   * @deprecated Deprecated. Use `playback_policies` instead, which accepts an
-   * identical type.
+   * @deprecated Use `playback_policies` instead.
    */
   playback_policy?: Array<Shared.PlaybackPolicy>;
 
@@ -930,11 +915,7 @@ export interface LiveStreamCreateParams {
   reconnect_window?: number;
 
   /**
-   * @deprecated This field is deprecated. Please use `latency_mode` instead. Latency
-   * is the time from when the streamer transmits a frame of video to when you see it
-   * in the player. Set this if you want lower latency for your live stream. Read
-   * more here:
-   * https://mux.com/blog/reduced-latency-for-mux-live-streaming-now-available/
+   * @deprecated Use `latency_mode` instead.
    */
   reduced_latency?: boolean;
 
@@ -959,28 +940,6 @@ export interface LiveStreamCreateParams {
 }
 
 export namespace LiveStreamCreateParams {
-  export interface AdvancedPlaybackPolicy {
-    /**
-     * The DRM configuration used by this playback ID. Must only be set when `policy`
-     * is set to `drm`.
-     */
-    drm_configuration_id?: string;
-
-    /**
-     * - `public` playback IDs are accessible by constructing an HLS URL like
-     *   `https://stream.mux.com/${PLAYBACK_ID}`
-     *
-     * - `signed` playback IDs should be used with tokens
-     *   `https://stream.mux.com/${PLAYBACK_ID}?token={TOKEN}`. See
-     *   [Secure video playback](https://docs.mux.com/guides/secure-video-playback) for
-     *   details about creating tokens.
-     *
-     * - `drm` playback IDs are protected with DRM technologies.
-     *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
-     */
-    policy?: Shared.PlaybackPolicy;
-  }
-
   export interface EmbeddedSubtitle {
     /**
      * CEA-608 caption channel to read data from.
@@ -1029,19 +988,6 @@ export namespace LiveStreamCreateParams {
     transcription_vocabulary_ids?: Array<string>;
   }
 
-  /**
-   * Customer provided metadata about this live stream.
-   *
-   * Note: This metadata may be publicly available via the video player. Do not
-   * include PII or sensitive information.
-   */
-  export interface Meta {
-    /**
-     * The live stream title. Max 512 code points.
-     */
-    title?: string;
-  }
-
   export interface SimulcastTarget {
     /**
      * The RTMP(s) or SRT endpoint for a simulcast destination.
@@ -1072,6 +1018,18 @@ export namespace LiveStreamCreateParams {
   }
 }
 
+export interface LiveStreamListParams extends BasePageParams {
+  /**
+   * Filter response to return live streams with the specified status only
+   */
+  status?: 'active' | 'idle' | 'disabled';
+
+  /**
+   * Filter response to return live stream for this stream key only
+   */
+  stream_key?: string;
+}
+
 export interface LiveStreamUpdateParams {
   /**
    * Latency is the time from when the streamer transmits a frame of video to when
@@ -1092,7 +1050,7 @@ export interface LiveStreamUpdateParams {
    * Note: This metadata may be publicly available via the video player. Do not
    * include PII or sensitive information.
    */
-  meta?: LiveStreamUpdateParams.Meta;
+  meta?: LiveStreamMetadata;
 
   /**
    * Updates the new asset settings to use to generate a new asset for this live
@@ -1146,19 +1104,6 @@ export interface LiveStreamUpdateParams {
 
 export namespace LiveStreamUpdateParams {
   /**
-   * Customer provided metadata about this live stream.
-   *
-   * Note: This metadata may be publicly available via the video player. Do not
-   * include PII or sensitive information.
-   */
-  export interface Meta {
-    /**
-     * The live stream title. Max 512 code points.
-     */
-    title?: string;
-  }
-
-  /**
    * Updates the new asset settings to use to generate a new asset for this live
    * stream. Only the `mp4_support`, `master_access`, and `video_quality` settings
    * may be updated.
@@ -1175,29 +1120,11 @@ export namespace LiveStreamUpdateParams {
      * Note: This metadata may be publicly available via the video player. Do not
      * include PII or sensitive information.
      */
-    meta?: NewAssetSettings.Meta;
+    meta?: AssetsAPI.AssetMetadata;
 
     /**
-     * @deprecated Deprecated. See the
-     * [Static Renditions API](https://www.mux.com/docs/guides/enable-static-mp4-renditions#during-live-stream-creation)
-     * for the updated API. Specify what level of support for mp4 playback should be
-     * added to new assets generated from this live stream.
-     *
-     * - The `none` option disables MP4 support for new assets. MP4 files will not be
-     *   produced for an asset generated from this live stream.
-     * - The `capped-1080p` option produces a single MP4 file, called
-     *   `capped-1080p.mp4`, with the video resolution capped at 1080p. This option
-     *   produces an `audio.m4a` file for an audio-only asset.
-     * - The `audio-only` option produces a single M4A file, called `audio.m4a` for a
-     *   video or an audio-only asset. MP4 generation will error when this option is
-     *   specified for a video-only asset.
-     * - The `audio-only,capped-1080p` option produces both the `audio.m4a` and
-     *   `capped-1080p.mp4` files. Only the `capped-1080p.mp4` file is produced for a
-     *   video-only asset, while only the `audio.m4a` file is produced for an
-     *   audio-only asset.
-     * - The `standard`(deprecated) option produces up to three MP4 files with
-     *   different levels of resolution (`high.mp4`, `medium.mp4`, `low.mp4`, or
-     *   `audio.m4a` for an audio-only asset).
+     * @deprecated See the Static Renditions API
+     * (https://www.mux.com/docs/guides/enable-static-mp4-renditions#during-live-stream-creation).
      */
     mp4_support?: 'none' | 'standard' | 'capped-1080p' | 'audio-only' | 'audio-only,capped-1080p';
 
@@ -1208,45 +1135,6 @@ export namespace LiveStreamUpdateParams {
      */
     video_quality?: 'plus' | 'premium';
   }
-
-  export namespace NewAssetSettings {
-    /**
-     * Customer provided metadata about this asset.
-     *
-     * Note: This metadata may be publicly available via the video player. Do not
-     * include PII or sensitive information.
-     */
-    export interface Meta {
-      /**
-       * This is an identifier you provide to keep track of the creator of the asset. Max
-       * 128 code points.
-       */
-      creator_id?: string;
-
-      /**
-       * This is an identifier you provide to link the asset to your own data. Max 128
-       * code points.
-       */
-      external_id?: string;
-
-      /**
-       * The asset title. Max 512 code points.
-       */
-      title?: string;
-    }
-  }
-}
-
-export interface LiveStreamListParams extends BasePageParams {
-  /**
-   * Filter response to return live streams with the specified status only
-   */
-  status?: 'active' | 'idle' | 'disabled';
-
-  /**
-   * Filter response to return live stream for this stream key only
-   */
-  stream_key?: string;
 }
 
 export interface LiveStreamCreatePlaybackIdParams {
@@ -1269,35 +1157,6 @@ export interface LiveStreamCreatePlaybackIdParams {
    *   [See DRM documentation for more details](https://docs.mux.com/guides/protect-videos-with-drm).
    */
   policy?: Shared.PlaybackPolicy;
-}
-
-export interface LiveStreamCreateSimulcastTargetParams {
-  /**
-   * The RTMP(s) or SRT endpoint for a simulcast destination.
-   *
-   * - For RTMP(s) destinations, this should include the application name for the
-   *   third party live streaming service, for example:
-   *   `rtmp://live.example.com/app`.
-   * - For SRT destinations, this should be a fully formed SRT connection string, for
-   *   example:
-   *   `srt://srt-live.example.com:1234?streamid={stream_key}&passphrase={srt_passphrase}`.
-   *
-   * Note: SRT simulcast targets can only be used when an source is connected over
-   * SRT.
-   */
-  url: string;
-
-  /**
-   * Arbitrary user-supplied metadata set by you when creating a simulcast target.
-   */
-  passthrough?: string;
-
-  /**
-   * Stream Key represents a stream identifier on the third party live streaming
-   * service to send the parent live stream to. Only used for RTMP(s) simulcast
-   * destinations.
-   */
-  stream_key?: string;
 }
 
 export interface LiveStreamUpdateEmbeddedSubtitlesParams {
@@ -1367,44 +1226,54 @@ export namespace LiveStreamUpdateGeneratedSubtitlesParams {
   }
 }
 
-export interface LiveStreamUpdateNewAssetSettingsStaticRenditionsParams {
-  static_renditions: Array<LiveStreamUpdateNewAssetSettingsStaticRenditionsParams.StaticRendition>;
+export interface LiveStreamCreateSimulcastTargetParams {
+  /**
+   * The RTMP(s) or SRT endpoint for a simulcast destination.
+   *
+   * - For RTMP(s) destinations, this should include the application name for the
+   *   third party live streaming service, for example:
+   *   `rtmp://live.example.com/app`.
+   * - For SRT destinations, this should be a fully formed SRT connection string, for
+   *   example:
+   *   `srt://srt-live.example.com:1234?streamid={stream_key}&passphrase={srt_passphrase}`.
+   *
+   * Note: SRT simulcast targets can only be used when an source is connected over
+   * SRT.
+   */
+  url: string;
+
+  /**
+   * Arbitrary user-supplied metadata set by you when creating a simulcast target.
+   */
+  passthrough?: string;
+
+  /**
+   * Stream Key represents a stream identifier on the third party live streaming
+   * service to send the parent live stream to. Only used for RTMP(s) simulcast
+   * destinations.
+   */
+  stream_key?: string;
 }
 
-export namespace LiveStreamUpdateNewAssetSettingsStaticRenditionsParams {
-  export interface StaticRendition {
-    resolution:
-      | 'highest'
-      | 'audio-only'
-      | '2160p'
-      | '1440p'
-      | '1080p'
-      | '720p'
-      | '540p'
-      | '480p'
-      | '360p'
-      | '270p';
-
-    /**
-     * Arbitrary user-supplied metadata set for the static rendition. Max 255
-     * characters.
-     */
-    passthrough?: string;
-  }
+export interface LiveStreamUpdateNewAssetSettingsStaticRenditionsParams {
+  static_renditions: Array<AssetsAPI.CreateStaticRenditionRequest>;
 }
 
 export declare namespace LiveStreams {
   export {
     type LiveStream as LiveStream,
+    type LiveStreamEmbeddedSubtitleSettings as LiveStreamEmbeddedSubtitleSettings,
+    type LiveStreamGeneratedSubtitleSettings as LiveStreamGeneratedSubtitleSettings,
+    type LiveStreamMetadata as LiveStreamMetadata,
     type SimulcastTarget as SimulcastTarget,
     type LiveStreamsBasePage as LiveStreamsBasePage,
     type LiveStreamCreateParams as LiveStreamCreateParams,
-    type LiveStreamUpdateParams as LiveStreamUpdateParams,
     type LiveStreamListParams as LiveStreamListParams,
+    type LiveStreamUpdateParams as LiveStreamUpdateParams,
     type LiveStreamCreatePlaybackIdParams as LiveStreamCreatePlaybackIdParams,
-    type LiveStreamCreateSimulcastTargetParams as LiveStreamCreateSimulcastTargetParams,
     type LiveStreamUpdateEmbeddedSubtitlesParams as LiveStreamUpdateEmbeddedSubtitlesParams,
     type LiveStreamUpdateGeneratedSubtitlesParams as LiveStreamUpdateGeneratedSubtitlesParams,
+    type LiveStreamCreateSimulcastTargetParams as LiveStreamCreateSimulcastTargetParams,
     type LiveStreamUpdateNewAssetSettingsStaticRenditionsParams as LiveStreamUpdateNewAssetSettingsStaticRenditionsParams,
   };
 }

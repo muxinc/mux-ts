@@ -2,7 +2,7 @@
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { ClientOptions } from '@mux/mux-node';
+import { ClientOptions } from '@mux/ts';
 import cors from 'cors';
 import express from 'express';
 import pino from 'pino';
@@ -20,11 +20,13 @@ const oauthResourceIdentifier = (req: express.Request): string => {
 const newServer = async ({
   clientOptions,
   mcpOptions,
+  requireAuthorization,
   req,
   res,
 }: {
   clientOptions: ClientOptions;
   mcpOptions: McpOptions;
+  requireAuthorization: boolean;
   req: express.Request;
   res: express.Response;
 }): Promise<McpServer | null> => {
@@ -33,12 +35,12 @@ const newServer = async ({
   const server = await newMcpServer({ stainlessApiKey, customInstructionsPath });
 
   // parseClientAuthHeaders throws if the Authorization header uses an unsupported
-  // scheme, or (when the second arg is true) if the header is missing entirely.
-  // On error, we return 401 with WWW-Authenticate pointing to the OAuth metadata
-  // endpoint so clients know how to authenticate (RFC 9728).
+  // scheme, or (when requireAuthorization is true) if the header is missing
+  // entirely. On error, we return 401 with WWW-Authenticate pointing to the
+  // OAuth metadata endpoint so clients know how to authenticate (RFC 9728).
   let authOptions: Partial<ClientOptions>;
   try {
-    authOptions = parseClientAuthHeaders(req, false);
+    authOptions = parseClientAuthHeaders(req, requireAuthorization);
   } catch (error) {
     const resourceIdentifier = oauthResourceIdentifier(req);
     res.set(
@@ -122,7 +124,7 @@ const newServer = async ({
 };
 
 const post =
-  (options: { clientOptions: ClientOptions; mcpOptions: McpOptions }) =>
+  (options: { clientOptions: ClientOptions; mcpOptions: McpOptions; requireAuthorization: boolean }) =>
   async (req: express.Request, res: express.Response) => {
     const server = await newServer({ ...options, req, res });
     // If we return null, we already set the authorization error.
@@ -175,9 +177,19 @@ const redactHeaders = (headers: Record<string, any>) => {
 export const streamableHTTPApp = ({
   clientOptions = {},
   mcpOptions,
+  requireAuthorization = false,
 }: {
   clientOptions?: ClientOptions;
   mcpOptions: McpOptions;
+  /**
+   * When true, every POST request must include an Authorization header (Basic
+   * or Bearer) or one of the supported token headers. Requests without
+   * credentials get a 401 with `WWW-Authenticate` pointing to the OAuth
+   * metadata endpoint, which is how MCP clients discover that they need to
+   * start an OAuth flow (RFC 9728). Defaults to false so that stdio and
+   * env-credential deployments keep working unchanged.
+   */
+  requireAuthorization?: boolean;
 }): express.Express => {
   const app = express();
   app.set('query parser', 'extended');
@@ -236,7 +248,7 @@ export const streamableHTTPApp = ({
     res.status(200).send('OK');
   });
   app.get('/', get);
-  app.post('/', post({ clientOptions, mcpOptions }));
+  app.post('/', post({ clientOptions, mcpOptions, requireAuthorization }));
   app.delete('/', del);
 
   return app;
@@ -245,11 +257,13 @@ export const streamableHTTPApp = ({
 export const launchStreamableHTTPServer = async ({
   mcpOptions,
   port,
+  requireAuthorization = false,
 }: {
   mcpOptions: McpOptions;
   port: number | string | undefined;
+  requireAuthorization?: boolean;
 }) => {
-  const app = streamableHTTPApp({ mcpOptions });
+  const app = streamableHTTPApp({ mcpOptions, requireAuthorization });
   const server = app.listen(port);
   const address = server.address();
 

@@ -25,7 +25,7 @@ async function copyFiles() {
 
   // replace package.json reference with local reference
   for (const dep in pkgJson.dependencies) {
-    if (dep === '@mux/mux-node') {
+    if (dep === '@mux/ts') {
       pkgJson.dependencies[dep] = 'file:../../../dist/';
     }
   }

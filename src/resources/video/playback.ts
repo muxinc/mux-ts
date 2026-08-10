@@ -8,6 +8,36 @@ import { path } from '../../internal/utils/path';
 
 export class Playback extends APIResource {
   /**
+   * [Fetch a thumbnail image from a video](https://docs.mux.com/guides/get-images-from-a-video)
+   * at a specified time with optional transformations.
+   *
+   * @example
+   * ```ts
+   * const response = await client.video.playback.thumbnail(
+   *   'PLAYBACK_ID',
+   *   'jpg',
+   * );
+   *
+   * const content = await response.blob();
+   * console.log(content);
+   * ```
+   */
+  thumbnail(
+    playbackId: string,
+    extension: 'jpg' | 'png' | 'webp',
+    query: PlaybackThumbnailParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<Response> {
+    return this._client.get(path`/${playbackId}/thumbnail.${extension}`, {
+      query,
+      defaultBaseURL: 'https://image.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: 'application/binary' }, options?.headers]),
+      __binaryResponse: true,
+    });
+  }
+
+  /**
    * [Fetch an animated GIF or WebP image](https://docs.mux.com/guides/get-images-from-a-video#get-an-animated-gif-from-a-video)
    * from a video segment with optional transformations.
    *
@@ -32,8 +62,87 @@ export class Playback extends APIResource {
       query,
       defaultBaseURL: 'https://image.mux.com',
       ...options,
-      headers: buildHeaders([{ Accept: 'image/gif' }, options?.headers]),
+      headers: buildHeaders([{ Accept: 'application/binary' }, options?.headers]),
       __binaryResponse: true,
+    });
+  }
+
+  /**
+   * Fetch a storyboard image composed of multiple thumbnails for use in
+   * [timeline hover previews](https://docs.mux.com/guides/create-timeline-hover-previews).
+   *
+   * @example
+   * ```ts
+   * const response = await client.video.playback.storyboard(
+   *   'PLAYBACK_ID',
+   *   'jpg',
+   * );
+   *
+   * const content = await response.blob();
+   * console.log(content);
+   * ```
+   */
+  storyboard(
+    playbackId: string,
+    extension: 'jpg' | 'png' | 'webp',
+    query: PlaybackStoryboardParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<Response> {
+    return this._client.get(path`/${playbackId}/storyboard.${extension}`, {
+      query,
+      defaultBaseURL: 'https://image.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: 'application/binary' }, options?.headers]),
+      __binaryResponse: true,
+    });
+  }
+
+  /**
+   * Fetch metadata for the
+   * [storyboard image in WebVTT format](https://docs.mux.com/guides/create-timeline-hover-previews#webvtt),
+   * detailing the coordinates and time ranges of each thumbnail.
+   *
+   * @example
+   * ```ts
+   * const response = await client.video.playback.storyboardVtt(
+   *   'PLAYBACK_ID',
+   * );
+   * ```
+   */
+  storyboardVtt(
+    playbackId: string,
+    query: PlaybackStoryboardVttParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<string> {
+    return this._client.get(path`/${playbackId}/storyboard.vtt`, {
+      query,
+      defaultBaseURL: 'https://image.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: 'text/vtt' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Fetch metadata for the
+   * [storyboard image in JSON format](https://docs.mux.com/guides/create-timeline-hover-previews#json),
+   * detailing the coordinates and time ranges of each thumbnail.
+   *
+   * @example
+   * ```ts
+   * const response = await client.video.playback.storyboardMeta(
+   *   'PLAYBACK_ID',
+   * );
+   * ```
+   */
+  storyboardMeta(
+    playbackId: string,
+    query: PlaybackStoryboardMetaParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<string> {
+    return this._client.get(path`/${playbackId}/storyboard.json`, {
+      query,
+      defaultBaseURL: 'https://image.mux.com',
+      ...options,
     });
   }
 
@@ -93,116 +202,7 @@ export class Playback extends APIResource {
       query,
       defaultBaseURL: 'https://stream.mux.com',
       ...options,
-      headers: buildHeaders([{ Accept: 'video/mp4' }, options?.headers]),
-      __binaryResponse: true,
-    });
-  }
-
-  /**
-   * Fetch a storyboard image composed of multiple thumbnails for use in
-   * [timeline hover previews](https://docs.mux.com/guides/create-timeline-hover-previews).
-   *
-   * @example
-   * ```ts
-   * const response = await client.video.playback.storyboard(
-   *   'PLAYBACK_ID',
-   *   'jpg',
-   * );
-   *
-   * const content = await response.blob();
-   * console.log(content);
-   * ```
-   */
-  storyboard(
-    playbackId: string,
-    extension: 'jpg' | 'png' | 'webp',
-    query: PlaybackStoryboardParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<Response> {
-    return this._client.get(path`/${playbackId}/storyboard.${extension}`, {
-      query,
-      defaultBaseURL: 'https://image.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: 'image/jpeg' }, options?.headers]),
-      __binaryResponse: true,
-    });
-  }
-
-  /**
-   * Fetch metadata for the
-   * [storyboard image in JSON format](https://docs.mux.com/guides/create-timeline-hover-previews#json),
-   * detailing the coordinates and time ranges of each thumbnail.
-   *
-   * @example
-   * ```ts
-   * const response = await client.video.playback.storyboardMeta(
-   *   'PLAYBACK_ID',
-   * );
-   * ```
-   */
-  storyboardMeta(
-    playbackId: string,
-    query: PlaybackStoryboardMetaParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<string> {
-    return this._client.get(path`/${playbackId}/storyboard.json`, {
-      query,
-      defaultBaseURL: 'https://image.mux.com',
-      ...options,
-    });
-  }
-
-  /**
-   * Fetch metadata for the
-   * [storyboard image in WebVTT format](https://docs.mux.com/guides/create-timeline-hover-previews#webvtt),
-   * detailing the coordinates and time ranges of each thumbnail.
-   *
-   * @example
-   * ```ts
-   * const response = await client.video.playback.storyboardVtt(
-   *   'PLAYBACK_ID',
-   * );
-   * ```
-   */
-  storyboardVtt(
-    playbackId: string,
-    query: PlaybackStoryboardVttParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<string> {
-    return this._client.get(path`/${playbackId}/storyboard.vtt`, {
-      query,
-      defaultBaseURL: 'https://image.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: 'text/vtt' }, options?.headers]),
-    });
-  }
-
-  /**
-   * [Fetch a thumbnail image from a video](https://docs.mux.com/guides/get-images-from-a-video)
-   * at a specified time with optional transformations.
-   *
-   * @example
-   * ```ts
-   * const response = await client.video.playback.thumbnail(
-   *   'PLAYBACK_ID',
-   *   'jpg',
-   * );
-   *
-   * const content = await response.blob();
-   * console.log(content);
-   * ```
-   */
-  thumbnail(
-    playbackId: string,
-    extension: 'jpg' | 'png' | 'webp',
-    query: PlaybackThumbnailParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<Response> {
-    return this._client.get(path`/${playbackId}/thumbnail.${extension}`, {
-      query,
-      defaultBaseURL: 'https://image.mux.com',
-      ...options,
-      headers: buildHeaders([{ Accept: 'image/jpeg' }, options?.headers]),
+      headers: buildHeaders([{ Accept: 'application/binary' }, options?.headers]),
       __binaryResponse: true,
     });
   }
@@ -269,6 +269,69 @@ export type PlaybackTrackResponse = string;
 
 export type PlaybackTranscriptResponse = string;
 
+export interface PlaybackThumbnailParams {
+  /**
+   * How to fit a thumbnail within the specified width + height.
+   */
+  fit_mode?: 'preserve' | 'stretch' | 'crop' | 'smartcrop' | 'pad';
+
+  /**
+   * Flip the image left-right after performing all other transformations.
+   */
+  flip_h?: boolean;
+
+  /**
+   * Flip the image top-bottom after performing all other transformations.
+   */
+  flip_v?: boolean;
+
+  /**
+   * The height of the thumbnail (in pixels). Defaults to the height of the original
+   * video.
+   */
+  height?: number;
+
+  /**
+   * When set to `true`, pulls the latest thumbnail from the playback ID of an
+   * ongoing live stream. Can only be used with live streams. Can be used to build
+   * moderation and classification workflows,
+   * [see documentation for more details](https://mux.com/docs/guides/get-images-from-a-video#getting-the-latest-thumbnail-from-a-live-stream).
+   */
+  latest?: boolean;
+
+  /**
+   * Set the time of the thumbnail for an asset created from a live stream when using
+   * the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_time?: number;
+
+  /**
+   * Rotate the image clockwise by the given number of degrees.
+   */
+  rotate?: 90 | 180 | 270;
+
+  /**
+   * The time (in seconds) of the video timeline where the image should be pulled.
+   * Defaults to the middle of the original video.
+   */
+  time?: number;
+
+  /**
+   * Signed token (JWT) for
+   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
+   */
+  TOKEN?: string;
+
+  /**
+   * The width of the thumbnail (in pixels). Defaults to the width of the original
+   * video.
+   */
+  width?: number;
+}
+
 export interface PlaybackAnimatedParams {
   /**
    * The time (in seconds) of the video timeline where the GIF ends. Defaults to 5
@@ -306,6 +369,120 @@ export interface PlaybackAnimatedParams {
    * Max width is 640px.
    */
   width?: number;
+}
+
+export interface PlaybackStoryboardParams {
+  /**
+   * Set the relative end time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_end_time?: number;
+
+  /**
+   * Set the relative start time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_start_time?: number;
+
+  /**
+   * Set the end time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_end_time?: number;
+
+  /**
+   * Set the start time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_start_time?: number;
+
+  /**
+   * Signed token (JWT) for
+   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
+   */
+  TOKEN?: string;
+}
+
+export interface PlaybackStoryboardVttParams {
+  /**
+   * Set the relative end time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_end_time?: number;
+
+  /**
+   * Set the relative start time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_start_time?: number;
+
+  /**
+   * Set the end time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_end_time?: number;
+
+  /**
+   * Set the start time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_start_time?: number;
+
+  /**
+   * Signed token (JWT) for
+   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
+   */
+  TOKEN?: string;
+}
+
+export interface PlaybackStoryboardMetaParams {
+  /**
+   * Set the relative end time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_end_time?: number;
+
+  /**
+   * Set the relative start time of the asset (in seconds) when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   */
+  asset_start_time?: number;
+
+  /**
+   * The format of the storyboard image URL in the response. Can be either 'jpg',
+   * 'png', or 'webp'. Defaults to 'jpg'.
+   */
+  format?: 'jpg' | 'png' | 'webp';
+
+  /**
+   * Set the end time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_end_time?: number;
+
+  /**
+   * Set the start time of the asset created from a live stream when using the
+   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
+   * The timestamp should be provided as an epoch integer, and is compared to the
+   * program date time (PDT) generated by a live stream.
+   */
+  program_start_time?: number;
+
+  /**
+   * Signed token (JWT) for
+   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
+   */
+  TOKEN?: string;
 }
 
 export interface PlaybackHlsParams {
@@ -398,183 +575,6 @@ export interface PlaybackStaticRenditionParams {
   TOKEN?: string;
 }
 
-export interface PlaybackStoryboardParams {
-  /**
-   * Set the relative end time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_end_time?: number;
-
-  /**
-   * Set the relative start time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_start_time?: number;
-
-  /**
-   * Set the end time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_end_time?: number;
-
-  /**
-   * Set the start time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_start_time?: number;
-
-  /**
-   * Signed token (JWT) for
-   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
-   */
-  TOKEN?: string;
-}
-
-export interface PlaybackStoryboardMetaParams {
-  /**
-   * Set the relative end time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_end_time?: number;
-
-  /**
-   * Set the relative start time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_start_time?: number;
-
-  /**
-   * The format of the storyboard image URL in the response. Can be either 'jpg',
-   * 'png', or 'webp'. Defaults to 'jpg'.
-   */
-  format?: 'jpg' | 'png' | 'webp';
-
-  /**
-   * Set the end time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_end_time?: number;
-
-  /**
-   * Set the start time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_start_time?: number;
-
-  /**
-   * Signed token (JWT) for
-   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
-   */
-  TOKEN?: string;
-}
-
-export interface PlaybackStoryboardVttParams {
-  /**
-   * Set the relative end time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_end_time?: number;
-
-  /**
-   * Set the relative start time of the asset (in seconds) when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   */
-  asset_start_time?: number;
-
-  /**
-   * Set the end time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_end_time?: number;
-
-  /**
-   * Set the start time of the asset created from a live stream when using the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_start_time?: number;
-
-  /**
-   * Signed token (JWT) for
-   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
-   */
-  TOKEN?: string;
-}
-
-export interface PlaybackThumbnailParams {
-  /**
-   * How to fit a thumbnail within the specified width + height.
-   */
-  fit_mode?: 'preserve' | 'stretch' | 'crop' | 'smartcrop' | 'pad';
-
-  /**
-   * Flip the image left-right after performing all other transformations.
-   */
-  flip_h?: boolean;
-
-  /**
-   * Flip the image top-bottom after performing all other transformations.
-   */
-  flip_v?: boolean;
-
-  /**
-   * The height of the thumbnail (in pixels). Defaults to the height of the original
-   * video.
-   */
-  height?: number;
-
-  /**
-   * When set to `true`, pulls the latest thumbnail from the playback ID of an
-   * ongoing live stream. Can only be used with live streams. Can be used to build
-   * moderation and classification workflows,
-   * [see documentation for more details](https://mux.com/docs/guides/get-images-from-a-video#getting-the-latest-thumbnail-from-a-live-stream).
-   */
-  latest?: boolean;
-
-  /**
-   * Set the time of the thumbnail for an asset created from a live stream when using
-   * the
-   * [instant clipping feature](https://docs.mux.com/guides/create-instant-clips).
-   * The timestamp should be provided as an epoch integer, and is compared to the
-   * program date time (PDT) generated by a live stream.
-   */
-  program_time?: number;
-
-  /**
-   * Rotate the image clockwise by the given number of degrees.
-   */
-  rotate?: 90 | 180 | 270;
-
-  /**
-   * The time (in seconds) of the video timeline where the image should be pulled.
-   * Defaults to the middle of the original video.
-   */
-  time?: number;
-
-  /**
-   * Signed token (JWT) for
-   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
-   */
-  TOKEN?: string;
-
-  /**
-   * The width of the thumbnail (in pixels). Defaults to the width of the original
-   * video.
-   */
-  width?: number;
-}
-
 export interface PlaybackTrackParams {
   /**
    * Signed token (JWT) for
@@ -597,13 +597,13 @@ export declare namespace Playback {
     type PlaybackStoryboardVttResponse as PlaybackStoryboardVttResponse,
     type PlaybackTrackResponse as PlaybackTrackResponse,
     type PlaybackTranscriptResponse as PlaybackTranscriptResponse,
+    type PlaybackThumbnailParams as PlaybackThumbnailParams,
     type PlaybackAnimatedParams as PlaybackAnimatedParams,
+    type PlaybackStoryboardParams as PlaybackStoryboardParams,
+    type PlaybackStoryboardVttParams as PlaybackStoryboardVttParams,
+    type PlaybackStoryboardMetaParams as PlaybackStoryboardMetaParams,
     type PlaybackHlsParams as PlaybackHlsParams,
     type PlaybackStaticRenditionParams as PlaybackStaticRenditionParams,
-    type PlaybackStoryboardParams as PlaybackStoryboardParams,
-    type PlaybackStoryboardMetaParams as PlaybackStoryboardMetaParams,
-    type PlaybackStoryboardVttParams as PlaybackStoryboardVttParams,
-    type PlaybackThumbnailParams as PlaybackThumbnailParams,
     type PlaybackTrackParams as PlaybackTrackParams,
     type PlaybackTranscriptParams as PlaybackTranscriptParams,
   };

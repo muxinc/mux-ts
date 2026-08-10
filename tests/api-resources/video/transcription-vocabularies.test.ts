@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -9,6 +9,17 @@ const client = new Mux({
 });
 
 describe('resource transcriptionVocabularies', () => {
+  test('retrieve', async () => {
+    const responsePromise = client.video.transcriptionVocabularies.retrieve('TRANSCRIPTION_VOCABULARY_ID');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
   test('create: only required params', async () => {
     const responsePromise = client.video.transcriptionVocabularies.create({
       phrases: ['Mux', 'Live Stream', 'Playback ID', 'video encoding'],
@@ -30,8 +41,8 @@ describe('resource transcriptionVocabularies', () => {
     });
   });
 
-  test('retrieve', async () => {
-    const responsePromise = client.video.transcriptionVocabularies.retrieve('TRANSCRIPTION_VOCABULARY_ID');
+  test('delete', async () => {
+    const responsePromise = client.video.transcriptionVocabularies.delete('TRANSCRIPTION_VOCABULARY_ID');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -81,16 +92,5 @@ describe('resource transcriptionVocabularies', () => {
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Mux.NotFoundError);
-  });
-
-  test('delete', async () => {
-    const responsePromise = client.video.transcriptionVocabularies.delete('TRANSCRIPTION_VOCABULARY_ID');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

@@ -22,14 +22,6 @@ export class Exports extends APIResource {
   }
 }
 
-export interface ExportsResponse {
-  data: Array<string>;
-
-  timeframe: Array<number>;
-
-  total_row_count: number | null;
-}
-
 export interface VideoViewExportsResponse {
   data: Array<VideoViewExportsResponse.Data>;
 
@@ -57,8 +49,5 @@ export namespace VideoViewExportsResponse {
 }
 
 export declare namespace Exports {
-  export {
-    type ExportsResponse as ExportsResponse,
-    type VideoViewExportsResponse as VideoViewExportsResponse,
-  };
+  export { type VideoViewExportsResponse as VideoViewExportsResponse };
 }

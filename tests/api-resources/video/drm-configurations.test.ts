@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -9,17 +9,6 @@ const client = new Mux({
 });
 
 describe('resource drmConfigurations', () => {
-  test('retrieve', async () => {
-    const responsePromise = client.video.drmConfigurations.retrieve('DRM_CONFIGURATION_ID');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
   test('list', async () => {
     const responsePromise = client.video.drmConfigurations.list();
     const rawResponse = await responsePromise.asResponse();
@@ -36,5 +25,16 @@ describe('resource drmConfigurations', () => {
     await expect(
       client.video.drmConfigurations.list({ limit: 0, page: 0 }, { path: '/_stainless_unknown_path' }),
     ).rejects.toThrow(Mux.NotFoundError);
+  });
+
+  test('retrieve', async () => {
+    const responsePromise = client.video.drmConfigurations.retrieve('DRM_CONFIGURATION_ID');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

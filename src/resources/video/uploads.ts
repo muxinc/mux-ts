@@ -55,6 +55,27 @@ export class Uploads extends APIResource {
   }
 
   /**
+   * Cancels a direct upload and marks it as cancelled. If a pending upload finishes
+   * after this request, no asset will be created. This request will only succeed if
+   * the upload is still in the `waiting` state.
+   *
+   * @example
+   * ```ts
+   * const upload = await client.video.uploads.cancel(
+   *   'abcd1234',
+   * );
+   * ```
+   */
+  cancel(uploadID: string, options?: RequestOptions): APIPromise<Upload> {
+    return (
+      this._client.put(path`/video/v1/uploads/${uploadID}/cancel`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: Upload }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
    * Lists direct uploads in the current environment.
    *
    * @example
@@ -74,27 +95,6 @@ export class Uploads extends APIResource {
       defaultBaseURL: 'https://api.mux.com',
       ...options,
     });
-  }
-
-  /**
-   * Cancels a direct upload and marks it as cancelled. If a pending upload finishes
-   * after this request, no asset will be created. This request will only succeed if
-   * the upload is still in the `waiting` state.
-   *
-   * @example
-   * ```ts
-   * const upload = await client.video.uploads.cancel(
-   *   'abcd1234',
-   * );
-   * ```
-   */
-  cancel(uploadID: string, options?: RequestOptions): APIPromise<Upload> {
-    return (
-      this._client.put(path`/video/v1/uploads/${uploadID}/cancel`, {
-        defaultBaseURL: 'https://api.mux.com',
-        ...options,
-      }) as APIPromise<{ data: Upload }>
-    )._thenUnwrap((obj) => obj.data);
   }
 }
 

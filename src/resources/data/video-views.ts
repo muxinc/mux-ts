@@ -11,22 +11,6 @@ import { path } from '../../internal/utils/path';
  */
 export class VideoViews extends APIResource {
   /**
-   * Returns the details of a video view.
-   *
-   * @example
-   * ```ts
-   * const videoViewResponse =
-   *   await client.data.videoViews.retrieve('abcd1234');
-   * ```
-   */
-  retrieve(videoViewID: string, options?: RequestOptions): APIPromise<VideoViewResponse> {
-    return this._client.get(path`/data/v1/video-views/${videoViewID}`, {
-      defaultBaseURL: 'https://api.mux.com',
-      ...options,
-    });
-  }
-
-  /**
    * Returns a list of video views which match the filters and have a `view_end`
    * within the specified timeframe.
    *
@@ -44,6 +28,22 @@ export class VideoViews extends APIResource {
   ): PagePromise<AbridgedVideoViewsBasePage, AbridgedVideoView> {
     return this._client.getAPIList('/data/v1/video-views', BasePage<AbridgedVideoView>, {
       query,
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+    });
+  }
+
+  /**
+   * Returns the details of a video view.
+   *
+   * @example
+   * ```ts
+   * const videoViewResponse =
+   *   await client.data.videoViews.retrieve('abcd1234');
+   * ```
+   */
+  retrieve(videoViewID: string, options?: RequestOptions): APIPromise<VideoViewResponse> {
+    return this._client.get(path`/data/v1/video-views/${videoViewID}`, {
       defaultBaseURL: 'https://api.mux.com',
       ...options,
     });

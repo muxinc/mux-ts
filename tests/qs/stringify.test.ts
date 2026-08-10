@@ -1,7 +1,7 @@
 import iconv from 'iconv-lite';
-import { stringify } from '@mux/mux-node/internal/qs';
-import { encode } from '@mux/mux-node/internal/qs/utils';
-import { StringifyOptions } from '@mux/mux-node/internal/qs/types';
+import { stringify } from '@mux/ts/internal/qs';
+import { encode } from '@mux/ts/internal/qs/utils';
+import { StringifyOptions } from '@mux/ts/internal/qs/types';
 import { empty_test_cases } from './empty-keys-cases';
 import assert from 'assert';
 

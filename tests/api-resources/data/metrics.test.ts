@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -36,8 +36,8 @@ describe('resource metrics', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
-  test('getInsights', async () => {
-    const responsePromise = client.data.metrics.getInsights('video_startup_time');
+  test('listBreakdownValues', async () => {
+    const responsePromise = client.data.metrics.listBreakdownValues('video_startup_time');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -47,16 +47,20 @@ describe('resource metrics', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('getInsights: request options and params are passed correctly', async () => {
+  test('listBreakdownValues: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.data.metrics.getInsights(
+      client.data.metrics.listBreakdownValues(
         'video_startup_time',
         {
           filters: ['string'],
+          group_by: 'asn',
+          limit: 0,
           measurement: '95th',
           metric_filters: ['string'],
+          order_by: 'negative_impact',
           order_direction: 'asc',
+          page: 0,
           timeframe: ['string'],
         },
         { path: '/_stainless_unknown_path' },
@@ -91,6 +95,34 @@ describe('resource metrics', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
+  test('getInsights', async () => {
+    const responsePromise = client.data.metrics.getInsights('video_startup_time');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('getInsights: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.data.metrics.getInsights(
+        'video_startup_time',
+        {
+          filters: ['string'],
+          measurement: '95th',
+          metric_filters: ['string'],
+          order_direction: 'asc',
+          timeframe: ['string'],
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Mux.NotFoundError);
+  });
+
   test('getTimeseries', async () => {
     const responsePromise = client.data.metrics.getTimeseries('video_startup_time');
     const rawResponse = await responsePromise.asResponse();
@@ -113,38 +145,6 @@ describe('resource metrics', () => {
           measurement: '95th',
           metric_filters: ['string'],
           order_direction: 'asc',
-          timeframe: ['string'],
-        },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Mux.NotFoundError);
-  });
-
-  test('listBreakdownValues', async () => {
-    const responsePromise = client.data.metrics.listBreakdownValues('video_startup_time');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('listBreakdownValues: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.data.metrics.listBreakdownValues(
-        'video_startup_time',
-        {
-          filters: ['string'],
-          group_by: 'asn',
-          limit: 0,
-          measurement: '95th',
-          metric_filters: ['string'],
-          order_by: 'negative_impact',
-          order_direction: 'asc',
-          page: 0,
           timeframe: ['string'],
         },
         { path: '/_stainless_unknown_path' },

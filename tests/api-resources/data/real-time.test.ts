@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Mux from '@mux/mux-node';
+import Mux from '@mux/ts';
 
 const client = new Mux({
   tokenId: 'my token id',
@@ -9,28 +9,6 @@ const client = new Mux({
 });
 
 describe('resource realTime', () => {
-  test('listDimensions', async () => {
-    const responsePromise = client.data.realTime.listDimensions();
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('listMetrics', async () => {
-    const responsePromise = client.data.realTime.listMetrics();
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
   test('retrieveBreakdown', async () => {
     const responsePromise = client.data.realTime.retrieveBreakdown('current-concurrent-viewers');
     const rawResponse = await responsePromise.asResponse();
@@ -59,6 +37,39 @@ describe('resource realTime', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
+  test('retrieveTimeseries', async () => {
+    const responsePromise = client.data.realTime.retrieveTimeseries('current-concurrent-viewers');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('retrieveTimeseries: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.data.realTime.retrieveTimeseries(
+        'current-concurrent-viewers',
+        { filters: ['string'], timestamp: 0 },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Mux.NotFoundError);
+  });
+
+  test('listMetrics', async () => {
+    const responsePromise = client.data.realTime.listMetrics();
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
   test('retrieveHistogramTimeseries', async () => {
     const responsePromise = client.data.realTime.retrieveHistogramTimeseries('video-startup-time');
     const rawResponse = await responsePromise.asResponse();
@@ -81,8 +92,8 @@ describe('resource realTime', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
-  test('retrieveTimeseries', async () => {
-    const responsePromise = client.data.realTime.retrieveTimeseries('current-concurrent-viewers');
+  test('listDimensions', async () => {
+    const responsePromise = client.data.realTime.listDimensions();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -90,16 +101,5 @@ describe('resource realTime', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('retrieveTimeseries: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.data.realTime.retrieveTimeseries(
-        'current-concurrent-viewers',
-        { filters: ['string'], timestamp: 0 },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Mux.NotFoundError);
   });
 });
