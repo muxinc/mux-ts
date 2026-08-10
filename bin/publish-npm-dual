@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Publishes the release twice from one tree at the SAME version: @mux/ts
+# (canonical) and @mux/mux-node (transitional alias — v15 continues the old
+# line under both names; the alias is expected to stop at v15). Each publish
+# skips if that name@version is already on npm, so a rerun after a partial
+# failure only does the missing half. Delegates the actual publish to the
+# generated bin/publish-npm (OIDC); kept as a separate file so custom code
+# never overlaps a generated one.
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+already_published() {
+  [ "$(npm view "$1@$2" version 2>/dev/null || true)" = "$2" ]
+}
+
+VERSION="$(jq -r -e '.version' package.json)"
+
+if already_published "@mux/ts" "$VERSION"; then
+  echo "@mux/ts@${VERSION} already published — skipping."
+else
+  bash ./bin/publish-npm
+fi
+
+if already_published "@mux/mux-node" "$VERSION"; then
+  echo "@mux/mux-node@${VERSION} already published — skipping."
+  exit 0
+fi
+
+# Same tree, same version, alias name only: bin/publish-npm runs yarn build
+# itself, so dist picks up the rewritten name.
+jq '.name = "@mux/mux-node"' package.json > package.json.tmp
+mv package.json.tmp package.json
+bash ./bin/publish-npm
