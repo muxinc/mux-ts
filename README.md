@@ -187,7 +187,7 @@ const mux = new Mux({
 export async function POST(request: Request) {
   const headersList = headers();
   const body = await request.text();
-  const event = mux.webhooks.unwrap(body, headersList);
+  const event = await mux.webhooks.unwrap(body, headersList);
 
   switch (event.type) {
     case 'video.live_stream.active':
@@ -262,7 +262,7 @@ const app = express();
 app.post('/webhooks', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
   try {
     // will raise an exception if the signature is invalid
-    const isValidSignature = mux.webhooks.verifySignature(req.body, req.headers, webhookSecret);
+    const isValidSignature = await mux.webhooks.verifySignature(req.body, req.headers, webhookSecret);
     console.log('Success:', isValidSignature);
     // convert the raw req.body to JSON, which is originally Buffer (raw)
     const jsonFormattedBody = JSON.parse(req.body);
