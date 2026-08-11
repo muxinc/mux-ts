@@ -1,13 +1,47 @@
 # Migration guide
 
-This guide outlines the changes and steps needed to migrate your codebase to the latest version of the Mux TypeScript SDK.
+This guide covers the two most recent major migrations of the Mux TypeScript SDK: v14 → v15 (the rename to `@mux/ts`), and the earlier v13 → v14 core migration.
 
-The main changes are that the SDK now relies on the [builtin Web fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of `node-fetch` and has zero dependencies.
+## Migrating from v14 to v15 (`@mux/ts`)
+
+v15 renames the package: the SDK is now published as [`@mux/ts`](https://www.npmjs.com/package/@mux/ts). For v15, the same artifact is also published as `@mux/mux-node` at the same version, so you can upgrade first and rename at your convenience — the alias is expected to stop after v15.
+
+### Package rename
+
+```sh
+npm uninstall @mux/mux-node && npm install @mux/ts
+```
+
+```diff
+- import Mux from '@mux/mux-node';
++ import Mux from '@mux/ts';
+```
+
+Subpath imports move the same way (for example `@mux/mux-node/lib/jwt` → `@mux/ts/lib/jwt`). No API shapes change as part of the rename itself.
+
+### `client.robotsPreview` is now `client.robots`
+
+The Robots API left preview: rename the accessor and any imported types. Job endpoints live under `client.robots.jobs.*`; the new job types added in v15 are additive.
+
+### Removed deprecated Data endpoints
+
+- `client.data.filters` is removed — use `client.data.dimensions` (`listValues`, `listTraceElements`).
+- The deprecated raw exports listing is removed; video-view exports remain via `client.data.exports.listVideoViews()`.
+
+### Moved type declarations
+
+Some TypeScript declarations moved or were renamed with the new generation pipeline (nested sub-types, pagination types). If a type import breaks after upgrading, check [`api.md`](./api.md) for its current location.
+
+Everything else in v15 is additive (engagement analytics, asset shots, track updates, named webhook payload models) and needs no migration.
+
+## Migrating from v13 to v14
+
+The sections below describe the earlier v13 → v14 migration, when the package was published as `@mux/mux-node` — they apply when upgrading from v13. The main changes were that the SDK moved to the [builtin Web fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of `node-fetch` and dropped to zero dependencies.
 
 ## Migration CLI
 
 Most programs will only need minimal changes, but to assist there is a migration tool that will automatically update your code for the new version.
-To use it, upgrade the `@mux/ts` package, then run `./node_modules/.bin/mux-ts migrate ./your/src/folders` to update your code.
+To use it, upgrade the `@mux/mux-node` package, then run `./node_modules/.bin/mux-mux-node migrate ./your/src/folders` to update your code.
 To preview the changes without writing them to disk, run the tool with `--dry`.
 
 ## Environment requirements
@@ -128,7 +162,7 @@ If you were using `httpAgent` for proxy support, check out the [new proxy docume
 Before:
 
 ```ts
-import Mux from '@mux/ts';
+import Mux from '@mux/mux-node';
 import http from 'http';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
@@ -141,7 +175,7 @@ const client = new Mux({
 After:
 
 ```ts
-import Mux from '@mux/ts';
+import Mux from '@mux/mux-node';
 import * as undici from 'undici';
 
 const proxyAgent = new undici.ProxyAgent(process.env.PROXY_URL);
@@ -154,27 +188,27 @@ const client = new Mux({
 
 ### Changed exports
 
-#### Refactor of `@mux/ts/core`, `error`, `pagination`, `resource` and `uploads`
+#### Refactor of `@mux/mux-node/core`, `error`, `pagination`, `resource` and `uploads`
 
-Much of the `@mux/ts/core` file was intended to be internal-only but it was publicly accessible, as such it has been refactored and split up into internal and public files, with public-facing code moved to a new `core` folder and internal code moving to the private `internal` folder.
+Much of the `@mux/mux-node/core` file was intended to be internal-only but it was publicly accessible, as such it has been refactored and split up into internal and public files, with public-facing code moved to a new `core` folder and internal code moving to the private `internal` folder.
 
 At the same time, we moved some public-facing files which were previously at the top level into `core` to make the file structure cleaner and more clear:
 
 ```typescript
 // Before
-import '@mux/ts/error';
-import '@mux/ts/pagination';
-import '@mux/ts/resource';
-import '@mux/ts/uploads';
+import '@mux/mux-node/error';
+import '@mux/mux-node/pagination';
+import '@mux/mux-node/resource';
+import '@mux/mux-node/uploads';
 
 // After
-import '@mux/ts/core/error';
-import '@mux/ts/core/pagination';
-import '@mux/ts/core/resource';
-import '@mux/ts/core/uploads';
+import '@mux/mux-node/core/error';
+import '@mux/mux-node/core/pagination';
+import '@mux/mux-node/core/resource';
+import '@mux/mux-node/core/uploads';
 ```
 
-If you were relying on anything that was only exported from `@mux/ts/core` and is also not accessible anywhere else, please open an issue and we'll consider adding it to the public API.
+If you were relying on anything that was only exported from `@mux/mux-node/core` and is also not accessible anywhere else, please open an issue and we'll consider adding it to the public API.
 
 #### Resource classes
 
@@ -183,16 +217,16 @@ Now you must always either reference them as static class properties or import t
 
 ```typescript
 // Before
-const { Video } = require('@mux/ts');
+const { Video } = require('@mux/mux-node');
 
 // After
-const { Mux } = require('@mux/ts');
-Mux.Video; // or import directly from @mux/ts/resources/video/video
+const { Mux } = require('@mux/mux-node');
+Mux.Video; // or import directly from @mux/mux-node/resources/video/video
 ```
 
 #### Cleaned up `uploads` exports
 
-As part of the `core` refactor, `@mux/ts/uploads` was moved to `@mux/ts/core/uploads`
+As part of the `core` refactor, `@mux/mux-node/uploads` was moved to `@mux/mux-node/core/uploads`
 and the following exports were removed, as they were not intended to be a part of the public API:
 
 - `fileFromPath`
@@ -212,7 +246,7 @@ and the following exports were removed, as they were not intended to be a part o
 Note that `Uploadable` & `toFile` **are** still exported:
 
 ```typescript
-import { type Uploadable, toFile } from '@mux/ts/core/uploads';
+import { type Uploadable, toFile } from '@mux/mux-node/core/uploads';
 ```
 
 #### `APIClient`
@@ -221,10 +255,10 @@ The `APIClient` base client class has been removed as it is no longer needed. If
 
 ```typescript
 // Before
-import { APIClient } from '@mux/ts/core';
+import { APIClient } from '@mux/mux-node/core';
 
 // After
-import { Mux } from '@mux/ts';
+import { Mux } from '@mux/mux-node';
 ```
 
 ### File handling
@@ -248,11 +282,11 @@ Previously you could configure the types that the SDK used like this:
 
 ```ts
 // Tell TypeScript and the package to use the global Web fetch instead of node-fetch.
-import '@mux/ts/shims/web';
-import Mux from '@mux/ts';
+import '@mux/mux-node/shims/web';
+import Mux from '@mux/mux-node';
 ```
 
-The `@mux/ts/shims` imports have been removed. Your global types must now be [correctly configured](#minimum-types-requirements).
+The `@mux/mux-node/shims` imports have been removed. Your global types must now be [correctly configured](#minimum-types-requirements).
 
 ### Pagination changes
 
@@ -291,19 +325,19 @@ export type DeliveryReportsPageWithTimeframe = PageWithTimeframe<DeliveryReport>
 
 If you were importing these classes at runtime, you'll need to switch to importing the base class or only import them at the type-level.
 
-### `@mux/ts/src` directory removed
+### `@mux/mux-node/src` directory removed
 
-Previously IDEs may have auto-completed imports from the `@mux/ts/src` directory, however this
+Previously IDEs may have auto-completed imports from the `@mux/mux-node/src` directory, however this
 directory was only included for an improved go-to-definition experience and should not have been used at runtime.
 
-If you have any `@mux/ts/src/*` imports, you will need to replace them with `@mux/ts/*`.
+If you have any `@mux/mux-node/src/*` imports, you will need to replace them with `@mux/mux-node/*`.
 
 ```ts
 // Before
-import Mux from '@mux/ts/src';
+import Mux from '@mux/mux-node/src';
 
 // After
-import Mux from '@mux/ts';
+import Mux from '@mux/mux-node';
 ```
 
 ## TypeScript troubleshooting
