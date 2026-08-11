@@ -1,9 +1,12 @@
 name: Publish NPM
 
-# Publishes the released tree as @mux/ts and @mux/mux-node (alias) via npm
-# trusted publishing (OIDC) — no npm token exists anywhere. The dual-publish
-# logic lives in bin/publish-npm-dual. packages/mcp-server is not published
-# by this workflow.
+# Publishes the released tree as @mux/ts, @mux/mux-node (same-version alias),
+# and @mux/mcp (packages/mcp-server) via npm trusted publishing (OIDC) — no
+# npm token exists anywhere. The publish logic lives in bin/publish-npm-all.
+# On release events the MCP desktop-extension bundle (mux.mcpb, produced by
+# the @mux/mcp build) is also attached to the GitHub Release. Announcing the
+# server to the MCP registry is a separate concern and not part of this
+# workflow.
 on:
   workflow_dispatch: {}
   release:
@@ -15,7 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == 'muxinc/mux-ts'
     permissions:
-      contents: read
+      # contents: write is for the mux.mcpb release-asset upload.
+      contents: write
       id-token: write
 
     steps:
@@ -31,5 +35,20 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Publish @mux/ts + @mux/mux-node alias
-        run: bash ./bin/publish-npm-dual
+      - name: Publish @mux/ts, @mux/mux-node alias, @mux/mcp
+        run: bash ./bin/publish-npm-all
+
+      - name: Upload MCP server .mcpb release asset
+        # Dispatch runs have no release to attach to; skip rather than fail.
+        # The bundle only exists when this run built @mux/mcp (a rerun that
+        # skipped an already-published @mux/mcp has nothing to upload).
+        if: github.event_name == 'release'
+        run: |
+          if [ -f packages/mcp-server/mux.mcpb ]; then
+            gh release upload "$TAG_NAME" packages/mcp-server/mux.mcpb --clobber
+          else
+            echo "mux.mcpb not built this run (publish skipped) — nothing to upload."
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.release.tag_name }}

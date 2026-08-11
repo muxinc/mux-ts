@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+# Publishes a release's three npm artifacts, in order, from one tree:
+#   1. @mux/ts        — canonical SDK (built once, under this name)
+#   2. @mux/mux-node  — transitional alias: the same dist with only
+#                       dist/package.json's name rewritten (v15 continues the
+#                       old line under both names; expected to stop at v15)
+#   3. @mux/mcp       — the MCP server package (packages/mcp-server), built
+#                       and published the same way the pre-v15 pipeline did
+#
+# The SDK tree is built exactly once, under the canonical name: the generated
+# build script smoke-tests `require("@mux/ts")` via package self-reference,
+# so a tree whose root package.json is renamed cannot build. The alias
+# publish tail mirrors the generated bin/publish-npm (same dist-tag logic,
+# same vendored OIDC-capable npm). Every publish skips if that name@version
+# is already on npm, so a rerun after a partial failure only does what's
+# missing. Publishing to the MCP *registry* (server announcement) is a
+# separate, currently-dormant concern — it is not part of this script.
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+already_published() {
+  [ "$(npm view "$1@$2" version 2>/dev/null || true)" = "$2" ]
+}
+
+VERSION="$(jq -r -e '.version' package.json)"
+
+# ── 1. @mux/ts ──────────────────────────────────────────────────────────
+if already_published "@mux/ts" "$VERSION"; then
+  echo "@mux/ts@${VERSION} already published — skipping."
+else
+  # Builds dist and publishes @mux/ts via OIDC.
+  bash ./bin/publish-npm
+fi
+
+# The alias artifact and @mux/mcp's compile (which resolves the SDK through
+# the link:../../dist dependency) both need a fresh canonical dist. The
+# canonical publish just built one — but on a rerun it may have been
+# skipped, leaving a fresh runner with no dist at all.
+if [ ! -f dist/package.json ] || [ "$(jq -r '.version' dist/package.json)" != "$VERSION" ]; then
+  yarn build
+fi
+
+# ── 2. @mux/mux-node (alias) ────────────────────────────────────────────
+if already_published "@mux/mux-node" "$VERSION"; then
+  echo "@mux/mux-node@${VERSION} already published — skipping."
+else
+  jq '.name = "@mux/mux-node"' dist/package.json > dist/package.json.tmp
+  mv dist/package.json.tmp dist/package.json
+
+  (
+    cd dist
+
+    # Same dist-tag rule as bin/publish-npm: a prerelease publishes under
+    # its prerelease id when the last published version is stable;
+    # otherwise latest.
+    TAG="latest"
+    if [[ "$VERSION" =~ -([a-zA-Z]+) ]]; then
+      PRERELEASE_TAG="${BASH_REMATCH[1]}"
+      LAST_VERSION="$(npm view "@mux/mux-node" version 2>/dev/null || true)"
+      if [[ -n "$LAST_VERSION" && ! "$LAST_VERSION" =~ -[a-zA-Z]+ ]]; then
+        TAG="$PRERELEASE_TAG"
+      fi
+    fi
+
+    # Reuse the vendored OIDC-capable npm if the canonical publish already
+    # installed it; otherwise install the same version the generated
+    # bin/publish-npm pins (trusted publishing needs npm >= 11.5.1; the pin
+    # keeps the alias publish byte-equivalent to the canonical one). If a
+    # regeneration bumps their pin, bump this to match.
+    if [ ! -x ../oidc/node_modules/.bin/npm ]; then
+      npm install --prefix ../oidc/ npm@11.6.2
+    fi
+    export npm_config_registry='https://registry.npmjs.org'
+    ../oidc/node_modules/.bin/npm publish --tag "$TAG"
+  )
+
+  # Restore the canonical name so dist stays a valid @mux/ts tree for
+  # anything that reads it after us (the @mux/mcp build below links to it).
+  jq '.name = "@mux/ts"' dist/package.json > dist/package.json.tmp
+  mv dist/package.json.tmp dist/package.json
+fi
+
+# ── 3. @mux/mcp ─────────────────────────────────────────────────────────
+# Published after the SDK: its build rewrites the link:../../dist dependency
+# to the npm version of @mux/ts, which must exist by then (dist itself is
+# guaranteed fresh by the guard above, whichever earlier steps were skipped).
+if already_published "@mux/mcp" "$VERSION"; then
+  echo "@mux/mcp@${VERSION} already published — skipping."
+  exit 0
+fi
+(
+  cd packages/mcp-server
+  yarn install
+  bash ../../bin/publish-npm
+)
