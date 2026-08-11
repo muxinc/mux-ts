@@ -2,6 +2,16 @@
 
 errors=()
 
+# release-please and the publish trigger both ride RELEASE_PLEASE_TOKEN (a
+# fine-grained PAT with a ~1 year expiry). An expired token is non-empty but
+# dead and its failure mode post-merge is silent, so validate it can actually
+# read the repo rather than only checking it is set.
+if [ -z "${RELEASE_PLEASE_TOKEN:-}" ]; then
+  errors+=("The RELEASE_PLEASE_TOKEN secret has not been set. Create a fine-grained GitHub PAT (Contents + Pull requests, read/write, this repository only) and add it as a repository secret.")
+elif ! curl -sf -o /dev/null -H "Authorization: Bearer ${RELEASE_PLEASE_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY:-muxinc/mux-ts}"; then
+  errors+=("RELEASE_PLEASE_TOKEN is set but cannot read ${GITHUB_REPOSITORY:-muxinc/mux-ts} — expired or under-scoped? Rotate the fine-grained PAT.")
+fi
+
 lenErrors=${#errors[@]}
 
 if [[ lenErrors -gt 0 ]]; then
@@ -15,4 +25,3 @@ if [[ lenErrors -gt 0 ]]; then
 fi
 
 echo "The environment is ready to push releases!"
-
