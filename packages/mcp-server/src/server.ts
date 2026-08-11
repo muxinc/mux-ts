@@ -36,6 +36,23 @@ export const newMcpServer = async ({
     },
   );
 
+// The index is deterministic per docsDir and expensive to build; share one
+// instance per process so HTTP mode (which runs initMcpServer per request)
+// doesn't re-index the embedded corpus on every call.
+const localSearchCache = new Map<string, Promise<LocalDocsSearch>>();
+function getOrCreateLocalSearch(docsDir: string | undefined): Promise<LocalDocsSearch> {
+  const key = docsDir ?? '';
+  let search = localSearchCache.get(key);
+  if (!search) {
+    search = LocalDocsSearch.create(docsDir ? { docsDir } : undefined);
+    // Evict on failure so a transient error can't wedge the process — the
+    // next request retries instead of replaying a cached rejection.
+    search.catch(() => localSearchCache.delete(key));
+    localSearchCache.set(key, search);
+  }
+  return search;
+}
+
 /**
  * Initializes the provided MCP Server with the given tools and handlers.
  * If not provided, the default client, tools and handlers will be used.
@@ -66,10 +83,12 @@ export async function initMcpServer(params: {
     error: logAtLevel('error'),
   };
 
-  if (params.mcpOptions?.docsSearchMode === 'local') {
+  // Local is the only mode, so default it like codeExecutionMode; programmatic
+  // consumers who omit the option would otherwise get a search_docs tool that
+  // throws on every call.
+  if ((params.mcpOptions?.docsSearchMode ?? 'local') === 'local') {
     const docsDir = params.mcpOptions?.docsDir;
-    const localSearch = await LocalDocsSearch.create(docsDir ? { docsDir } : undefined);
-    setLocalSearch(localSearch);
+    setLocalSearch(await getOrCreateLocalSearch(docsDir));
   }
 
   let _client: Mux | undefined;
