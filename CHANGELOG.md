@@ -1,5 +1,45 @@
 # Changelog
 
+## [15.0.0](https://github.com/muxinc/mux-ts/compare/v14.1.1...v15.0.0) (2026-08-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* the npm package is renamed to @mux/ts (@mux/mux-node continues as a same-version alias for v15). client.robotsPreview is replaced by client.robots. The deprecated Data filters and exports endpoints are removed (superseded by dimensions and video-views exports). Some type declarations moved or were renamed with the new generation pipeline — see api.md for the current surface and MIGRATION.md for upgrade notes.
+
+### Features
+
+* move to a new SDK generation pipeline as @mux/ts ([dbca20f](https://github.com/muxinc/mux-ts/commit/dbca20fdc59f9c1bcbe6e67c9efbcfc792153194))
+* robots jobs gain time-scoped output steering, automatic asset thumbnail updates, and shot reuse ([ce5dcc5](https://github.com/muxinc/mux-ts/commit/ce5dcc50d5bf19cf6d7af93db93ceb93577ee020))
+* set and unset an asset's default thumbnail time ([20606c5](https://github.com/muxinc/mux-ts/commit/20606c5547722be7767b8e46cda99187246f3cc4))
+
+
+### Bug Fixes
+
+* **docs:** await the async webhook methods in README examples ([18f3411](https://github.com/muxinc/mux-ts/commit/18f3411775fd67b1a4cc60c819be363c606f7399))
+* **mcp:** default docs search for programmatic consumers; reuse the search index across requests ([487a7f9](https://github.com/muxinc/mux-ts/commit/487a7f97933e9931611382199b36fb953bda8f60))
+* migration materials target the real upgrade path ([f1a30df](https://github.com/muxinc/mux-ts/commit/f1a30df5cbc6c6ff6115fa9d1b87b118235c34d7))
+* release doctor actually diagnoses the release token ([fb1339b](https://github.com/muxinc/mux-ts/commit/fb1339bc392ab8147f39f791ede3002bff033a46))
+
+
+### Chores
+
+* absorb out-of-band staging changes ([493bea1](https://github.com/muxinc/mux-ts/commit/493bea1f7c9b4a2a30ff45aad11dd4e377d7c145))
+* adopt promote/sync/publish workflows ([b823936](https://github.com/muxinc/mux-ts/commit/b82393609887bd57b66c1e4855569f8da22a468f))
+* adopt promote/sync/publish workflows ([882c1d0](https://github.com/muxinc/mux-ts/commit/882c1d0c71f99d9d6f7bc658379bee4c376ca0e7))
+* publish all three npm artifacts; retire the dual script ([08d9545](https://github.com/muxinc/mux-ts/commit/08d9545b5b72e416576dfa3fe4abcfa914b6943e))
+* remove revoked MCP publish key ([#633](https://github.com/muxinc/mux-ts/issues/633)) ([be39f12](https://github.com/muxinc/mux-ts/commit/be39f1260cdc3adbac2dfb3798899b29ef889ca3))
+
+
+### Documentation
+
+* Update update-asset description to include thumbnail_time ([4ee25c1](https://github.com/muxinc/mux-ts/commit/4ee25c1beb4c967dece1271cd8dc82e8d0d18892))
+
+
+### Styles
+
+* format bin/cli ([9f57c84](https://github.com/muxinc/mux-ts/commit/9f57c84025ac4f6c28d1c58d1a3f82ff06ee96e4))
+
 ## 14.1.1 (2026-05-28)
 
 Full Changelog: [v14.1.0...v14.1.1](https://github.com/muxinc/mux-node-sdk/compare/v14.1.0...v14.1.1)
