@@ -8,6 +8,7 @@ import {
   AskQuestionsJob,
   AskQuestionsJobOutputs,
   AskQuestionsJobParameters,
+  AskQuestionsOutputSteering,
 } from './ask-questions';
 import * as EditCaptionsAPI from './edit-captions';
 import {
@@ -77,6 +78,7 @@ import {
   ModerateJob,
   ModerateJobOutputs,
   ModerateJobParameters,
+  ModerateOutputSteering,
 } from './moderate';
 import * as SummarizeAPI from './summarize';
 import {
@@ -289,10 +291,10 @@ export namespace JobSummary {
 }
 
 /**
- * Optional execution window in seconds on the original asset timeline. The range
- * must contain a video frame at the asset frame rate. Omit start_time to begin at
- * the asset start and omit end_time to continue through the asset end. Returned
- * scene timestamps remain absolute asset timestamps.
+ * Optional execution window in seconds on the original asset timeline. Omit
+ * start_time to begin at the asset start and omit end_time to continue through the
+ * asset end. The summary and tags are generated only from media within this
+ * window.
  */
 export interface OutputSteeringScope {
   /**
@@ -469,6 +471,7 @@ export declare namespace Jobs {
     type AskQuestionsJob as AskQuestionsJob,
     type AskQuestionsJobOutputs as AskQuestionsJobOutputs,
     type AskQuestionsJobParameters as AskQuestionsJobParameters,
+    type AskQuestionsOutputSteering as AskQuestionsOutputSteering,
     type AskQuestionCreateParams as AskQuestionCreateParams,
   };
 
@@ -496,6 +499,7 @@ export declare namespace Jobs {
     type ModerateJob as ModerateJob,
     type ModerateJobOutputs as ModerateJobOutputs,
     type ModerateJobParameters as ModerateJobParameters,
+    type ModerateOutputSteering as ModerateOutputSteering,
     type ModerateCreateParams as ModerateCreateParams,
   };
 

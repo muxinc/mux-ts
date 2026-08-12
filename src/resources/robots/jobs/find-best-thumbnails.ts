@@ -25,6 +25,7 @@ export class FindBestThumbnails extends APIResource {
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
    *       max_thumbnails: 3,
+   *       update_asset_thumbnail: true,
    *       output_steering: {
    *         scope: { start_time: 30, end_time: 180 },
    *         selection_strategy: 'campaign_thumbnail',
@@ -213,6 +214,14 @@ export interface FindBestThumbnailsJobParameters {
    * guarantee exact output.
    */
   output_steering?: FindBestThumbnailsOutputSteering;
+
+  /**
+   * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+   * asset's thumbnail_time once the job completes, making that frame the asset's
+   * default poster image. The new thumbnail will appear for some clients sooner than
+   * others, depending on local cache settings.
+   */
+  update_asset_thumbnail?: boolean;
 }
 
 /**
@@ -241,10 +250,10 @@ export interface FindBestThumbnailsOutputSteering {
   looking_for?: string;
 
   /**
-   * Optional execution window in seconds on the original asset timeline. The range
-   * must contain a video frame at the asset frame rate. Omit start_time to begin at
-   * the asset start and omit end_time to continue through the asset end. Returned
-   * scene timestamps remain absolute asset timestamps.
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

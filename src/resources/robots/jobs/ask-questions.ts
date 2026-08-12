@@ -12,6 +12,7 @@ import { path } from '../../../internal/utils/path';
 export class AskQuestions extends APIResource {
   /**
    * Creates a new job that uses AI to answer questions about a Mux Video asset.
+   * Optional output steering can restrict execution to a time scope in seconds.
    *
    * @example
    * ```ts
@@ -37,6 +38,9 @@ export class AskQuestions extends APIResource {
    *         },
    *       ],
    *       max_free_form_answer_length: 300,
+   *       output_steering: {
+   *         scope: { start_time: 30, end_time: 180 },
+   *       },
    *     },
    *   });
    * ```
@@ -194,22 +198,29 @@ export interface AskQuestionsJobParameters {
   language_code?: string;
 
   /**
-   * Experimental. Max character length for free-form answers. Ignored unless at
-   * least one question sets free_form_reply: true.
+   * Experimental. Max character length for free-form answers, between 1 and 1000.
+   * Ignored unless at least one question sets free_form_reply: true.
    */
   max_free_form_answer_length?: number;
+
+  /**
+   * Curated controls that optionally restrict question answering to an asset time
+   * range.
+   */
+  output_steering?: AskQuestionsOutputSteering;
 }
 
 export namespace AskQuestionsJobParameters {
   export interface Question {
     /**
-     * The question to ask about the video content.
+     * The question to ask about the video content. Maximum 600 characters.
      */
     question: string;
 
     /**
      * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
-     * and free_form_reply is not true. Mutually exclusive with free_form_reply.
+     * and free_form_reply is not true. Mutually exclusive with free_form_reply. Each
+     * option is a short label of at most 150 characters.
      */
     answer_options?: Array<string>;
 
@@ -220,6 +231,20 @@ export namespace AskQuestionsJobParameters {
      */
     free_form_reply?: boolean;
   }
+}
+
+/**
+ * Curated controls that optionally restrict question answering to an asset time
+ * range.
+ */
+export interface AskQuestionsOutputSteering {
+  /**
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
+   */
+  scope?: JobsAPI.OutputSteeringScope;
 }
 
 export interface AskQuestionCreateParams {
@@ -237,6 +262,7 @@ export declare namespace AskQuestions {
     type AskQuestionsJob as AskQuestionsJob,
     type AskQuestionsJobOutputs as AskQuestionsJobOutputs,
     type AskQuestionsJobParameters as AskQuestionsJobParameters,
+    type AskQuestionsOutputSteering as AskQuestionsOutputSteering,
     type AskQuestionCreateParams as AskQuestionCreateParams,
   };
 }

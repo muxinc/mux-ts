@@ -321,22 +321,29 @@ export namespace WebhookAskQuestionsJob {
     language_code?: string;
 
     /**
-     * Experimental. Max character length for free-form answers. Ignored unless at
-     * least one question sets free_form_reply: true.
+     * Experimental. Max character length for free-form answers, between 1 and 1000.
+     * Ignored unless at least one question sets free_form_reply: true.
      */
     max_free_form_answer_length?: number;
+
+    /**
+     * Curated controls that optionally restrict question answering to an asset time
+     * range.
+     */
+    output_steering?: Parameters.OutputSteering;
   }
 
   export namespace Parameters {
     export interface Question {
       /**
-       * The question to ask about the video content.
+       * The question to ask about the video content. Maximum 600 characters.
        */
       question: string;
 
       /**
        * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
-       * and free_form_reply is not true. Mutually exclusive with free_form_reply.
+       * and free_form_reply is not true. Mutually exclusive with free_form_reply. Each
+       * option is a short label of at most 150 characters.
        */
       answer_options?: Array<string>;
 
@@ -346,6 +353,42 @@ export namespace WebhookAskQuestionsJob {
        * answer as untrusted model output.
        */
       free_form_reply?: boolean;
+    }
+
+    /**
+     * Curated controls that optionally restrict question answering to an asset time
+     * range.
+     */
+    export interface OutputSteering {
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      scope?: OutputSteering.Scope;
+    }
+
+    export namespace OutputSteering {
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      export interface Scope {
+        /**
+         * End of the execution window in seconds from the beginning of the media. When
+         * omitted, the window extends to the end.
+         */
+        end_time?: number;
+
+        /**
+         * Start of the execution window in seconds from the beginning of the media. When
+         * omitted, the window starts at the beginning.
+         */
+        start_time?: number;
+      }
     }
   }
 
@@ -2389,6 +2432,14 @@ export namespace WebhookFindKeyMomentsJob {
      * will aim to select moments within this range.
      */
     target_duration_ms?: Parameters.TargetDurationMs;
+
+    /**
+     * Controls whether video assets are analyzed using Mux shots. When true, shots are
+     * generated or reused and visual evidence drives selection. When false or omitted,
+     * selection uses transcript evidence and the asset must have a caption track. Not
+     * supported for audio-only assets.
+     */
+    use_shots?: boolean;
   }
 
   export namespace Parameters {
@@ -2418,10 +2469,10 @@ export namespace WebhookFindKeyMomentsJob {
       >;
 
       /**
-       * Optional execution window in seconds on the original asset timeline. The range
-       * must contain a video frame at the asset frame rate. Omit start_time to begin at
-       * the asset start and omit end_time to continue through the asset end. Returned
-       * scene timestamps remain absolute asset timestamps.
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
        */
       scope?: OutputSteering.Scope;
 
@@ -2449,10 +2500,10 @@ export namespace WebhookFindKeyMomentsJob {
 
     export namespace OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. The range
-       * must contain a video frame at the asset frame rate. Omit start_time to begin at
-       * the asset start and omit end_time to continue through the asset end. Returned
-       * scene timestamps remain absolute asset timestamps.
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
        */
       export interface Scope {
         /**
@@ -2574,12 +2625,14 @@ export namespace WebhookFindKeyMomentsJob {
   export namespace Outputs {
     export interface Moment {
       /**
-       * One-sentence summary of what is being said during the moment.
+       * One-sentence summary of what is being said during the moment. Empty when no
+       * transcript evidence is available.
        */
       audible_narrative: string;
 
       /**
-       * Contiguous transcript segments that comprise this moment.
+       * Contiguous transcript segments that comprise this moment. Empty when video
+       * selection identifies the moment without transcript evidence.
        */
       cues: Array<Moment.Cue>;
 
@@ -2590,12 +2643,13 @@ export namespace WebhookFindKeyMomentsJob {
 
       /**
        * Multi-word descriptive phrases (2-5 words each) capturing key audible concepts.
+       * Empty when no transcript evidence is available.
        */
       notable_audible_concepts: Array<string>;
 
       /**
-       * Weighted quality score from 0.0 to 1.0 based on hook strength, clarity,
-       * emotional intensity, novelty, and soundbite quality.
+       * Weighted quality score from 0.0 to 1.0 based on the audible and/or visual
+       * evidence available to the selected analysis mode.
        */
       overall_score: number;
 
@@ -2616,8 +2670,8 @@ export namespace WebhookFindKeyMomentsJob {
       notable_visual_concepts?: Array<Moment.NotableVisualConcept>;
 
       /**
-       * Best short, verbatim quote from within this moment. New jobs include this field;
-       * older stored results may omit it.
+       * Best short, verbatim quote from within this moment. Omitted when the selected
+       * video moment has no source-grounded transcript quote.
        */
       quotable_segment?: Moment.QuotableSegment;
 
@@ -2658,15 +2712,15 @@ export namespace WebhookFindKeyMomentsJob {
         rationale: string;
 
         /**
-         * Relevance score from 0.0 to 1.0 measuring how closely the visual concept relates
-         * to the audible narrative.
+         * Relevance score from 0.0 to 1.0 measuring how important the visual concept is to
+         * the moment's available evidence.
          */
         score: number;
       }
 
       /**
-       * Best short, verbatim quote from within this moment. New jobs include this field;
-       * older stored results may omit it.
+       * Best short, verbatim quote from within this moment. Omitted when the selected
+       * video moment has no source-grounded transcript quote.
        */
       export interface QuotableSegment {
         /**
@@ -3908,6 +3962,11 @@ export namespace WebhookModerateJob {
     on_flagged?: Parameters.OnFlagged;
 
     /**
+     * Curated controls that optionally restrict moderation to an asset time range.
+     */
+    output_steering?: Parameters.OutputSteering;
+
+    /**
      * Interval, in seconds, between sampled thumbnails. Minimum 5 seconds. When
      * max_samples is also set, the actual sampling density is the more restrictive of
      * the two constraints.
@@ -3937,6 +3996,41 @@ export namespace WebhookModerateJob {
        * underlying asset so it can be re-published or reviewed.
        */
       action: 'delete_playback_ids';
+    }
+
+    /**
+     * Curated controls that optionally restrict moderation to an asset time range.
+     */
+    export interface OutputSteering {
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      scope?: OutputSteering.Scope;
+    }
+
+    export namespace OutputSteering {
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      export interface Scope {
+        /**
+         * End of the execution window in seconds from the beginning of the media. When
+         * omitted, the window extends to the end.
+         */
+        end_time?: number;
+
+        /**
+         * Start of the execution window in seconds from the beginning of the media. When
+         * omitted, the window starts at the beginning.
+         */
+        start_time?: number;
+      }
     }
 
     /**
@@ -4293,9 +4387,9 @@ export namespace WebhookSummarizeJob {
     output_language_code?: string;
 
     /**
-     * Curated output_steering controls for summary style, audience, brand terminology,
-     * and tag taxonomy. These controls guide model behavior but do not guarantee exact
-     * output.
+     * Curated output_steering controls for execution scope, summary style, audience,
+     * brand terminology, and tag taxonomy. Scope is enforced; other controls guide
+     * model behavior but do not guarantee exact output.
      */
     output_steering?: Parameters.OutputSteering;
 
@@ -4332,9 +4426,9 @@ export namespace WebhookSummarizeJob {
 
   export namespace Parameters {
     /**
-     * Curated output_steering controls for summary style, audience, brand terminology,
-     * and tag taxonomy. These controls guide model behavior but do not guarantee exact
-     * output.
+     * Curated output_steering controls for execution scope, summary style, audience,
+     * brand terminology, and tag taxonomy. Scope is enforced; other controls guide
+     * model behavior but do not guarantee exact output.
      */
     export interface OutputSteering {
       /**
@@ -4347,6 +4441,14 @@ export namespace WebhookSummarizeJob {
        * Preferred brand or domain terms to use when supported by the source content.
        */
       brand_terms?: Array<string>;
+
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      scope?: OutputSteering.Scope;
 
       /**
        * Best-effort style guidance for the generated title and description.
@@ -4362,6 +4464,26 @@ export namespace WebhookSummarizeJob {
     }
 
     export namespace OutputSteering {
+      /**
+       * Optional execution window in seconds on the original asset timeline. Omit
+       * start_time to begin at the asset start and omit end_time to continue through the
+       * asset end. The summary and tags are generated only from media within this
+       * window.
+       */
+      export interface Scope {
+        /**
+         * End of the execution window in seconds from the beginning of the media. When
+         * omitted, the window extends to the end.
+         */
+        end_time?: number;
+
+        /**
+         * Start of the execution window in seconds from the beginning of the media. When
+         * omitted, the window starts at the beginning.
+         */
+        start_time?: number;
+      }
+
       /**
        * Controlled vocabulary for tag generation. This steers tags and may be
        * deterministically filtered after generation. Supports up to 50 values and 2000
@@ -6403,6 +6525,14 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
        * guarantee exact output.
        */
       output_steering?: Parameters.OutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
 
     export namespace Parameters {
@@ -6432,10 +6562,10 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -6459,10 +6589,10 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -6754,6 +6884,14 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
        * guarantee exact output.
        */
       output_steering?: Parameters.OutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
 
     export namespace Parameters {
@@ -6783,10 +6921,10 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -6810,10 +6948,10 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -7105,6 +7243,14 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
        * guarantee exact output.
        */
       output_steering?: Parameters.OutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
 
     export namespace Parameters {
@@ -7134,10 +7280,10 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -7161,10 +7307,10 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -7456,6 +7602,14 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
        * guarantee exact output.
        */
       output_steering?: Parameters.OutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
 
     export namespace Parameters {
@@ -7485,10 +7639,10 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -7512,10 +7666,10 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -7807,6 +7961,14 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
        * guarantee exact output.
        */
       output_steering?: Parameters.OutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
 
     export namespace Parameters {
@@ -7836,10 +7998,10 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -7863,10 +8025,10 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -8255,10 +8417,10 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -8286,10 +8448,10 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -8723,10 +8885,10 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -8754,10 +8916,10 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -9191,10 +9353,10 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -9222,10 +9384,10 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -9659,10 +9821,10 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -9690,10 +9852,10 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**
@@ -10127,10 +10289,10 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         scope?: OutputSteering.Scope;
 
@@ -10158,10 +10320,10 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. The range
-         * must contain a video frame at the asset frame rate. Omit start_time to begin at
-         * the asset start and omit end_time to continue through the asset end. Returned
-         * scene timestamps remain absolute asset timestamps.
+         * Optional execution window in seconds on the original asset timeline. Omit
+         * start_time to begin at the asset start and omit end_time to continue through the
+         * asset end. The summary and tags are generated only from media within this
+         * window.
          */
         export interface Scope {
           /**

@@ -318,10 +318,10 @@ export interface FindScenesOutputSteering {
   narration_detail?: 'concise' | 'balanced' | 'detailed';
 
   /**
-   * Optional execution window in seconds on the original asset timeline. The range
-   * must contain a video frame at the asset frame rate. Omit start_time to begin at
-   * the asset start and omit end_time to continue through the asset end. Returned
-   * scene timestamps remain absolute asset timestamps.
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

@@ -5,6 +5,7 @@ export {
   type AskQuestionsJob,
   type AskQuestionsJobOutputs,
   type AskQuestionsJobParameters,
+  type AskQuestionsOutputSteering,
   type AskQuestionCreateParams,
 } from './ask-questions';
 export {
@@ -80,6 +81,7 @@ export {
   type ModerateJob,
   type ModerateJobOutputs,
   type ModerateJobParameters,
+  type ModerateOutputSteering,
   type ModerateCreateParams,
 } from './moderate';
 export {

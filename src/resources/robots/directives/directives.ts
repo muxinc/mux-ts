@@ -11,6 +11,7 @@ import {
   RunListParams,
   Runs,
 } from './runs';
+import * as AskQuestionsAPI from '../jobs/ask-questions';
 import * as FindBestThumbnailsAPI from '../jobs/find-best-thumbnails';
 import * as FindKeyMomentsAPI from '../jobs/find-key-moments';
 import * as FindScenesAPI from '../jobs/find-scenes';
@@ -569,9 +570,9 @@ export namespace WorkflowBinding {
       output_language_code?: string;
 
       /**
-       * Curated output_steering controls for summary style, audience, brand terminology,
-       * and tag taxonomy. These controls guide model behavior but do not guarantee exact
-       * output.
+       * Curated output_steering controls for execution scope, summary style, audience,
+       * brand terminology, and tag taxonomy. Scope is enforced; other controls guide
+       * model behavior but do not guarantee exact output.
        */
       output_steering?: SummarizeAPI.SummarizeOutputSteering;
 
@@ -693,6 +694,11 @@ export namespace WorkflowBinding {
        * break sibling workflows that need a playback ID.
        */
       on_flagged?: ModerateAPI.ActionOnFlagged;
+
+      /**
+       * Curated controls that optionally restrict moderation to an asset time range.
+       */
+      output_steering?: ModerateAPI.ModerateOutputSteering;
 
       /**
        * Interval, in seconds, between sampled thumbnails. Minimum 5 seconds. When
@@ -1133,22 +1139,29 @@ export namespace WorkflowBinding {
       language_code?: string;
 
       /**
-       * Experimental. Max character length for free-form answers. Ignored unless at
-       * least one question sets free_form_reply: true.
+       * Experimental. Max character length for free-form answers, between 1 and 1000.
+       * Ignored unless at least one question sets free_form_reply: true.
        */
       max_free_form_answer_length?: number;
+
+      /**
+       * Curated controls that optionally restrict question answering to an asset time
+       * range.
+       */
+      output_steering?: AskQuestionsAPI.AskQuestionsOutputSteering;
     }
 
     export namespace Params {
       export interface Question {
         /**
-         * The question to ask about the video content.
+         * The question to ask about the video content. Maximum 600 characters.
          */
         question: string;
 
         /**
          * Allowed answer values for this question. Defaults to ["yes", "no"] when omitted
-         * and free_form_reply is not true. Mutually exclusive with free_form_reply.
+         * and free_form_reply is not true. Mutually exclusive with free_form_reply. Each
+         * option is a short label of at most 150 characters.
          */
         answer_options?: Array<string>;
 
@@ -1212,6 +1225,14 @@ export namespace WorkflowBinding {
        * will aim to select moments within this range.
        */
       target_duration_ms?: Params.TargetDurationMs;
+
+      /**
+       * Controls whether video assets are analyzed using Mux shots. When true, shots are
+       * generated or reused and visual evidence drives selection. When false or omitted,
+       * selection uses transcript evidence and the asset must have a caption track. Not
+       * supported for audio-only assets.
+       */
+      use_shots?: boolean;
     }
 
     export namespace Params {
@@ -1386,6 +1407,14 @@ export namespace WorkflowBinding {
        * guarantee exact output.
        */
       output_steering?: FindBestThumbnailsAPI.FindBestThumbnailsOutputSteering;
+
+      /**
+       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+       * asset's thumbnail_time once the job completes, making that frame the asset's
+       * default poster image. The new thumbnail will appear for some clients sooner than
+       * others, depending on local cache settings.
+       */
+      update_asset_thumbnail?: boolean;
     }
   }
 }

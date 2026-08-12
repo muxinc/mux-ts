@@ -47,6 +47,7 @@ describe('resource findKeyMoments', () => {
           },
         },
         target_duration_ms: { max: 45000, min: 15000 },
+        use_shots: true,
       },
       passthrough: 'passthrough',
     });

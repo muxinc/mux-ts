@@ -12,8 +12,9 @@ import { path } from '../../../internal/utils/path';
 export class Summarize extends APIResource {
   /**
    * Creates a new job that uses AI to generate a title, description, and tags for a
-   * Mux Video asset. Optional output steering can guide summary style, audience,
-   * brand terms, and tag taxonomy without changing the response schema.
+   * Mux Video asset. Optional output steering can restrict execution to a time scope
+   * in seconds and guide summary style, audience, brand terms, and tag taxonomy
+   * without changing the response schema.
    *
    * @example
    * ```ts
@@ -24,6 +25,7 @@ export class Summarize extends APIResource {
    *       tone: 'neutral',
    *       tag_count: 10,
    *       output_steering: {
+   *         scope: { start_time: 30, end_time: 180 },
    *         summary_style: 'concise',
    *         audience: 'Product marketers',
    *         brand_terms: ['Mux', 'Robots'],
@@ -164,9 +166,9 @@ export interface SummarizeJobParameters {
   output_language_code?: string;
 
   /**
-   * Curated output_steering controls for summary style, audience, brand terminology,
-   * and tag taxonomy. These controls guide model behavior but do not guarantee exact
-   * output.
+   * Curated output_steering controls for execution scope, summary style, audience,
+   * brand terminology, and tag taxonomy. Scope is enforced; other controls guide
+   * model behavior but do not guarantee exact output.
    */
   output_steering?: SummarizeOutputSteering;
 
@@ -235,9 +237,9 @@ export namespace SummarizeJobParameters {
 }
 
 /**
- * Curated output_steering controls for summary style, audience, brand terminology,
- * and tag taxonomy. These controls guide model behavior but do not guarantee exact
- * output.
+ * Curated output_steering controls for execution scope, summary style, audience,
+ * brand terminology, and tag taxonomy. Scope is enforced; other controls guide
+ * model behavior but do not guarantee exact output.
  */
 export interface SummarizeOutputSteering {
   /**
@@ -250,6 +252,14 @@ export interface SummarizeOutputSteering {
    * Preferred brand or domain terms to use when supported by the source content.
    */
   brand_terms?: Array<string>;
+
+  /**
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
+   */
+  scope?: JobsAPI.OutputSteeringScope;
 
   /**
    * Best-effort style guidance for the generated title and description.

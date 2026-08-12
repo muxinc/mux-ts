@@ -52,6 +52,7 @@ describe('resource askQuestions', () => {
         ],
         language_code: 'x',
         max_free_form_answer_length: 300,
+        output_steering: { scope: { end_time: 180, start_time: 30 } },
       },
       passthrough: 'passthrough',
     });

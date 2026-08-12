@@ -11,11 +11,15 @@ import { path } from '../../../internal/utils/path';
  */
 export class FindKeyMoments extends APIResource {
   /**
-   * Creates a new job that uses AI to identify key moments in a Mux Video asset.
-   * Optional output steering can restrict execution to a time scope in seconds and
-   * guide selection strategy, title style, audience, topic taxonomy, and scoring
-   * priorities without changing the response schema. Scoped results retain absolute
-   * timestamps on the original asset timeline.
+   * Creates a new job that uses AI to identify key moments in a Mux Video asset. Set
+   * use_shots to true to automatically generate or reuse Mux shots and use visual
+   * evidence during selection, with transcript evidence incorporated when available;
+   * otherwise selection uses transcript evidence and the asset must have a caption
+   * track. Audio-only assets always use transcript evidence and require a caption
+   * track. Optional output steering can restrict execution to a time scope in
+   * seconds and guide selection strategy, title style, audience, topic taxonomy, and
+   * scoring priorities without changing the response schema. Scoped results retain
+   * absolute timestamps on the original asset timeline.
    *
    * @example
    * ```ts
@@ -141,12 +145,14 @@ export interface FindKeyMomentsJobOutputs {
 export namespace FindKeyMomentsJobOutputs {
   export interface Moment {
     /**
-     * One-sentence summary of what is being said during the moment.
+     * One-sentence summary of what is being said during the moment. Empty when no
+     * transcript evidence is available.
      */
     audible_narrative: string;
 
     /**
-     * Contiguous transcript segments that comprise this moment.
+     * Contiguous transcript segments that comprise this moment. Empty when video
+     * selection identifies the moment without transcript evidence.
      */
     cues: Array<Moment.Cue>;
 
@@ -157,12 +163,13 @@ export namespace FindKeyMomentsJobOutputs {
 
     /**
      * Multi-word descriptive phrases (2-5 words each) capturing key audible concepts.
+     * Empty when no transcript evidence is available.
      */
     notable_audible_concepts: Array<string>;
 
     /**
-     * Weighted quality score from 0.0 to 1.0 based on hook strength, clarity,
-     * emotional intensity, novelty, and soundbite quality.
+     * Weighted quality score from 0.0 to 1.0 based on the audible and/or visual
+     * evidence available to the selected analysis mode.
      */
     overall_score: number;
 
@@ -183,8 +190,8 @@ export namespace FindKeyMomentsJobOutputs {
     notable_visual_concepts?: Array<Moment.NotableVisualConcept>;
 
     /**
-     * Best short, verbatim quote from within this moment. New jobs include this field;
-     * older stored results may omit it.
+     * Best short, verbatim quote from within this moment. Omitted when the selected
+     * video moment has no source-grounded transcript quote.
      */
     quotable_segment?: Moment.QuotableSegment;
 
@@ -225,15 +232,15 @@ export namespace FindKeyMomentsJobOutputs {
       rationale: string;
 
       /**
-       * Relevance score from 0.0 to 1.0 measuring how closely the visual concept relates
-       * to the audible narrative.
+       * Relevance score from 0.0 to 1.0 measuring how important the visual concept is to
+       * the moment's available evidence.
        */
       score: number;
     }
 
     /**
-     * Best short, verbatim quote from within this moment. New jobs include this field;
-     * older stored results may omit it.
+     * Best short, verbatim quote from within this moment. Omitted when the selected
+     * video moment has no source-grounded transcript quote.
      */
     export interface QuotableSegment {
       /**
@@ -273,6 +280,14 @@ export interface FindKeyMomentsJobParameters {
    * will aim to select moments within this range.
    */
   target_duration_ms?: FindKeyMomentsJobParameters.TargetDurationMs;
+
+  /**
+   * Controls whether video assets are analyzed using Mux shots. When true, shots are
+   * generated or reused and visual evidence drives selection. When false or omitted,
+   * selection uses transcript evidence and the asset must have a caption track. Not
+   * supported for audio-only assets.
+   */
+  use_shots?: boolean;
 }
 
 export namespace FindKeyMomentsJobParameters {
@@ -317,10 +332,10 @@ export interface FindKeyMomentsOutputSteering {
   rubric_priorities?: Array<'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'>;
 
   /**
-   * Optional execution window in seconds on the original asset timeline. The range
-   * must contain a video frame at the asset frame rate. Omit start_time to begin at
-   * the asset start and omit end_time to continue through the asset end. Returned
-   * scene timestamps remain absolute asset timestamps.
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

@@ -32,6 +32,7 @@ describe('resource summarize', () => {
         output_steering: {
           audience: 'Product marketers',
           brand_terms: ['Mux', 'Robots'],
+          scope: { end_time: 180, start_time: 30 },
           summary_style: 'concise',
           tag_taxonomy: {
             allow_other: true,

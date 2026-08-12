@@ -12,7 +12,8 @@ import { path } from '../../../internal/utils/path';
 export class Moderate extends APIResource {
   /**
    * Creates a new job that uses AI to analyze a Mux Video asset for inappropriate
-   * content.
+   * content. Optional output steering can restrict execution to a time scope in
+   * seconds.
    *
    * @example
    * ```ts
@@ -21,6 +22,9 @@ export class Moderate extends APIResource {
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
    *       thresholds: { sexual: 0.7, violence: 0.8 },
+   *       output_steering: {
+   *         scope: { start_time: 30, end_time: 180 },
+   *       },
    *       on_flagged: { action: 'delete_playback_ids' },
    *     },
    *   });
@@ -226,6 +230,11 @@ export interface ModerateJobParameters {
   on_flagged?: ActionOnFlagged;
 
   /**
+   * Curated controls that optionally restrict moderation to an asset time range.
+   */
+  output_steering?: ModerateOutputSteering;
+
+  /**
    * Interval, in seconds, between sampled thumbnails. Minimum 5 seconds. When
    * max_samples is also set, the actual sampling density is the more restrictive of
    * the two constraints.
@@ -263,6 +272,19 @@ export namespace ModerateJobParameters {
   }
 }
 
+/**
+ * Curated controls that optionally restrict moderation to an asset time range.
+ */
+export interface ModerateOutputSteering {
+  /**
+   * Optional execution window in seconds on the original asset timeline. Omit
+   * start_time to begin at the asset start and omit end_time to continue through the
+   * asset end. The summary and tags are generated only from media within this
+   * window.
+   */
+  scope?: JobsAPI.OutputSteeringScope;
+}
+
 export interface ModerateCreateParams {
   parameters: ModerateJobParameters;
 
@@ -279,6 +301,7 @@ export declare namespace Moderate {
     type ModerateJob as ModerateJob,
     type ModerateJobOutputs as ModerateJobOutputs,
     type ModerateJobParameters as ModerateJobParameters,
+    type ModerateOutputSteering as ModerateOutputSteering,
     type ModerateCreateParams as ModerateCreateParams,
   };
 }

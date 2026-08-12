@@ -35,6 +35,7 @@ describe('resource findBestThumbnails', () => {
           scoring_priorities: ['composition', 'brand_fit'],
           selection_strategy: 'campaign_thumbnail',
         },
+        update_asset_thumbnail: true,
       },
       passthrough: 'passthrough',
     });

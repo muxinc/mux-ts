@@ -29,6 +29,7 @@ describe('resource moderate', () => {
         language_code: 'x',
         max_samples: 1,
         on_flagged: { action: 'delete_playback_ids' },
+        output_steering: { scope: { end_time: 180, start_time: 30 } },
         sampling_interval: 5,
         thresholds: { sexual: 0.7, violence: 0.8 },
       },

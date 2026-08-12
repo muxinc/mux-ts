@@ -26,6 +26,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/ask-questions.ts">AskQuestionsJob</a></code>
 - <code><a href="./src/resources/robots/jobs/ask-questions.ts">AskQuestionsJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/ask-questions.ts">AskQuestionsJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/ask-questions.ts">AskQuestionsOutputSteering</a></code>
 
 Methods:
 
@@ -68,6 +69,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/moderate.ts">ModerateJob</a></code>
 - <code><a href="./src/resources/robots/jobs/moderate.ts">ModerateJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/moderate.ts">ModerateJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/moderate.ts">ModerateOutputSteering</a></code>
 
 Methods:
 
