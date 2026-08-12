@@ -101,7 +101,7 @@ export class Assets extends APIResource {
 
   /**
    * Updates the details of an existing Asset with the provided Asset ID. This API
-   * currently only supports the `passthrough` and `meta` fields.
+   * currently only supports the `passthrough`, `meta` and `thumbnail_time` fields.
    *
    * @example
    * ```ts
