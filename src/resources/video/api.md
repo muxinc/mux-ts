@@ -42,6 +42,7 @@ Methods:
 - <code title="get /video/v1/assets/{ASSET_ID}/shots">client.video.assets.<a href="./src/resources/video/assets.ts">retrieveShots</a>(assetId) -> AssetShots</code>
 - <code title="post /video/v1/assets/{ASSET_ID}/shots">client.video.assets.<a href="./src/resources/video/assets.ts">generateShots</a>(assetId) -> AssetShots</code>
 - <code title="delete /video/v1/assets/{ASSET_ID}/shots">client.video.assets.<a href="./src/resources/video/assets.ts">deleteShots</a>(assetId) -> void</code>
+- <code title="delete /video/v1/assets/{ASSET_ID}/thumbnail-time">client.video.assets.<a href="./src/resources/video/assets.ts">deleteThumbnailTime</a>(assetId) -> void</code>
 
 ## DeliveryUsage
 

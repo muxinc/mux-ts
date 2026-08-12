@@ -116,6 +116,7 @@ const fuse = new Fuse(
     'client.video.assets.deletePlaybackId',
     'client.video.assets.deleteShots',
     'client.video.assets.deleteStaticRendition',
+    'client.video.assets.deleteThumbnailTime',
     'client.video.assets.deleteTrack',
     'client.video.assets.generateShots',
     'client.video.assets.generateSubtitles',

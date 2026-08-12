@@ -686,6 +686,12 @@ export interface WebhookAsset {
   test?: boolean;
 
   /**
+   * The media time within the asset used when a thumbnail without an explicit time
+   * is requested.
+   */
+  thumbnail_time?: number;
+
+  /**
    * The individual media tracks that make up an asset.
    */
   tracks?: Array<WebhookAssetEmbeddedTrack>;

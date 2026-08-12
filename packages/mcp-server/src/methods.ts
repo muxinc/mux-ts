@@ -131,6 +131,12 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/video/v1/assets/{ASSET_ID}/shots',
   },
   {
+    clientCallName: 'client.video.assets.deleteThumbnailTime',
+    fullyQualifiedName: 'video.assets.deleteThumbnailTime',
+    httpMethod: 'delete',
+    httpPath: '/video/v1/assets/{ASSET_ID}/thumbnail-time',
+  },
+  {
     clientCallName: 'client.video.deliveryUsage.list',
     fullyQualifiedName: 'video.deliveryUsage.list',
     httpMethod: 'get',

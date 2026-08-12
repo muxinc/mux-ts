@@ -487,6 +487,23 @@ export class Assets extends APIResource {
       headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
     });
   }
+
+  /**
+   * Unset the thumbnail time for an asset, returning the thumbnail to default
+   * behavior
+   *
+   * @example
+   * ```ts
+   * await client.video.assets.deleteThumbnailTime('ASSET_ID');
+   * ```
+   */
+  deleteThumbnailTime(assetId: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.delete(path`/video/v1/assets/${assetId}/thumbnail-time`, {
+      defaultBaseURL: 'https://api.mux.com',
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
 }
 
 export type AssetsCursorPage = CursorPage<Asset>;
@@ -678,6 +695,12 @@ export interface Asset {
    * seconds, and deleted after 24 hrs.
    */
   test?: boolean;
+
+  /**
+   * The media time within the asset used when a thumbnail without an explicit time
+   * is requested.
+   */
+  thumbnail_time?: number;
 
   /**
    * The individual media tracks that make up an asset.
@@ -1742,6 +1765,12 @@ export interface AssetUpdateParams {
    * with an empty string value.
    */
   passthrough?: string;
+
+  /**
+   * The media time within the asset used when a thumbnail without an explicit time
+   * is requested.
+   */
+  thumbnail_time?: number;
 }
 
 export interface AssetCreatePlaybackIdParams {
