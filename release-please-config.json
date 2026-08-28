@@ -74,6 +74,8 @@
       "type": "json",
       "path": "packages/mcp-server/manifest.json",
       "jsonpath": "$.version"
-    }
+    },
+    "packages/mcp-server/src/server.ts",
+    "packages/mcp-server/cloudflare-worker/src/index.ts"
   ]
 }
