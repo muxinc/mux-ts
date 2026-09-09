@@ -713,10 +713,22 @@ export interface WebhookAsset {
   source_asset_id?: string;
 
   /**
-   * An object containing the current status of any static renditions (mp4s). The
-   * object does not exist if no static renditions have been requested. See
+   * An object containing the current status of any static renditions (MP4s) for this
+   * asset. The object does not exist if no static renditions have been requested.
+   * See
    * [Download your videos](https://docs.mux.com/guides/enable-static-mp4-renditions)
    * for more information.
+   *
+   * This object is populated by both the
+   * [Static Renditions API](https://www.mux.com/docs/guides/enable-static-mp4-renditions)
+   * and the deprecated `mp4_support` option, and the two report status differently:
+   *
+   * - Renditions created with the Static Renditions API each carry their own `id`,
+   *   `status`, `type`, `resolution`, and `resolution_tier` in `files`. Track
+   *   progress per rendition using `files[].status`.
+   * - Renditions created with the deprecated `mp4_support` option share a single
+   *   aggregate `status` on this object, and their `files` entries do not include
+   *   the per-rendition fields above.
    */
   static_renditions?: WebhookAsset.StaticRenditions;
 
@@ -1021,10 +1033,22 @@ export namespace WebhookAsset {
   }
 
   /**
-   * An object containing the current status of any static renditions (mp4s). The
-   * object does not exist if no static renditions have been requested. See
+   * An object containing the current status of any static renditions (MP4s) for this
+   * asset. The object does not exist if no static renditions have been requested.
+   * See
    * [Download your videos](https://docs.mux.com/guides/enable-static-mp4-renditions)
    * for more information.
+   *
+   * This object is populated by both the
+   * [Static Renditions API](https://www.mux.com/docs/guides/enable-static-mp4-renditions)
+   * and the deprecated `mp4_support` option, and the two report status differently:
+   *
+   * - Renditions created with the Static Renditions API each carry their own `id`,
+   *   `status`, `type`, `resolution`, and `resolution_tier` in `files`. Track
+   *   progress per rendition using `files[].status`.
+   * - Renditions created with the deprecated `mp4_support` option share a single
+   *   aggregate `status` on this object, and their `files` entries do not include
+   *   the per-rendition fields above.
    */
   export interface StaticRenditions {
     /**
@@ -1033,8 +1057,10 @@ export namespace WebhookAsset {
     files?: Array<StaticRenditions.File>;
 
     /**
-     * Indicates the status of downloadable MP4 versions of this asset. This field is
-     * only valid when `mp4_support` is enabled
+     * Indicates the aggregate status of MP4 renditions created with the deprecated
+     * `mp4_support` option. This field is only meaningful when `mp4_support` is
+     * enabled on the asset. For renditions created with the Static Renditions API, use
+     * the per-rendition `files[].status` field instead.
      */
     status?: 'ready' | 'preparing' | 'disabled' | 'errored';
   }
@@ -1042,8 +1068,9 @@ export namespace WebhookAsset {
   export namespace StaticRenditions {
     export interface File {
       /**
-       * The ID of this static rendition, used in managing this static rendition. This
-       * field is only valid for `static_renditions`, not for `mp4_support`.
+       * The ID of this static rendition, used in managing this static rendition. Only
+       * present for static renditions created with the Static Renditions API. Not set
+       * for renditions created with the deprecated `mp4_support` option.
        */
       id?: string;
 
@@ -1093,8 +1120,9 @@ export namespace WebhookAsset {
       passthrough?: string;
 
       /**
-       * Indicates the resolution of this specific MP4 version of this asset. This field
-       * is only valid for `static_renditions`, not for `mp4_support`.
+       * Indicates the resolution of this specific MP4 version of this asset. Only
+       * present for static renditions created with the Static Renditions API. Not set
+       * for renditions created with the deprecated `mp4_support` option.
        */
       resolution?:
         | 'highest'
@@ -1109,14 +1137,18 @@ export namespace WebhookAsset {
         | '270p';
 
       /**
-       * Indicates the resolution tier of this specific MP4 version of this asset. This
-       * field is only valid for `static_renditions`, not for `mp4_support`.
+       * Indicates the resolution tier of this specific MP4 version of this asset. Only
+       * present for static renditions created with the Static Renditions API. Not set
+       * for renditions created with the deprecated `mp4_support` option.
        */
       resolution_tier?: '2160p' | '1440p' | '1080p' | '720p' | 'audio-only';
 
       /**
-       * Indicates the status of this specific MP4 version of this asset. This field is
-       * only valid for `static_renditions`, not for `mp4_support`.
+       * Indicates the status of this specific MP4 version of this asset. Only present
+       * for static renditions created with the Static Renditions API. Not set for
+       * renditions created with the deprecated `mp4_support` option. For `mp4_support`
+       * renditions, see the top-level `static_renditions.status` field on the asset
+       * instead.
        *
        * - `ready` indicates the MP4 has been generated and is ready for download
        * - `preparing` indicates the asset has not been ingested or the static rendition
@@ -1131,7 +1163,8 @@ export namespace WebhookAsset {
 
       /**
        * Indicates the static rendition type of this specific MP4 version of this asset.
-       * This field is only valid for `static_renditions`, not for `mp4_support`.
+       * Only present for static renditions created with the Static Renditions API. Not
+       * set for renditions created with the deprecated `mp4_support` option.
        */
       type?: 'standard' | 'advanced';
 
@@ -1288,8 +1321,9 @@ export namespace WebhookAssetEmbeddedTrack {
 
 export interface WebhookAssetStaticRendition {
   /**
-   * The ID of this static rendition, used in managing this static rendition. This
-   * field is only valid for `static_renditions`, not for `mp4_support`.
+   * The ID of this static rendition, used in managing this static rendition. Only
+   * present for static renditions created with the Static Renditions API. Not set
+   * for renditions created with the deprecated `mp4_support` option.
    */
   id?: string;
 
@@ -1349,8 +1383,9 @@ export interface WebhookAssetStaticRendition {
   passthrough?: string;
 
   /**
-   * Indicates the resolution of this specific MP4 version of this asset. This field
-   * is only valid for `static_renditions`, not for `mp4_support`.
+   * Indicates the resolution of this specific MP4 version of this asset. Only
+   * present for static renditions created with the Static Renditions API. Not set
+   * for renditions created with the deprecated `mp4_support` option.
    */
   resolution?:
     | 'highest'
@@ -1365,14 +1400,18 @@ export interface WebhookAssetStaticRendition {
     | '270p';
 
   /**
-   * Indicates the resolution tier of this specific MP4 version of this asset. This
-   * field is only valid for `static_renditions`, not for `mp4_support`.
+   * Indicates the resolution tier of this specific MP4 version of this asset. Only
+   * present for static renditions created with the Static Renditions API. Not set
+   * for renditions created with the deprecated `mp4_support` option.
    */
   resolution_tier?: '2160p' | '1440p' | '1080p' | '720p' | 'audio-only';
 
   /**
-   * Indicates the status of this specific MP4 version of this asset. This field is
-   * only valid for `static_renditions`, not for `mp4_support`.
+   * Indicates the status of this specific MP4 version of this asset. Only present
+   * for static renditions created with the Static Renditions API. Not set for
+   * renditions created with the deprecated `mp4_support` option. For `mp4_support`
+   * renditions, see the top-level `static_renditions.status` field on the asset
+   * instead.
    *
    * - `ready` indicates the MP4 has been generated and is ready for download
    * - `preparing` indicates the asset has not been ingested or the static rendition
@@ -1387,7 +1426,8 @@ export interface WebhookAssetStaticRendition {
 
   /**
    * Indicates the static rendition type of this specific MP4 version of this asset.
-   * This field is only valid for `static_renditions`, not for `mp4_support`.
+   * Only present for static renditions created with the Static Renditions API. Not
+   * set for renditions created with the deprecated `mp4_support` option.
    */
   type?: 'standard' | 'advanced';
 
@@ -1744,7 +1784,7 @@ export namespace WebhookDirectUpload {
 
     /**
      * An array of static renditions to create for this asset. You may not enable both
-     * `static_renditions` and `mp4_support (the latter being deprecated)`
+     * `static_renditions` and the deprecated `mp4_support`.
      */
     static_renditions?: Array<NewAssetSettings.StaticRendition>;
 
@@ -3419,7 +3459,7 @@ export namespace WebhookLiveStream {
 
     /**
      * An array of static renditions to create for this asset. You may not enable both
-     * `static_renditions` and `mp4_support (the latter being deprecated)`
+     * `static_renditions` and the deprecated `mp4_support`.
      */
     static_renditions?: Array<NewAssetSettings.StaticRendition>;
 
