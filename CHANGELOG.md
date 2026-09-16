@@ -1,5 +1,25 @@
 # Changelog
 
+## [15.2.0](https://github.com/muxinc/mux-ts/compare/v15.1.0...v15.2.0) (2026-09-16)
+
+
+### Features
+
+* **mcp:** mcp-code-runner bin; Deno resolved via DENO_PATH or the bundled binary ([35eaccf](https://github.com/muxinc/mux-ts/commit/35eaccf94c6e2963d05828dd7c90a04bb373c5bd))
+
+
+### Bug Fixes
+
+* **mcp:** desktop bundle ships without Deno, exposes DENO_PATH, keeps its .d.ts files ([21c5081](https://github.com/muxinc/mux-ts/commit/21c50813fa3257c9ed3b1c9480d0007ad9c587ef))
+* rewrite the annotated MCP self-id version literals at release time ([#9](https://github.com/muxinc/mux-ts/issues/9)) ([a98e5d3](https://github.com/muxinc/mux-ts/commit/a98e5d3d65f13fb589e8f50c8dc33dd061cce045))
+
+
+### Chores
+
+* absorb out-of-band staging changes ([079d85b](https://github.com/muxinc/mux-ts/commit/079d85ba00a39f7570ca2af1e7d7b0c47b02d861))
+* Improve MP4 docs based on mmcc's feedback ([5329dce](https://github.com/muxinc/mux-ts/commit/5329dce6080e21d5e06371ddc426595b78a1814f))
+* **spec:** remove the stats spec (/counts) and its build wiring ([a141b0a](https://github.com/muxinc/mux-ts/commit/a141b0aed1d7af189fd2b2aaf58d2cbe905bb73e))
+
 ## [15.1.0](https://github.com/muxinc/mux-ts/compare/v15.0.0...v15.1.0) (2026-08-27)
 
 
