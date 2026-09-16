@@ -27,7 +27,8 @@
         "MUX_WEBHOOK_SECRET": "${user_config.MUX_WEBHOOK_SECRET}",
         "MUX_SIGNING_KEY": "${user_config.MUX_SIGNING_KEY}",
         "MUX_PRIVATE_KEY": "${user_config.MUX_PRIVATE_KEY}",
-        "MUX_AUTHORIZATION_TOKEN": "${user_config.MUX_AUTHORIZATION_TOKEN}"
+        "MUX_AUTHORIZATION_TOKEN": "${user_config.MUX_AUTHORIZATION_TOKEN}",
+        "DENO_PATH": "${user_config.DENO_PATH}"
       }
     }
   },
@@ -67,6 +68,12 @@
       "description": "",
       "required": false,
       "type": "string"
+    },
+    "DENO_PATH": {
+      "title": "Deno executable",
+      "description": "Path to a Deno 2.9 or newer executable (install from https://deno.land). The code execution tool needs it and reports an error until it is set; the docs tool works without it.",
+      "required": false,
+      "type": "file"
     }
   },
   "tools": [],

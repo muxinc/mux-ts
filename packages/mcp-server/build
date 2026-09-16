@@ -41,13 +41,17 @@ PKG_JSON_PATH=../../packages/mcp-server/package.json node ../../scripts/utils/ma
 # copy files
 node scripts/copy-bundle-files.cjs
 
-# install runtime deps
+# install runtime deps; no optional ones, since the optional deno dependency would bake in this build host's binary
 cd dist-bundle
-npm install
+npm install --omit=optional
 cd ..
 
 # pack bundle
 cp manifest.json dist-bundle
+
+# mcpb pack drops *.d.ts by default; the code tool's type-check needs TypeScript's lib files
+# and the SDK's types at runtime
+printf '!*.d.ts\n' > dist-bundle/.mcpbignore
 
 npx mcpb pack dist-bundle mux.mcpb
 

@@ -97,7 +97,8 @@ sandbox service instead, configured with:
 Local mode runs the code under Deno, which the package installs for itself through its optional
 `deno` dependency. Where that cannot install — a blocked binary download, `npm install --omit=optional`,
 or a platform Deno does not ship an npm build for, such as Alpine — set `DENO_PATH` to a Deno 2.9 or
-newer executable. The same variable applies to `mcp-code-runner` below.
+newer executable. The same variable applies to `mcp-code-runner` below. The desktop bundle (`.mcpb`) never
+includes Deno; its settings expose `DENO_PATH` for the same purpose.
 
 ### Request headers a caller may send
 
