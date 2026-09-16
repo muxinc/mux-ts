@@ -34,25 +34,25 @@ export class Engagement extends APIResource {
 
 export interface EngagementHeatmap {
   /**
-   * Total number of views the heatmap was calculated from.
+   * The asset ID this data is for.
    */
-  total_views: number;
+  asset_id: string;
 
   /**
    * Per-bucket engagement values across the content timeline, ordered from the start
    * to the end of the content. The number of buckets is dynamic (between 10
    * and 1000) and scales with the content duration.
    */
-  value: Array<number>;
+  heatmap: Array<number>;
 }
 
 export interface EngagementHotspots {
-  hotspots: Array<Hotspot>;
-
   /**
-   * Total number of views the hotspots were calculated from.
+   * The asset ID this data is for.
    */
-  total_views: number;
+  asset_id: string;
+
+  hotspots: Array<Hotspot>;
 }
 
 export interface Hotspot {
