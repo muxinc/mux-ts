@@ -12,6 +12,7 @@ import {
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { readEnv } from './util';
 import { WorkerInput, WorkerOutput } from './code-tool-types';
+import { allowNetFor, DenoUnavailableError, runCode, RunCodeResult } from './code-tool-runner';
 import { getLogger } from './logger';
 import { SdkMethod } from './methods';
 import { McpCodeExecutionMode } from './options';
@@ -234,199 +235,48 @@ const localDenoHandler = async ({
   reqContext: McpRequestContext;
   args: unknown;
 }): Promise<ToolCallResult> => {
-  const fs = await import('node:fs');
-  const path = await import('node:path');
-  const url = await import('node:url');
-  const { newDenoHTTPWorker } = await import('@valtown/deno-http-worker');
-  const { getWorkerPath } = await import('./code-tool-paths.cjs');
-  const workerPath = getWorkerPath();
-
   const client = reqContext.client;
-  const baseURLHostname = new URL(client.baseURL).hostname;
   const { code } = args as { code: string };
 
-  let denoPath: string;
-
-  const packageRoot = path.resolve(path.dirname(workerPath), '..');
-  const packageNodeModulesPath = path.resolve(packageRoot, 'node_modules');
-
-  // Check if deno is in PATH
-  const { execSync } = await import('node:child_process');
-  try {
-    execSync('command -v deno', { stdio: 'ignore' });
-    denoPath = 'deno';
-  } catch {
-    try {
-      // Use deno binary in node_modules if it's found
-      const denoNodeModulesPath = path.resolve(packageNodeModulesPath, 'deno', 'bin.cjs');
-      await fs.promises.access(denoNodeModulesPath, fs.constants.X_OK);
-      denoPath = denoNodeModulesPath;
-    } catch {
-      return asErrorResult(
-        'Deno is required for code execution but was not found. ' +
-          'Install it from https://deno.land or run: npm install deno',
-      );
-    }
-  }
-
-  const allowReadPaths = [
-    'code-tool-worker.mjs',
-    `${workerPath.replace(/([\/\\]node_modules)[\/\\].+$/, '$1')}/`,
-    packageRoot,
-  ];
-
-  // Follow symlinks in node_modules to allow read access to workspace-linked packages
-  try {
-    const sdkPkgName = '@mux/ts';
-    const sdkDir = path.resolve(packageNodeModulesPath, sdkPkgName);
-    const realSdkDir = fs.realpathSync(sdkDir);
-    if (realSdkDir !== sdkDir) {
-      allowReadPaths.push(realSdkDir);
-    }
-  } catch {
-    // Ignore if symlink resolution fails
-  }
-
-  const allowRead = allowReadPaths.join(',');
-
-  const worker = await newDenoHTTPWorker(url.pathToFileURL(workerPath), {
-    denoExecutable: denoPath,
-    runFlags: [
-      `--node-modules-dir=manual`,
-      `--allow-read=${allowRead}`,
-      `--allow-net=${baseURLHostname}`,
-      // Allow environment variables because instantiating the client will try to read from them,
-      // even though they are not set.
-      '--allow-env',
-    ],
-    printOutput: true,
-    spawnOptions: {
-      cwd: path.dirname(workerPath),
-      // Merge any upstream client envs into the Deno subprocess environment,
-      // with the upstream env vars taking precedence.
-      env: { ...process.env, ...reqContext.upstreamClientEnvs },
+  // Strip null/undefined values so that the worker SDK client can fall back to
+  // reading from environment variables (including any upstreamClientEnvs).
+  const opts = {
+    ...(client.baseURL != null ? { baseURL: client.baseURL } : undefined),
+    ...(client.tokenId != null ? { tokenId: client.tokenId } : undefined),
+    ...(client.tokenSecret != null ? { tokenSecret: client.tokenSecret } : undefined),
+    ...(client.webhookSecret != null ? { webhookSecret: client.webhookSecret } : undefined),
+    ...(client.jwtSigningKey != null ? { jwtSigningKey: client.jwtSigningKey } : undefined),
+    ...(client.jwtPrivateKey != null ? { jwtPrivateKey: client.jwtPrivateKey } : undefined),
+    ...(client.authorizationToken != null ? { authorizationToken: client.authorizationToken } : undefined),
+    defaultHeaders: {
+      'X-Stainless-MCP': 'true',
     },
-  });
+  } satisfies Partial<ClientOptions> as ClientOptions;
 
+  let run: RunCodeResult;
   try {
-    const resp = await new Promise<Response>((resolve, reject) => {
-      worker.addEventListener('exit', (exitCode) => {
-        reject(new Error(`Worker exited with code ${exitCode}`));
-      });
-
-      // Strip null/undefined values so that the worker SDK client can fall back to
-      // reading from environment variables (including any upstreamClientEnvs).
-      const opts = {
-        ...(client.baseURL != null ? { baseURL: client.baseURL } : undefined),
-        ...(client.tokenId != null ? { tokenId: client.tokenId } : undefined),
-        ...(client.tokenSecret != null ? { tokenSecret: client.tokenSecret } : undefined),
-        ...(client.webhookSecret != null ? { webhookSecret: client.webhookSecret } : undefined),
-        ...(client.jwtSigningKey != null ? { jwtSigningKey: client.jwtSigningKey } : undefined),
-        ...(client.jwtPrivateKey != null ? { jwtPrivateKey: client.jwtPrivateKey } : undefined),
-        ...(client.authorizationToken != null ?
-          { authorizationToken: client.authorizationToken }
-        : undefined),
-        defaultHeaders: {
-          'X-Stainless-MCP': 'true',
-        },
-      } satisfies Partial<ClientOptions> as ClientOptions;
-
-      const req = worker.request(
-        'http://localhost',
-        {
-          headers: {
-            'content-type': 'application/json',
-          },
-          method: 'POST',
-        },
-        (resp) => {
-          const body: Uint8Array[] = [];
-          resp.on('error', (err) => {
-            reject(err);
-          });
-          resp.on('data', (chunk) => {
-            body.push(chunk);
-          });
-          resp.on('end', () => {
-            resolve(
-              new Response(Buffer.concat(body).toString(), {
-                status: resp.statusCode ?? 200,
-                headers: resp.headers as any,
-              }),
-            );
-          });
-        },
-      );
-
-      const body = JSON.stringify({
-        opts,
-        code,
-      });
-
-      req.write(body, (err) => {
-        if (err != null) {
-          reject(err);
-        }
-      });
-
-      req.end();
+    run = await runCode({
+      code,
+      opts,
+      allowNet: allowNetFor(client),
+      // Upstream client envs take precedence over the server's own environment.
+      env: { ...process.env, ...reqContext.upstreamClientEnvs },
     });
-
-    if (resp.status === 200) {
-      const { result, log_lines, err_lines } = (await resp.json()) as WorkerOutput;
-      const returnOutput: ContentBlock | null =
-        result == null ? null : (
-          {
-            type: 'text',
-            text: typeof result === 'string' ? result : JSON.stringify(result),
-          }
-        );
-      const logOutput: ContentBlock | null =
-        log_lines.length === 0 ?
-          null
-        : {
-            type: 'text',
-            text: log_lines.join('\n'),
-          };
-      const errOutput: ContentBlock | null =
-        err_lines.length === 0 ?
-          null
-        : {
-            type: 'text',
-            text: 'Error output:\n' + err_lines.join('\n'),
-          };
-      return {
-        content: [returnOutput, logOutput, errOutput].filter((block) => block !== null),
-      };
-    } else {
-      const { result, log_lines, err_lines } = (await resp.json()) as WorkerOutput;
-      const messageOutput: ContentBlock | null =
-        result == null ? null : (
-          {
-            type: 'text',
-            text: typeof result === 'string' ? result : JSON.stringify(result),
-          }
-        );
-      const logOutput: ContentBlock | null =
-        log_lines.length === 0 ?
-          null
-        : {
-            type: 'text',
-            text: log_lines.join('\n'),
-          };
-      const errOutput: ContentBlock | null =
-        err_lines.length === 0 ?
-          null
-        : {
-            type: 'text',
-            text: 'Error output:\n' + err_lines.join('\n'),
-          };
-      return {
-        content: [messageOutput, logOutput, errOutput].filter((block) => block !== null),
-        isError: true,
-      };
-    }
-  } finally {
-    worker.terminate();
+  } catch (err) {
+    if (err instanceof DenoUnavailableError) return asErrorResult(err.message);
+    throw err;
   }
+
+  const { result, log_lines, err_lines } = run.output;
+  const content: ContentBlock[] = [];
+  if (result != null) {
+    content.push({ type: 'text', text: typeof result === 'string' ? result : JSON.stringify(result) });
+  }
+  if (log_lines.length > 0) {
+    content.push({ type: 'text', text: log_lines.join('\n') });
+  }
+  if (err_lines.length > 0) {
+    content.push({ type: 'text', text: 'Error output:\n' + err_lines.join('\n') });
+  }
+  return run.status === 200 ? { content } : { content, isError: true };
 };

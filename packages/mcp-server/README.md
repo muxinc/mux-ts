@@ -94,6 +94,28 @@ sandbox service instead, configured with:
 - `--code-sandbox-api-key` / `CODE_SANDBOX_API_KEY`: API key for the sandbox service,
   sent as a `Bearer` token. Required in remote mode.
 
+Local mode runs the code under Deno, which the package installs for itself through its optional
+`deno` dependency. Where that cannot install — a blocked binary download, `npm install --omit=optional`,
+or a platform Deno does not ship an npm build for, such as Alpine — set `DENO_PATH` to a Deno 2.9 or
+newer executable. The same variable applies to `mcp-code-runner` below.
+
+### Request headers a caller may send
+
+Over the HTTP transport, `x-stainless-mcp-client-envs` lets a caller supply client environment values
+(for example credentials) and `x-stainless-mcp-client-permissions` lets it adjust code tool permissions.
+Both are honored by default so a trusted proxy in front of the server can use them. A public deployment
+whose callers must not do either should start the server with `--no-client-header-overrides` (or pass
+`clientHeaderOverrides: false` in `mcpOptions` when embedding `streamableHTTPApp`).
+
+### Running code outside the server
+
+The package also installs a `mcp-code-runner` bin for sandbox services that execute caller
+code in their own VM. It runs one request through the same Deno worker as local execution
+mode: feed it `{"code": ..., "client_opts": ...}` as JSON on stdin or as a file argument; it
+writes one `{is_error, result, log_lines, err_lines}` JSON line to stdout and Deno's own
+output to stderr. The network grant is the set of hosts the SDK calls (the client's base URL plus the
+media hosts some endpoints use), as in local execution mode.
+
 ## Running remotely
 
 Launching the client with `--transport=http` launches the server as a remote server using Streamable HTTP transport. The `--port` setting can choose the port it will run on, and the `--socket` setting allows it to run on a Unix socket.

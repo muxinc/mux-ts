@@ -29,4 +29,14 @@ describe('parseCLIOptions', () => {
     expect(result.port).toBe(2222);
     cleanup();
   });
+
+  it('client header overrides default on and can be disabled', () => {
+    let cleanup = mockArgv([]);
+    expect(parseCLIOptions().clientHeaderOverrides).toBe(true);
+    cleanup();
+
+    cleanup = mockArgv(['--no-client-header-overrides']);
+    expect(parseCLIOptions().clientHeaderOverrides).toBe(false);
+    cleanup();
+  });
 });

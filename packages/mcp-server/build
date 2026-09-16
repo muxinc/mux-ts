@@ -28,6 +28,7 @@ node scripts/postprocess-dist-package-json.cjs
 cp tsconfig.dist-src.json dist/src/tsconfig.json
 
 chmod +x dist/index.js
+if [ -e dist/code-runner.js ]; then chmod +x dist/code-runner.js; fi
 
 DIST_PATH=./dist PKG_IMPORT_PATH=@mux/mcp/ node ../../scripts/utils/postprocess-files.cjs
 

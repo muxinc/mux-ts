@@ -1219,10 +1219,10 @@
     "@typescript-eslint/types" "8.31.1"
     eslint-visitor-keys "^4.2.0"
 
-"@valtown/deno-http-worker@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@valtown/deno-http-worker/-/deno-http-worker-0.0.21.tgz#9ce3b5c1d0db211fe7ea8297881fe551838474ad"
-  integrity sha512-16kFuUykann75lNytnXXIQlmpzreZjzdyT27ebT3yNGCS3kKaS1iZYWHc3Si9An54Cphwr4qEcviChQkEeJBlA==
+"@valtown/deno-http-worker@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@valtown/deno-http-worker/-/deno-http-worker-3.0.0.tgz#35d9b867fe619454fa516d3772b3ca208d5481c5"
+  integrity sha512-+92vwPm6KtgrmcLJE7jzx0i8FT+Ksha1VpiPKeobKqLeKuvB6b2MYfHadmUHacQHMu5/ifldrHyYVC99SG9vVg==
 
 accepts@^2.0.0:
   version "2.0.0"

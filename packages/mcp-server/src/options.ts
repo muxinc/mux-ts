@@ -23,6 +23,7 @@ export type McpOptions = {
   codeAllowHttpGets?: boolean | undefined;
   codeAllowedMethods?: string[] | undefined;
   codeBlockedMethods?: string[] | undefined;
+  clientHeaderOverrides?: boolean | undefined;
   codeExecutionMode: McpCodeExecutionMode;
   codeSandboxUrl?: string | undefined;
   codeSandboxApiKey?: string | undefined;
@@ -33,6 +34,12 @@ export type McpCodeExecutionMode = 'local' | 'remote';
 
 export function parseCLIOptions(): CLIOptions {
   const opts = yargs(hideBin(process.argv))
+    .option('client-header-overrides', {
+      type: 'boolean',
+      default: true,
+      description:
+        'Honor the x-stainless-mcp-client-envs and x-stainless-mcp-client-permissions request headers (caller-supplied client environment values and code tool permission changes). Disable on a public deployment whose callers must not set either.',
+    })
     .option('code-allow-http-gets', {
       type: 'boolean',
       description:
@@ -151,6 +158,7 @@ export function parseCLIOptions(): CLIOptions {
     codeAllowHttpGets: argv.codeAllowHttpGets,
     codeAllowedMethods: argv.codeAllowedMethods,
     codeBlockedMethods: argv.codeBlockedMethods,
+    clientHeaderOverrides: argv.clientHeaderOverrides,
     codeExecutionMode: argv.codeExecutionMode as McpCodeExecutionMode,
     codeSandboxUrl: argv.codeSandboxUrl,
     codeSandboxApiKey: argv.codeSandboxApiKey,
