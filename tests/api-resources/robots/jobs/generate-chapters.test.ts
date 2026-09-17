@@ -40,6 +40,7 @@ describe('resource generateChapters', () => {
           task: 'x',
           title_guidelines: 'x',
         },
+        update_asset_chapters: true,
       },
       passthrough: 'passthrough',
     });

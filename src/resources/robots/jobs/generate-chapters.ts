@@ -21,6 +21,7 @@ export class GenerateChapters extends APIResource {
    *   await client.robots.jobs.generateChapters.create({
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
+   *       update_asset_chapters: true,
    *       output_steering: {
    *         chapter_style: 'descriptive',
    *         chapter_granularity: 'balanced',
@@ -126,6 +127,12 @@ export interface GenerateChaptersJobOutputs {
    * Generated chapters, ordered by start time.
    */
   chapters: Array<GenerateChaptersJobOutputs.Chapter>;
+
+  /**
+   * What happened when the generated chapters were written back to the Mux asset.
+   * Present only when update_asset_chapters was true.
+   */
+  asset_update?: GenerateChaptersJobOutputs.AssetUpdate;
 }
 
 export namespace GenerateChaptersJobOutputs {
@@ -139,6 +146,33 @@ export namespace GenerateChaptersJobOutputs {
      * Concise chapter title.
      */
     title: string;
+  }
+
+  /**
+   * What happened when the generated chapters were written back to the Mux asset.
+   * Present only when update_asset_chapters was true.
+   */
+  export interface AssetUpdate {
+    /**
+     * Outcome of the chapters track write. `created` means the asset now carries these
+     * chapters. `failed` means the write was attempted and errored; the chapters in
+     * this response are still valid and can be applied manually.
+     */
+    status: 'created' | 'failed';
+
+    /**
+     * Mux text track ID of the chapters track that was deleted to make room for the
+     * new one. Absent when the asset had no chapters track. On a `failed` status it
+     * means the delete succeeded but the create did not, leaving the asset with no
+     * chapters track.
+     */
+    replaced_track_id?: string;
+
+    /**
+     * Mux text track ID of the chapters track created on the asset. Present when
+     * status is `created`.
+     */
+    track_id?: string;
   }
 }
 
@@ -172,6 +206,17 @@ export interface GenerateChaptersJobParameters {
    * integrations.
    */
   prompt_overrides?: GenerateChaptersJobParameters.PromptOverrides;
+
+  /**
+   * When true, the generated chapters are written back to the Mux asset as a
+   * chapters text track once the job completes, making them deliverable with the
+   * asset. Overwrites existing chapters: an asset holds a single chapters track, so
+   * any chapters track already on the asset is deleted and replaced — including one
+   * in a different language, and one you created yourself. Best-effort — a failed
+   * write does not fail the job — so check `asset_update` in the job outputs for the
+   * outcome.
+   */
+  update_asset_chapters?: boolean;
 }
 
 export namespace GenerateChaptersJobParameters {

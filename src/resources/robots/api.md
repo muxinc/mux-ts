@@ -111,6 +111,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/edit-captions.ts">EditCaptionsJob</a></code>
 - <code><a href="./src/resources/robots/jobs/edit-captions.ts">EditCaptionsJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/edit-captions.ts">EditCaptionsJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/edit-captions.ts">EditCaptionsSpeakerReplacement</a></code>
 
 Methods:
 

@@ -12,8 +12,9 @@ import { path } from '../../../internal/utils/path';
 export class EditCaptions extends APIResource {
   /**
    * Creates a new job that edits an existing Mux text track using static
-   * replacements and optional profanity censoring. Provide at least one of
-   * `replacements` or `auto_censor_profanity`.
+   * replacements, speaker-label replacements, and optional profanity censoring.
+   * Provide at least one of `replacements`, `speaker_replacements`, or
+   * `auto_censor_profanity`.
    *
    * @example
    * ```ts
@@ -29,6 +30,9 @@ export class EditCaptions extends APIResource {
    *           case_sensitive: true,
    *         },
    *         { find: 'gonna', replace: 'going to' },
+   *       ],
+   *       speaker_replacements: [
+   *         { find: 'speaker_0', replace: 'Alice' },
    *       ],
    *       upload_to_mux: true,
    *       delete_original_track: true,
@@ -174,6 +178,13 @@ export interface EditCaptionsJobParameters {
   replacements?: Array<EditCaptionsJobParameters.Replacement>;
 
   /**
+   * Optional replacements for bracketed speaker labels at the start of caption cues.
+   * Values omit the surrounding square brackets, and matching spoken text is not
+   * changed.
+   */
+  speaker_replacements?: Array<EditCaptionsSpeakerReplacement>;
+
+  /**
    * Optional suffix appended to the uploaded replacement track name. Defaults to
    * "edited".
    */
@@ -237,6 +248,18 @@ export namespace EditCaptionsJobParameters {
   }
 }
 
+export interface EditCaptionsSpeakerReplacement {
+  /**
+   * Existing speaker label without the surrounding square brackets.
+   */
+  find: string;
+
+  /**
+   * New speaker label without the surrounding square brackets.
+   */
+  replace: string;
+}
+
 export interface EditCaptionCreateParams {
   parameters: EditCaptionsJobParameters;
 
@@ -252,6 +275,7 @@ export declare namespace EditCaptions {
     type EditCaptionsJob as EditCaptionsJob,
     type EditCaptionsJobOutputs as EditCaptionsJobOutputs,
     type EditCaptionsJobParameters as EditCaptionsJobParameters,
+    type EditCaptionsSpeakerReplacement as EditCaptionsSpeakerReplacement,
     type EditCaptionCreateParams as EditCaptionCreateParams,
   };
 }

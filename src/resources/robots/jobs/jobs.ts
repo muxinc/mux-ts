@@ -17,6 +17,7 @@ import {
   EditCaptionsJob,
   EditCaptionsJobOutputs,
   EditCaptionsJobParameters,
+  EditCaptionsSpeakerReplacement,
 } from './edit-captions';
 import * as FindBestThumbnailsAPI from './find-best-thumbnails';
 import {
@@ -526,6 +527,7 @@ export declare namespace Jobs {
     type EditCaptionsJob as EditCaptionsJob,
     type EditCaptionsJobOutputs as EditCaptionsJobOutputs,
     type EditCaptionsJobParameters as EditCaptionsJobParameters,
+    type EditCaptionsSpeakerReplacement as EditCaptionsSpeakerReplacement,
     type EditCaptionCreateParams as EditCaptionCreateParams,
   };
 

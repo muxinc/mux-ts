@@ -13,6 +13,7 @@ export {
   type EditCaptionsJob,
   type EditCaptionsJobOutputs,
   type EditCaptionsJobParameters,
+  type EditCaptionsSpeakerReplacement,
   type EditCaptionCreateParams,
 } from './edit-captions';
 export {

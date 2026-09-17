@@ -12,6 +12,7 @@ import {
   Runs,
 } from './runs';
 import * as AskQuestionsAPI from '../jobs/ask-questions';
+import * as EditCaptionsAPI from '../jobs/edit-captions';
 import * as FindBestThumbnailsAPI from '../jobs/find-best-thumbnails';
 import * as FindKeyMomentsAPI from '../jobs/find-key-moments';
 import * as FindScenesAPI from '../jobs/find-scenes';
@@ -795,6 +796,17 @@ export namespace WorkflowBinding {
        * integrations.
        */
       prompt_overrides?: Params.PromptOverrides;
+
+      /**
+       * When true, the generated chapters are written back to the Mux asset as a
+       * chapters text track once the job completes, making them deliverable with the
+       * asset. Overwrites existing chapters: an asset holds a single chapters track, so
+       * any chapters track already on the asset is deleted and replaced — including one
+       * in a different language, and one you created yourself. Best-effort — a failed
+       * write does not fail the job — so check `asset_update` in the job outputs for the
+       * outcome.
+       */
+      update_asset_chapters?: boolean;
     }
 
     export namespace Params {
@@ -935,6 +947,13 @@ export namespace WorkflowBinding {
        * Optional static word or phrase replacements applied directly to cue text.
        */
       replacements?: Array<Params.Replacement>;
+
+      /**
+       * Optional replacements for bracketed speaker labels at the start of caption cues.
+       * Values omit the surrounding square brackets, and matching spoken text is not
+       * changed.
+       */
+      speaker_replacements?: Array<EditCaptionsAPI.EditCaptionsSpeakerReplacement>;
 
       /**
        * Optional suffix appended to the uploaded replacement track name. Defaults to
@@ -1134,9 +1153,9 @@ export namespace WorkflowBinding {
      */
     export interface Params {
       /**
-       * One or more questions to ask about the video. Each question can either select
-       * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
-       * receive a free-form prose answer.
+       * One or more questions to ask about the video, up to 50. Each question can either
+       * select from answer_options (defaults to yes/no) or, by setting free_form_reply:
+       * true, receive a free-form prose answer.
        */
       questions: Array<Params.Question>;
 

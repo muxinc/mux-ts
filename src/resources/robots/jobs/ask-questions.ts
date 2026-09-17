@@ -185,9 +185,9 @@ export interface AskQuestionsJobParameters {
   asset_id: string;
 
   /**
-   * One or more questions to ask about the video. Each question can either select
-   * from answer_options (defaults to yes/no) or, by setting free_form_reply: true,
-   * receive a free-form prose answer.
+   * One or more questions to ask about the video, up to 50. Each question can either
+   * select from answer_options (defaults to yes/no) or, by setting free_form_reply:
+   * true, receive a free-form prose answer.
    */
   questions: Array<AskQuestionsJobParameters.Question>;
 

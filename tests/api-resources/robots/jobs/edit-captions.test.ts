@@ -46,6 +46,7 @@ describe('resource editCaptions', () => {
             case_sensitive: true,
           },
         ],
+        speaker_replacements: [{ find: 'speaker_0', replace: 'Alice' }],
         track_name_suffix: 'x',
         upload_to_mux: true,
       },
