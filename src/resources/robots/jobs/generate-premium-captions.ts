@@ -7,7 +7,7 @@ import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 /**
- * Generate high-quality captions for a Mux asset and upload the result as a text track. This workflow is experimental and subject to change.
+ * Generate high-quality captions for a Mux asset and upload the result as a text track.
  */
 export class GeneratePremiumCaptions extends APIResource {
   /**

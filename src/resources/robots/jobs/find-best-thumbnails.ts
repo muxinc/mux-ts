@@ -7,7 +7,7 @@ import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 /**
- * Sample thumbnails from a Mux Video asset, score them with AI, and select the best thumbnail candidates. This workflow is experimental and subject to change.
+ * Sample thumbnails from a Mux Video asset, score them with AI, and select the best thumbnail candidates.
  */
 export class FindBestThumbnails extends APIResource {
   /**

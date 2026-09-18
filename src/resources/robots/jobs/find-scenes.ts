@@ -7,7 +7,7 @@ import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 /**
- * Segment a Mux video asset into ordered scenes using shot boundaries and transcript cues. This workflow is experimental and subject to change.
+ * Segment a Mux video asset into ordered scenes using shot boundaries and transcript cues.
  */
 export class FindScenes extends APIResource {
   /**

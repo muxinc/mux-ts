@@ -7,7 +7,7 @@ import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 /**
- * Translate the audio track to another language. This workflow is experimental and subject to change.
+ * Translate the audio track to another language.
  */
 export class TranslateAudio extends APIResource {
   /**

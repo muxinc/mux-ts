@@ -7,7 +7,7 @@ import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 /**
- * Analyze viewer engagement patterns to identify high and low engagement moments with AI-powered insights. This workflow is experimental and subject to change.
+ * Analyze viewer engagement patterns to identify high and low engagement moments with AI-powered insights.
  */
 export class GenerateEngagementInsights extends APIResource {
   /**

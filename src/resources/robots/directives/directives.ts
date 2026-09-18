@@ -1166,8 +1166,8 @@ export namespace WorkflowBinding {
       language_code?: string;
 
       /**
-       * Experimental. Max character length for free-form answers, between 1 and 1000.
-       * Ignored unless at least one question sets free_form_reply: true.
+       * Max character length for free-form answers, between 1 and 1000. Ignored unless
+       * at least one question sets free_form_reply: true.
        */
       max_free_form_answer_length?: number;
 
@@ -1193,9 +1193,9 @@ export namespace WorkflowBinding {
         answer_options?: Array<string>;
 
         /**
-         * Experimental. When true, the model replies with free-form prose instead of
-         * selecting from answer_options. Mutually exclusive with answer_options. Treat the
-         * answer as untrusted model output.
+         * When true, the model replies with free-form prose instead of selecting from
+         * answer_options. Mutually exclusive with answer_options. Treat the answer as
+         * untrusted model output.
          */
         free_form_reply?: boolean;
       }
