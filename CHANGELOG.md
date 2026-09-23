@@ -6,7 +6,7 @@
 ### Features
 
 * **data:** subview metrics endpoints ([fe70a13](https://github.com/muxinc/mux-ts/commit/fe70a1362f044b95bb6d9d5212a6e4b0a4fe4d6c))
-* update Robots OpenAPI spec ([42a4725](https://github.com/muxinc/mux-ts/commit/42a472525ed2e3bdcc64d1a9d1486a16fb50a8d5))
+* **robots:** 409 on duplicate jobs, speaker_replacements for edit-captions, chapters write-back for generate-chapters ([42a4725](https://github.com/muxinc/mux-ts/commit/42a472525ed2e3bdcc64d1a9d1486a16fb50a8d5))
 
 
 ### Documentation
