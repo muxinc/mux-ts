@@ -1,6 +1,6 @@
 {
   "name": "@mux/ts",
-  "version": "15.2.0",
+  "version": "15.3.0",
   "description": "The official TypeScript library for the Mux API",
   "author": "Mux <devex@mux.com>",
   "types": "dist/index.d.ts",
