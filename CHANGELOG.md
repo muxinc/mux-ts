@@ -1,5 +1,18 @@
 # Changelog
 
+## [15.3.0](https://github.com/muxinc/mux-ts/compare/v15.2.0...v15.3.0) (2026-09-23)
+
+
+### Features
+
+* **data:** subview metrics endpoints ([fe70a13](https://github.com/muxinc/mux-ts/commit/fe70a1362f044b95bb6d9d5212a6e4b0a4fe4d6c))
+* update Robots OpenAPI spec ([42a4725](https://github.com/muxinc/mux-ts/commit/42a472525ed2e3bdcc64d1a9d1486a16fb50a8d5))
+
+
+### Documentation
+
+* Remove "Experimental" warnings in Mux Robots ([f7f6d69](https://github.com/muxinc/mux-ts/commit/f7f6d69cd07565155d1bca0f245829fc4dea26a7))
+
 ## [15.2.0](https://github.com/muxinc/mux-ts/compare/v15.1.0...v15.2.0) (2026-09-16)
 
 
