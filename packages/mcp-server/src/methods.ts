@@ -731,6 +731,42 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/data/v1/metrics/{METRIC_ID}/timeseries',
   },
   {
+    clientCallName: 'client.data.subviewMetrics.getOverallValues',
+    fullyQualifiedName: 'data.subviewMetrics.getOverallValues',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/overall',
+  },
+  {
+    clientCallName: 'client.data.subviewMetrics.listBreakdownValues',
+    fullyQualifiedName: 'data.subviewMetrics.listBreakdownValues',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown',
+  },
+  {
+    clientCallName: 'client.data.subviewMetrics.listComparisonValues',
+    fullyQualifiedName: 'data.subviewMetrics.listComparisonValues',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/comparison',
+  },
+  {
+    clientCallName: 'client.data.subviewMetrics.getBreakdownTimeseries',
+    fullyQualifiedName: 'data.subviewMetrics.getBreakdownTimeseries',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown-timeseries',
+  },
+  {
+    clientCallName: 'client.data.subviewMetrics.listDimensions',
+    fullyQualifiedName: 'data.subviewMetrics.listDimensions',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions',
+  },
+  {
+    clientCallName: 'client.data.subviewMetrics.listDimensionValues',
+    fullyQualifiedName: 'data.subviewMetrics.listDimensionValues',
+    httpMethod: 'get',
+    httpPath: '/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}',
+  },
+  {
     clientCallName: 'client.data.realTime.retrieveBreakdown',
     fullyQualifiedName: 'data.realTime.retrieveBreakdown',
     httpMethod: 'get',

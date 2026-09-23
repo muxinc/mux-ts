@@ -66,6 +66,27 @@ import {
   RealTimeRetrieveTimeseriesParams,
   RealTimeTimeseriesResponse,
 } from './real-time';
+import * as SubviewMetricsAPI from './subview-metrics';
+import {
+  SubviewBreakdownTimeseriesDatapoint,
+  SubviewBreakdownTimeseriesResponse,
+  SubviewBreakdownValue,
+  SubviewBreakdownValuesBasePage,
+  SubviewBreakdownValuesResponse,
+  SubviewComparisonGroup,
+  SubviewComparisonValuesResponse,
+  SubviewDimensionValue,
+  SubviewDimensionValuesBasePage,
+  SubviewDimensionValuesResponse,
+  SubviewDimensionsResponse,
+  SubviewMetricGetBreakdownTimeseriesParams,
+  SubviewMetricGetOverallValuesParams,
+  SubviewMetricListBreakdownValuesParams,
+  SubviewMetricListComparisonValuesParams,
+  SubviewMetricListDimensionValuesParams,
+  SubviewMetrics,
+  SubviewOverallValuesResponse,
+} from './subview-metrics';
 import * as VideoViewsAPI from './video-views';
 import {
   AbridgedVideoView,
@@ -86,6 +107,7 @@ export class Data extends APIResource {
   exports: ExportsAPI.Exports = new ExportsAPI.Exports(this._client);
   incidents: IncidentsAPI.Incidents = new IncidentsAPI.Incidents(this._client);
   metrics: MetricsAPI.Metrics = new MetricsAPI.Metrics(this._client);
+  subviewMetrics: SubviewMetricsAPI.SubviewMetrics = new SubviewMetricsAPI.SubviewMetrics(this._client);
   realTime: RealTimeAPI.RealTime = new RealTimeAPI.RealTime(this._client);
   videoViews: VideoViewsAPI.VideoViews = new VideoViewsAPI.VideoViews(this._client);
   annotations: AnnotationsAPI.Annotations = new AnnotationsAPI.Annotations(this._client);
@@ -98,6 +120,7 @@ Data.Errors = Errors;
 Data.Exports = Exports;
 Data.Incidents = Incidents;
 Data.Metrics = Metrics;
+Data.SubviewMetrics = SubviewMetrics;
 Data.RealTime = RealTime;
 Data.VideoViews = VideoViews;
 Data.Annotations = Annotations;
@@ -148,6 +171,27 @@ export declare namespace Data {
     type MetricGetOverallValuesParams as MetricGetOverallValuesParams,
     type MetricGetInsightsParams as MetricGetInsightsParams,
     type MetricGetTimeseriesParams as MetricGetTimeseriesParams,
+  };
+
+  export {
+    SubviewMetrics as SubviewMetrics,
+    type SubviewBreakdownTimeseriesDatapoint as SubviewBreakdownTimeseriesDatapoint,
+    type SubviewBreakdownTimeseriesResponse as SubviewBreakdownTimeseriesResponse,
+    type SubviewBreakdownValue as SubviewBreakdownValue,
+    type SubviewBreakdownValuesResponse as SubviewBreakdownValuesResponse,
+    type SubviewComparisonGroup as SubviewComparisonGroup,
+    type SubviewComparisonValuesResponse as SubviewComparisonValuesResponse,
+    type SubviewDimensionValue as SubviewDimensionValue,
+    type SubviewDimensionValuesResponse as SubviewDimensionValuesResponse,
+    type SubviewDimensionsResponse as SubviewDimensionsResponse,
+    type SubviewOverallValuesResponse as SubviewOverallValuesResponse,
+    type SubviewBreakdownValuesBasePage as SubviewBreakdownValuesBasePage,
+    type SubviewDimensionValuesBasePage as SubviewDimensionValuesBasePage,
+    type SubviewMetricGetOverallValuesParams as SubviewMetricGetOverallValuesParams,
+    type SubviewMetricListBreakdownValuesParams as SubviewMetricListBreakdownValuesParams,
+    type SubviewMetricListComparisonValuesParams as SubviewMetricListComparisonValuesParams,
+    type SubviewMetricGetBreakdownTimeseriesParams as SubviewMetricGetBreakdownTimeseriesParams,
+    type SubviewMetricListDimensionValuesParams as SubviewMetricListDimensionValuesParams,
   };
 
   export {

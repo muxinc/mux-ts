@@ -96,6 +96,30 @@ Methods:
 - <code title="get /data/v1/metrics/{METRIC_ID}/insights">client.data.metrics.<a href="./src/resources/data/metrics.ts">getInsights</a>(metricID, { ...params }) -> InsightsResponse</code>
 - <code title="get /data/v1/metrics/{METRIC_ID}/timeseries">client.data.metrics.<a href="./src/resources/data/metrics.ts">getTimeseries</a>(metricID, { ...params }) -> MetricTimeseriesDataResponse</code>
 
+## SubviewMetrics
+
+Types:
+
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewBreakdownTimeseriesDatapoint</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewBreakdownTimeseriesResponse</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewBreakdownValue</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewBreakdownValuesResponse</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewComparisonGroup</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewComparisonValuesResponse</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewDimensionValue</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewDimensionValuesResponse</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewDimensionsResponse</a></code>
+- <code><a href="./src/resources/data/subview-metrics.ts">SubviewOverallValuesResponse</a></code>
+
+Methods:
+
+- <code title="get /data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/overall">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">getOverallValues</a>(metricID, subviewType, { ...params }) -> SubviewOverallValuesResponse</code>
+- <code title="get /data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listBreakdownValues</a>(metricID, subviewType, { ...params }) -> SubviewBreakdownValuesBasePage</code>
+- <code title="get /data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/comparison">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listComparisonValues</a>(metricID, subviewType, { ...params }) -> SubviewComparisonValuesResponse</code>
+- <code title="get /data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown-timeseries">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">getBreakdownTimeseries</a>(metricID, subviewType, { ...params }) -> SubviewBreakdownTimeseriesResponse</code>
+- <code title="get /data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listDimensions</a>(subviewType) -> SubviewDimensionsResponse</code>
+- <code title="get /data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listDimensionValues</a>(subviewType, dimensionName, { ...params }) -> SubviewDimensionValuesBasePage</code>
+
 ## RealTime
 
 Types:

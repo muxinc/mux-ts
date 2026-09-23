@@ -7585,6 +7585,409 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     },
   },
   {
+    name: 'get_overall_values',
+    endpoint: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/overall',
+    httpMethod: 'get',
+    summary: 'Get Subview Overall Values',
+    description:
+      'Returns the total subview metric value across all views matching the given filters and timeframe.',
+    stainlessPath: '(resource) data.subview_metrics > (method) get_overall_values',
+    qualified: 'client.data.subviewMetrics.getOverallValues',
+    params: [
+      "METRIC_ID: 'playing_time';",
+      "SUBVIEW_TYPE: 'rendition' | 'playback_mode';",
+      'filters?: string[];',
+      'timeframe?: string[];',
+    ],
+    response:
+      '{ data: { metric_value: number; }; meta: { metric: string; subview_type: string; unit: string; }; timeframe: number[]; total_row_count: number; }',
+    markdown:
+      "## get_overall_values\n\n`client.data.subviewMetrics.getOverallValues(METRIC_ID: 'playing_time', SUBVIEW_TYPE: 'rendition' | 'playback_mode', filters?: string[], timeframe?: string[]): { data: object; meta: object; timeframe: number[]; total_row_count: number; }`\n\n**get** `/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/overall`\n\nReturns the total subview metric value across all views matching the given filters and timeframe.\n\n### Parameters\n\n- `METRIC_ID: 'playing_time'`\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n- `filters?: string[]`\n  Filter results using key:value pairs. Must be provided as an array query string parameter.\n\nThe set of filterable dimensions is distinct from the main Data API's dimensions, and depends on the subview type — see the List Subview Dimensions endpoint for the valid names.\n\n* `filters[]=dimension:value` - Include rows where dimension equals value\n* `filters[]=!dimension:value` - Exclude rows where dimension equals value\n* `filters[]=dimension:__empty__` - Include rows where the dimension has no value\n\nExample: `filters[]=country:US`\n\n\n- `timeframe?: string[]`\n  Timeframe window to limit results by. Must be provided as an array query string parameter (e.g. timeframe[]=).\n\nAccepted formats are...\n\n  * array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`\n  * duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`\n\n\n### Returns\n\n- `{ data: { metric_value: number; }; meta: { metric: string; subview_type: string; unit: string; }; timeframe: number[]; total_row_count: number; }`\n\n  - `data: { metric_value: number; }`\n  - `meta: { metric: string; subview_type: string; unit: string; }`\n  - `timeframe: number[]`\n  - `total_row_count: number`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\nconst subviewOverallValuesResponse = await client.data.subviewMetrics.getOverallValues('playing_time', 'rendition');\n\nconsole.log(subviewOverallValuesResponse);\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.getOverallValues',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\nconst subviewOverallValuesResponse = await client.data.subviewMetrics.getOverallValues(\n  'playing_time',\n  'rendition',\n);\n\nconsole.log(subviewOverallValuesResponse.data);",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$METRIC_ID/$SUBVIEW_TYPE/overall \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.get_overall_values',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\nsubview_overall_values_response = client.data.subview_metrics.get_overall_values(\n    metric_id="playing_time",\n    subview_type="rendition",\n)\nprint(subview_overall_values_response.data)',
+      },
+      java: {
+        method: 'data().subviewMetrics().getOverallValues',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewMetricGetOverallValuesParams;\nimport com.mux.models.data.subviewmetrics.SubviewOverallValuesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewOverallValuesResponse subviewOverallValuesResponse = client.data().subviewMetrics().getOverallValues(\n          SubviewMetricGetOverallValuesParams.MetricId.PLAYING_TIME, SubviewMetricGetOverallValuesParams.SubviewType.RENDITION\n        );\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().getOverallValues',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewMetricGetOverallValuesParams\nimport com.mux.models.data.subviewmetrics.SubviewOverallValuesResponse\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val subviewOverallValuesResponse: SubviewOverallValuesResponse = client.data().subviewMetrics().getOverallValues(\n      SubviewMetricGetOverallValuesParams.MetricId.PLAYING_TIME, SubviewMetricGetOverallValuesParams.SubviewType.RENDITION\n    )\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.GetOverallValues',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tsubviewOverallValuesResponse, err := client.Data.SubviewMetrics.GetOverallValues(\n\t\tcontext.TODO(),\n\t\tdata.SubviewMetricGetOverallValuesParamsMetricIDPlayingTime,\n\t\tdata.SubviewMetricGetOverallValuesParamsSubviewTypeRendition,\n\t\tdata.SubviewMetricGetOverallValuesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", subviewOverallValuesResponse.Data)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.get_overall_values',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\nsubview_overall_values_response = mux.data.subview_metrics.get_overall_values(:playing_time, :rendition)\n\nputs(subview_overall_values_response)',
+      },
+      php: {
+        method: 'data->subviewMetrics->getOverallValues',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$subviewOverallValuesResponse = $client->data->subviewMetrics->getOverallValues(\n  'playing_time', 'rendition', filters: ['string'], timeframe: ['string']\n);\n\nvar_dump($subviewOverallValuesResponse);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.GetOverallValues',
+        example:
+          'SubviewMetricGetOverallValuesParams parameters = new()\n{\n    MetricID = MetricID.PlayingTime,\n    SubviewType = SubviewType.Rendition,\n};\n\nvar subviewOverallValuesResponse = await client.Data.SubviewMetrics.GetOverallValues(parameters);\n\nConsole.WriteLine(subviewOverallValuesResponse);',
+      },
+    },
+  },
+  {
+    name: 'list_breakdown_values',
+    endpoint: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown',
+    httpMethod: 'get',
+    summary: 'List Subview Breakdown Values',
+    description:
+      "Returns the metric value broken down by subview attributes, with each row's percentage of the total. By default, groups by all of the subview type's attributes (for example, every rendition attribute for `rendition` subviews) — use `group_by[]` to select a subset.\n",
+    stainlessPath: '(resource) data.subview_metrics > (method) list_breakdown_values',
+    qualified: 'client.data.subviewMetrics.listBreakdownValues',
+    params: [
+      "METRIC_ID: 'playing_time';",
+      "SUBVIEW_TYPE: 'rendition' | 'playback_mode';",
+      'filters?: string[];',
+      'group_by?: string[];',
+      'limit?: number;',
+      'page?: number;',
+      'timeframe?: string[];',
+    ],
+    response: '{ breakdown_value: string; metric_value: number; }',
+    markdown:
+      "## list_breakdown_values\n\n`client.data.subviewMetrics.listBreakdownValues(METRIC_ID: 'playing_time', SUBVIEW_TYPE: 'rendition' | 'playback_mode', filters?: string[], group_by?: string[], limit?: number, page?: number, timeframe?: string[]): { breakdown_value: string; metric_value: number; }`\n\n**get** `/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown`\n\nReturns the metric value broken down by subview attributes, with each row's percentage of the total. By default, groups by all of the subview type's attributes (for example, every rendition attribute for `rendition` subviews) — use `group_by[]` to select a subset.\n\n\n### Parameters\n\n- `METRIC_ID: 'playing_time'`\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n- `filters?: string[]`\n  Filter results using key:value pairs. Must be provided as an array query string parameter.\n\nThe set of filterable dimensions is distinct from the main Data API's dimensions, and depends on the subview type — see the List Subview Dimensions endpoint for the valid names.\n\n* `filters[]=dimension:value` - Include rows where dimension equals value\n* `filters[]=!dimension:value` - Exclude rows where dimension equals value\n* `filters[]=dimension:__empty__` - Include rows where the dimension has no value\n\nExample: `filters[]=country:US`\n\n\n- `group_by?: string[]`\n  Subview attributes to group the results by. Must be provided as an array query string parameter. Currently only supported for the `rendition` subview type, as any combination of the 6 enum values below.\n\nIf omitted, defaults to grouping by every attribute available for the subview type.\n\n\n- `limit?: number`\n  Number of breakdown rows to include in the response.\n\n- `page?: number`\n  Offset by this many pages, of the size of `limit`\n\n- `timeframe?: string[]`\n  Timeframe window to limit results by. Must be provided as an array query string parameter (e.g. timeframe[]=).\n\nAccepted formats are...\n\n  * array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`\n  * duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`\n\n\n### Returns\n\n- `{ breakdown_value: string; metric_value: number; }`\n\n  - `breakdown_value: string`\n  - `metric_value: number`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\n// Automatically fetches more pages as needed.\nfor await (const subviewBreakdownValue of client.data.subviewMetrics.listBreakdownValues('playing_time', 'rendition')) {\n  console.log(subviewBreakdownValue);\n}\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.listBreakdownValues',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const subviewBreakdownValue of client.data.subviewMetrics.listBreakdownValues(\n  'playing_time',\n  'rendition',\n)) {\n  console.log(subviewBreakdownValue.breakdown_value);\n}",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$METRIC_ID/$SUBVIEW_TYPE/breakdown \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.list_breakdown_values',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\npage = client.data.subview_metrics.list_breakdown_values(\n    metric_id="playing_time",\n    subview_type="rendition",\n)\npage = page.data[0]\nprint(page.breakdown_value)',
+      },
+      java: {
+        method: 'data().subviewMetrics().listBreakdownValues',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListBreakdownValuesPage;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListBreakdownValuesParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewMetricListBreakdownValuesPage page = client.data().subviewMetrics().listBreakdownValues(\n          SubviewMetricListBreakdownValuesParams.MetricId.PLAYING_TIME, SubviewMetricListBreakdownValuesParams.SubviewType.RENDITION\n        );\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().listBreakdownValues',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewMetricListBreakdownValuesPage\nimport com.mux.models.data.subviewmetrics.SubviewMetricListBreakdownValuesParams\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val page: SubviewMetricListBreakdownValuesPage = client.data().subviewMetrics().listBreakdownValues(\n      SubviewMetricListBreakdownValuesParams.MetricId.PLAYING_TIME, SubviewMetricListBreakdownValuesParams.SubviewType.RENDITION\n    )\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.ListBreakdownValues',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tpage, err := client.Data.SubviewMetrics.ListBreakdownValues(\n\t\tcontext.TODO(),\n\t\tdata.SubviewMetricListBreakdownValuesParamsMetricIDPlayingTime,\n\t\tdata.SubviewMetricListBreakdownValuesParamsSubviewTypeRendition,\n\t\tdata.SubviewMetricListBreakdownValuesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.list_breakdown_values',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\npage = mux.data.subview_metrics.list_breakdown_values(:playing_time, :rendition)\n\nputs(page)',
+      },
+      php: {
+        method: 'data->subviewMetrics->listBreakdownValues',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$page = $client->data->subviewMetrics->listBreakdownValues(\n  'playing_time',\n  'rendition',\n  filters: ['string'],\n  groupBy: ['video_source_bitrate'],\n  limit: 100,\n  page: 0,\n  timeframe: ['string'],\n);\n\nvar_dump($page);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.ListBreakdownValues',
+        example:
+          'SubviewMetricListBreakdownValuesParams parameters = new()\n{\n    MetricID = MetricID.PlayingTime,\n    SubviewType = SubviewType.Rendition,\n};\n\nvar page = await client.Data.SubviewMetrics.ListBreakdownValues(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
+      },
+    },
+  },
+  {
+    name: 'list_comparison_values',
+    endpoint: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/comparison',
+    httpMethod: 'get',
+    summary: 'List Subview Comparison Values',
+    description:
+      'Returns the metric value broken down by subview attributes, for each of up to 4 selected values of a given dimension. Powers side-by-side comparisons across dimension values (for example, comparing the rendition breakdown for the US vs. India).\n',
+    stainlessPath: '(resource) data.subview_metrics > (method) list_comparison_values',
+    qualified: 'client.data.subviewMetrics.listComparisonValues',
+    params: [
+      "METRIC_ID: 'playing_time';",
+      "SUBVIEW_TYPE: 'rendition' | 'playback_mode';",
+      'dimension: string;',
+      'values: string[];',
+      'breakdown_value_limit?: number;',
+      'filters?: string[];',
+      'group_by?: string[];',
+      'timeframe?: string[];',
+    ],
+    response:
+      '{ data: { dimension_value: string; values: subview_breakdown_value[]; }[]; meta: { dimension: string; group_by: string[]; metric: string; subview_type: string; unit: string; }; timeframe: number[]; total_row_count: number; }',
+    markdown:
+      "## list_comparison_values\n\n`client.data.subviewMetrics.listComparisonValues(METRIC_ID: 'playing_time', SUBVIEW_TYPE: 'rendition' | 'playback_mode', dimension: string, values: string[], breakdown_value_limit?: number, filters?: string[], group_by?: string[], timeframe?: string[]): { data: subview_comparison_group[]; meta: object; timeframe: number[]; total_row_count: number; }`\n\n**get** `/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/comparison`\n\nReturns the metric value broken down by subview attributes, for each of up to 4 selected values of a given dimension. Powers side-by-side comparisons across dimension values (for example, comparing the rendition breakdown for the US vs. India).\n\n\n### Parameters\n\n- `METRIC_ID: 'playing_time'`\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n- `dimension: string`\n  Name of the dimension to compare across. See the List Subview Dimensions endpoint for the valid values for a given subview type.\n\n- `values: string[]`\n  The dimension values to compare, up to 4. Must be provided as an array query string parameter. Use `__empty__` to select subviews where the dimension has no value.\n\nExample: `values[]=US&values[]=FR`\n\n\n- `breakdown_value_limit?: number`\n  Number of breakdown rows to include per selected dimension value.\n\n- `filters?: string[]`\n  Filter results using key:value pairs. Must be provided as an array query string parameter.\n\nThe set of filterable dimensions is distinct from the main Data API's dimensions, and depends on the subview type — see the List Subview Dimensions endpoint for the valid names.\n\n* `filters[]=dimension:value` - Include rows where dimension equals value\n* `filters[]=!dimension:value` - Exclude rows where dimension equals value\n* `filters[]=dimension:__empty__` - Include rows where the dimension has no value\n\nExample: `filters[]=country:US`\n\n\n- `group_by?: string[]`\n  Subview attributes to group the results by. Must be provided as an array query string parameter. Currently only supported for the `rendition` subview type, as any combination of the 6 enum values below.\n\nIf omitted, defaults to grouping by every attribute available for the subview type.\n\n\n- `timeframe?: string[]`\n  Timeframe window to limit results by. Must be provided as an array query string parameter (e.g. timeframe[]=).\n\nAccepted formats are...\n\n  * array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`\n  * duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`\n\n\n### Returns\n\n- `{ data: { dimension_value: string; values: subview_breakdown_value[]; }[]; meta: { dimension: string; group_by: string[]; metric: string; subview_type: string; unit: string; }; timeframe: number[]; total_row_count: number; }`\n\n  - `data: { dimension_value: string; values: { breakdown_value: string; metric_value: number; }[]; }[]`\n  - `meta: { dimension: string; group_by: string[]; metric: string; subview_type: string; unit: string; }`\n  - `timeframe: number[]`\n  - `total_row_count: number`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\nconst subviewComparisonValuesResponse = await client.data.subviewMetrics.listComparisonValues('playing_time', 'rendition', { dimension: 'dimension', values: ['string'] });\n\nconsole.log(subviewComparisonValuesResponse);\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.listComparisonValues',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\nconst subviewComparisonValuesResponse = await client.data.subviewMetrics.listComparisonValues(\n  'playing_time',\n  'rendition',\n  { dimension: 'dimension', values: ['string'] },\n);\n\nconsole.log(subviewComparisonValuesResponse.data);",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$METRIC_ID/$SUBVIEW_TYPE/comparison \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.list_comparison_values',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\nsubview_comparison_values_response = client.data.subview_metrics.list_comparison_values(\n    metric_id="playing_time",\n    subview_type="rendition",\n    dimension="dimension",\n    values=["string"],\n)\nprint(subview_comparison_values_response.data)',
+      },
+      java: {
+        method: 'data().subviewMetrics().listComparisonValues',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewComparisonValuesResponse;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListComparisonValuesParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewMetricListComparisonValuesParams params = SubviewMetricListComparisonValuesParams.builder()\n            .metricId(SubviewMetricListComparisonValuesParams.MetricId.PLAYING_TIME)\n            .subviewType(SubviewMetricListComparisonValuesParams.SubviewType.RENDITION)\n            .dimension("dimension")\n            .addValue("string")\n            .build();\n        SubviewComparisonValuesResponse subviewComparisonValuesResponse = client.data().subviewMetrics().listComparisonValues(params);\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().listComparisonValues',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewComparisonValuesResponse\nimport com.mux.models.data.subviewmetrics.SubviewMetricListComparisonValuesParams\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val params: SubviewMetricListComparisonValuesParams = SubviewMetricListComparisonValuesParams.builder()\n        .metricId(SubviewMetricListComparisonValuesParams.MetricId.PLAYING_TIME)\n        .subviewType(SubviewMetricListComparisonValuesParams.SubviewType.RENDITION)\n        .dimension("dimension")\n        .addValue("string")\n        .build()\n    val subviewComparisonValuesResponse: SubviewComparisonValuesResponse = client.data().subviewMetrics().listComparisonValues(params)\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.ListComparisonValues',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tsubviewComparisonValuesResponse, err := client.Data.SubviewMetrics.ListComparisonValues(\n\t\tcontext.TODO(),\n\t\tdata.SubviewMetricListComparisonValuesParamsMetricIDPlayingTime,\n\t\tdata.SubviewMetricListComparisonValuesParamsSubviewTypeRendition,\n\t\tdata.SubviewMetricListComparisonValuesParams{\n\t\t\tDimension: "dimension",\n\t\t\tValues:    []string{"string"},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", subviewComparisonValuesResponse.Data)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.list_comparison_values',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\nsubview_comparison_values_response = mux.data.subview_metrics.list_comparison_values(\n  :playing_time,\n  :rendition,\n  dimension: "dimension",\n  values: ["string"]\n)\n\nputs(subview_comparison_values_response)',
+      },
+      php: {
+        method: 'data->subviewMetrics->listComparisonValues',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$subviewComparisonValuesResponse = $client\n  ->data\n  ->subviewMetrics\n  ->listComparisonValues(\n  'playing_time',\n  'rendition',\n  dimension: 'dimension',\n  values: ['string'],\n  breakdownValueLimit: 100,\n  filters: ['string'],\n  groupBy: ['video_source_bitrate'],\n  timeframe: ['string'],\n);\n\nvar_dump($subviewComparisonValuesResponse);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.ListComparisonValues',
+        example:
+          'SubviewMetricListComparisonValuesParams parameters = new()\n{\n    MetricID = MetricID.PlayingTime,\n    SubviewType = SubviewType.Rendition,\n    Dimension = "dimension",\n    Values =\n    [\n        "string"\n    ],\n};\n\nvar subviewComparisonValuesResponse = await client.Data.SubviewMetrics.ListComparisonValues(parameters);\n\nConsole.WriteLine(subviewComparisonValuesResponse);',
+      },
+    },
+  },
+  {
+    name: 'get_breakdown_timeseries',
+    endpoint: '/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown-timeseries',
+    httpMethod: 'get',
+    summary: 'Get Subview Breakdown Timeseries',
+    description:
+      "Returns the metric value broken down by subview attributes over time, bucketed by the requested time granularity. Powers stacked bar chart visualizations.\n\nBuckets the data pipeline has not yet finalized are omitted from `data` entirely, rather than zero-filled. Check each entry's `status` and the response's `meta.complete_through` to tell a genuinely-empty bucket apart from one that's still incomplete.\n",
+    stainlessPath: '(resource) data.subview_metrics > (method) get_breakdown_timeseries',
+    qualified: 'client.data.subviewMetrics.getBreakdownTimeseries',
+    params: [
+      "METRIC_ID: 'playing_time';",
+      "SUBVIEW_TYPE: 'rendition' | 'playback_mode';",
+      'breakdown_value_limit?: number;',
+      'filters?: string[];',
+      'group_by?: string[];',
+      "time_granularity?: 'hour' | 'day';",
+      'timeframe?: string[];',
+    ],
+    response:
+      "{ data: { date: string; status: 'complete' | 'partial'; values: subview_breakdown_value[]; }[]; meta: { complete_through: string; group_by: string[]; metric: string; subview_type: string; time_granularity: 'hour' | 'day'; unit: string; }; timeframe: number[]; total_row_count: number; }",
+    markdown:
+      "## get_breakdown_timeseries\n\n`client.data.subviewMetrics.getBreakdownTimeseries(METRIC_ID: 'playing_time', SUBVIEW_TYPE: 'rendition' | 'playback_mode', breakdown_value_limit?: number, filters?: string[], group_by?: string[], time_granularity?: 'hour' | 'day', timeframe?: string[]): { data: subview_breakdown_timeseries_datapoint[]; meta: object; timeframe: number[]; total_row_count: number; }`\n\n**get** `/data/v1/subview-metrics/{METRIC_ID}/{SUBVIEW_TYPE}/breakdown-timeseries`\n\nReturns the metric value broken down by subview attributes over time, bucketed by the requested time granularity. Powers stacked bar chart visualizations.\n\nBuckets the data pipeline has not yet finalized are omitted from `data` entirely, rather than zero-filled. Check each entry's `status` and the response's `meta.complete_through` to tell a genuinely-empty bucket apart from one that's still incomplete.\n\n\n### Parameters\n\n- `METRIC_ID: 'playing_time'`\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n- `breakdown_value_limit?: number`\n  Number of breakdown rows to include per selected dimension value.\n\n- `filters?: string[]`\n  Filter results using key:value pairs. Must be provided as an array query string parameter.\n\nThe set of filterable dimensions is distinct from the main Data API's dimensions, and depends on the subview type — see the List Subview Dimensions endpoint for the valid names.\n\n* `filters[]=dimension:value` - Include rows where dimension equals value\n* `filters[]=!dimension:value` - Exclude rows where dimension equals value\n* `filters[]=dimension:__empty__` - Include rows where the dimension has no value\n\nExample: `filters[]=country:US`\n\n\n- `group_by?: string[]`\n  Subview attributes to group the results by. Must be provided as an array query string parameter. Currently only supported for the `rendition` subview type, as any combination of the 6 enum values below.\n\nIf omitted, defaults to grouping by every attribute available for the subview type.\n\n\n- `time_granularity?: 'hour' | 'day'`\n  Time bucket size for the timeseries.\n\n- `timeframe?: string[]`\n  Timeframe window to limit results by. Must be provided as an array query string parameter (e.g. timeframe[]=).\n\nAccepted formats are...\n\n  * array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`\n  * duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`\n\n\n### Returns\n\n- `{ data: { date: string; status: 'complete' | 'partial'; values: subview_breakdown_value[]; }[]; meta: { complete_through: string; group_by: string[]; metric: string; subview_type: string; time_granularity: 'hour' | 'day'; unit: string; }; timeframe: number[]; total_row_count: number; }`\n\n  - `data: { date: string; status: 'complete' | 'partial'; values: { breakdown_value: string; metric_value: number; }[]; }[]`\n  - `meta: { complete_through: string; group_by: string[]; metric: string; subview_type: string; time_granularity: 'hour' | 'day'; unit: string; }`\n  - `timeframe: number[]`\n  - `total_row_count: number`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\nconst subviewBreakdownTimeseriesResponse = await client.data.subviewMetrics.getBreakdownTimeseries('playing_time', 'rendition');\n\nconsole.log(subviewBreakdownTimeseriesResponse);\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.getBreakdownTimeseries',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\nconst subviewBreakdownTimeseriesResponse = await client.data.subviewMetrics.getBreakdownTimeseries(\n  'playing_time',\n  'rendition',\n);\n\nconsole.log(subviewBreakdownTimeseriesResponse.data);",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$METRIC_ID/$SUBVIEW_TYPE/breakdown-timeseries \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.get_breakdown_timeseries',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\nsubview_breakdown_timeseries_response = client.data.subview_metrics.get_breakdown_timeseries(\n    metric_id="playing_time",\n    subview_type="rendition",\n)\nprint(subview_breakdown_timeseries_response.data)',
+      },
+      java: {
+        method: 'data().subviewMetrics().getBreakdownTimeseries',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewBreakdownTimeseriesResponse;\nimport com.mux.models.data.subviewmetrics.SubviewMetricGetBreakdownTimeseriesParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewBreakdownTimeseriesResponse subviewBreakdownTimeseriesResponse = client.data().subviewMetrics().getBreakdownTimeseries(\n          SubviewMetricGetBreakdownTimeseriesParams.MetricId.PLAYING_TIME, SubviewMetricGetBreakdownTimeseriesParams.SubviewType.RENDITION\n        );\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().getBreakdownTimeseries',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewBreakdownTimeseriesResponse\nimport com.mux.models.data.subviewmetrics.SubviewMetricGetBreakdownTimeseriesParams\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val subviewBreakdownTimeseriesResponse: SubviewBreakdownTimeseriesResponse = client.data().subviewMetrics().getBreakdownTimeseries(\n      SubviewMetricGetBreakdownTimeseriesParams.MetricId.PLAYING_TIME, SubviewMetricGetBreakdownTimeseriesParams.SubviewType.RENDITION\n    )\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.GetBreakdownTimeseries',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tsubviewBreakdownTimeseriesResponse, err := client.Data.SubviewMetrics.GetBreakdownTimeseries(\n\t\tcontext.TODO(),\n\t\tdata.SubviewMetricGetBreakdownTimeseriesParamsMetricIDPlayingTime,\n\t\tdata.SubviewMetricGetBreakdownTimeseriesParamsSubviewTypeRendition,\n\t\tdata.SubviewMetricGetBreakdownTimeseriesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", subviewBreakdownTimeseriesResponse.Data)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.get_breakdown_timeseries',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\nsubview_breakdown_timeseries_response = mux.data.subview_metrics.get_breakdown_timeseries(:playing_time, :rendition)\n\nputs(subview_breakdown_timeseries_response)',
+      },
+      php: {
+        method: 'data->subviewMetrics->getBreakdownTimeseries',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$subviewBreakdownTimeseriesResponse = $client\n  ->data\n  ->subviewMetrics\n  ->getBreakdownTimeseries(\n  'playing_time',\n  'rendition',\n  breakdownValueLimit: 100,\n  filters: ['string'],\n  groupBy: ['video_source_bitrate'],\n  timeGranularity: 'hour',\n  timeframe: ['string'],\n);\n\nvar_dump($subviewBreakdownTimeseriesResponse);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.GetBreakdownTimeseries',
+        example:
+          'SubviewMetricGetBreakdownTimeseriesParams parameters = new()\n{\n    MetricID = MetricID.PlayingTime,\n    SubviewType = SubviewType.Rendition,\n};\n\nvar subviewBreakdownTimeseriesResponse = await client.Data.SubviewMetrics.GetBreakdownTimeseries(parameters);\n\nConsole.WriteLine(subviewBreakdownTimeseriesResponse);',
+      },
+    },
+  },
+  {
+    name: 'list_dimensions',
+    endpoint: '/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions',
+    httpMethod: 'get',
+    summary: 'List Subview Dimensions',
+    description:
+      'Lists the dimensions available for filtering and breaking down subview metrics for the given subview type. `view` dimensions describe the parent video view; `subview` dimensions are specific to the subview type itself (for example, rendition attributes for `rendition` subviews).\n',
+    stainlessPath: '(resource) data.subview_metrics > (method) list_dimensions',
+    qualified: 'client.data.subviewMetrics.listDimensions',
+    params: ["SUBVIEW_TYPE: 'rendition' | 'playback_mode';"],
+    response: '{ data: { subview: string[]; view: string[]; }; total_row_count: number; }',
+    markdown:
+      "## list_dimensions\n\n`client.data.subviewMetrics.listDimensions(SUBVIEW_TYPE: 'rendition' | 'playback_mode'): { data: object; total_row_count: number; }`\n\n**get** `/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions`\n\nLists the dimensions available for filtering and breaking down subview metrics for the given subview type. `view` dimensions describe the parent video view; `subview` dimensions are specific to the subview type itself (for example, rendition attributes for `rendition` subviews).\n\n\n### Parameters\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n### Returns\n\n- `{ data: { subview: string[]; view: string[]; }; total_row_count: number; }`\n\n  - `data: { subview: string[]; view: string[]; }`\n  - `total_row_count: number`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\nconst subviewDimensionsResponse = await client.data.subviewMetrics.listDimensions('rendition');\n\nconsole.log(subviewDimensionsResponse);\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.listDimensions',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\nconst subviewDimensionsResponse = await client.data.subviewMetrics.listDimensions('rendition');\n\nconsole.log(subviewDimensionsResponse.data);",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$SUBVIEW_TYPE/dimensions \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.list_dimensions',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\nsubview_dimensions_response = client.data.subview_metrics.list_dimensions(\n    "rendition",\n)\nprint(subview_dimensions_response.data)',
+      },
+      java: {
+        method: 'data().subviewMetrics().listDimensions',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewDimensionsResponse;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionsParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewDimensionsResponse subviewDimensionsResponse = client.data().subviewMetrics().listDimensions(SubviewMetricListDimensionsParams.SubviewType.RENDITION);\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().listDimensions',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewDimensionsResponse\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionsParams\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val subviewDimensionsResponse: SubviewDimensionsResponse = client.data().subviewMetrics().listDimensions(SubviewMetricListDimensionsParams.SubviewType.RENDITION)\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.ListDimensions',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tsubviewDimensionsResponse, err := client.Data.SubviewMetrics.ListDimensions(context.TODO(), data.SubviewMetricListDimensionsParamsSubviewTypeRendition)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", subviewDimensionsResponse.Data)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.list_dimensions',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\nsubview_dimensions_response = mux.data.subview_metrics.list_dimensions(:rendition)\n\nputs(subview_dimensions_response)',
+      },
+      php: {
+        method: 'data->subviewMetrics->listDimensions',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$subviewDimensionsResponse = $client->data->subviewMetrics->listDimensions(\n  'rendition'\n);\n\nvar_dump($subviewDimensionsResponse);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.ListDimensions',
+        example:
+          'SubviewMetricListDimensionsParams parameters = new()\n{\n    SubviewType = SubviewType.Rendition\n};\n\nvar subviewDimensionsResponse = await client.Data.SubviewMetrics.ListDimensions(parameters);\n\nConsole.WriteLine(subviewDimensionsResponse);',
+      },
+    },
+  },
+  {
+    name: 'list_dimension_values',
+    endpoint: '/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}',
+    httpMethod: 'get',
+    summary: 'List Subview Dimension Values',
+    description:
+      'Returns the distinct values for a dimension, each annotated with the total playing time across all matching values. Sorted by playing time descending by default.\n',
+    stainlessPath: '(resource) data.subview_metrics > (method) list_dimension_values',
+    qualified: 'client.data.subviewMetrics.listDimensionValues',
+    params: [
+      "SUBVIEW_TYPE: 'rendition' | 'playback_mode';",
+      'DIMENSION_NAME: string;',
+      'filters?: string[];',
+      'limit?: number;',
+      "order_by?: 'playing_time' | 'value';",
+      "order_direction?: 'asc' | 'desc';",
+      'page?: number;',
+      'query?: string;',
+      'timeframe?: string[];',
+    ],
+    response: '{ playing_time: number; value: string; }',
+    markdown:
+      "## list_dimension_values\n\n`client.data.subviewMetrics.listDimensionValues(SUBVIEW_TYPE: 'rendition' | 'playback_mode', DIMENSION_NAME: string, filters?: string[], limit?: number, order_by?: 'playing_time' | 'value', order_direction?: 'asc' | 'desc', page?: number, query?: string, timeframe?: string[]): { playing_time: number; value: string; }`\n\n**get** `/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}`\n\nReturns the distinct values for a dimension, each annotated with the total playing time across all matching values. Sorted by playing time descending by default.\n\n\n### Parameters\n\n- `SUBVIEW_TYPE: 'rendition' | 'playback_mode'`\n\n- `DIMENSION_NAME: string`\n\n- `filters?: string[]`\n  Filter results using key:value pairs. Must be provided as an array query string parameter.\n\nThe set of filterable dimensions is distinct from the main Data API's dimensions, and depends on the subview type — see the List Subview Dimensions endpoint for the valid names.\n\n* `filters[]=dimension:value` - Include rows where dimension equals value\n* `filters[]=!dimension:value` - Exclude rows where dimension equals value\n* `filters[]=dimension:__empty__` - Include rows where the dimension has no value\n\nExample: `filters[]=country:US`\n\n\n- `limit?: number`\n  Number of items to include in the response.\n\n- `order_by?: 'playing_time' | 'value'`\n  Value to order the results by.\n\n- `order_direction?: 'asc' | 'desc'`\n  Sort order.\n\n- `page?: number`\n  Offset by this many pages, of the size of `limit`\n\n- `query?: string`\n  Only return dimension values containing this substring.\n\n- `timeframe?: string[]`\n  Timeframe window to limit results by. Must be provided as an array query string parameter (e.g. timeframe[]=).\n\nAccepted formats are...\n\n  * array of epoch timestamps e.g. `timeframe[]=1498867200&timeframe[]=1498953600`\n  * duration string e.g. `timeframe[]=24:hours or timeframe[]=7:days`\n\n\n### Returns\n\n- `{ playing_time: number; value: string; }`\n\n  - `playing_time: number`\n  - `value: string`\n\n### Example\n\n```typescript\nimport Mux from '@mux/ts';\n\nconst client = new Mux();\n\n// Automatically fetches more pages as needed.\nfor await (const subviewDimensionValue of client.data.subviewMetrics.listDimensionValues('rendition', 'country')) {\n  console.log(subviewDimensionValue);\n}\n```",
+    perLanguage: {
+      typescript: {
+        method: 'client.data.subviewMetrics.listDimensionValues',
+        example:
+          "import Mux from '@mux/ts';\n\nconst client = new Mux({\n  tokenId: process.env['MUX_TOKEN_ID'], // This is the default and can be omitted\n  tokenSecret: process.env['MUX_TOKEN_SECRET'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const subviewDimensionValue of client.data.subviewMetrics.listDimensionValues(\n  'rendition',\n  'country',\n)) {\n  console.log(subviewDimensionValue.playing_time);\n}",
+      },
+      http: {
+        example:
+          'curl https://api.mux.com/data/v1/subview-metrics/$SUBVIEW_TYPE/dimensions/$DIMENSION_NAME \\\n    -u "$MUX_TOKEN_ID:MUX_TOKEN_SECRET"',
+      },
+      python: {
+        method: 'data.subview_metrics.list_dimension_values',
+        example:
+          'import os\nfrom mux_python import Mux\n\nclient = Mux(\n    token_id=os.environ.get("MUX_TOKEN_ID"),  # This is the default and can be omitted\n    token_secret=os.environ.get("MUX_TOKEN_SECRET"),  # This is the default and can be omitted\n)\npage = client.data.subview_metrics.list_dimension_values(\n    subview_type="rendition",\n    dimension_name="country",\n)\npage = page.data[0]\nprint(page.playing_time)',
+      },
+      java: {
+        method: 'data().subviewMetrics().listDimensionValues',
+        example:
+          'package com.mux.example;\n\nimport com.mux.client.MuxClient;\nimport com.mux.client.okhttp.MuxOkHttpClient;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionValuesPage;\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionValuesParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        MuxClient client = MuxOkHttpClient.fromEnv();\n\n        SubviewMetricListDimensionValuesPage page = client.data().subviewMetrics().listDimensionValues(\n          SubviewMetricListDimensionValuesParams.SubviewType.RENDITION, "country"\n        );\n    }\n}',
+      },
+      kotlin: {
+        method: 'data().subviewMetrics().listDimensionValues',
+        example:
+          'package com.mux.example\n\nimport com.mux.client.MuxClient\nimport com.mux.client.okhttp.MuxOkHttpClient\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionValuesPage\nimport com.mux.models.data.subviewmetrics.SubviewMetricListDimensionValuesParams\n\nfun main() {\n    val client: MuxClient = MuxOkHttpClient.fromEnv()\n\n    val page: SubviewMetricListDimensionValuesPage = client.data().subviewMetrics().listDimensionValues(\n      SubviewMetricListDimensionValuesParams.SubviewType.RENDITION, "country"\n    )\n}',
+      },
+      go: {
+        method: 'client.Data.SubviewMetrics.ListDimensionValues',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/muxinc/mux-go"\n\t"github.com/muxinc/mux-go/data"\n\t"github.com/muxinc/mux-go/option"\n)\n\nfunc main() {\n\tclient := muxgo.NewClient(\n\t\toption.WithTokenId("my token id"),\n\t\toption.WithTokenSecret("my secret"),\n\t)\n\tpage, err := client.Data.SubviewMetrics.ListDimensionValues(\n\t\tcontext.TODO(),\n\t\tdata.SubviewMetricListDimensionValuesParamsSubviewTypeRendition,\n\t\t"country",\n\t\tdata.SubviewMetricListDimensionValuesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      ruby: {
+        method: 'data.subview_metrics.list_dimension_values',
+        example:
+          'require "mux_ruby"\n\nmux = MuxRuby::Client.new(token_id: "my token id", token_secret: "my secret")\n\npage = mux.data.subview_metrics.list_dimension_values(:rendition, "country")\n\nputs(page)',
+      },
+      php: {
+        method: 'data->subviewMetrics->listDimensionValues',
+        example:
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(tokenId: 'my token id', tokenSecret: 'my secret');\n\n$page = $client->data->subviewMetrics->listDimensionValues(\n  'rendition',\n  'country',\n  filters: ['string'],\n  limit: 250,\n  orderBy: 'playing_time',\n  orderDirection: 'asc',\n  page: 0,\n  query: 'query',\n  timeframe: ['string'],\n);\n\nvar_dump($page);",
+      },
+      csharp: {
+        method: 'Data.SubviewMetrics.ListDimensionValues',
+        example:
+          'SubviewMetricListDimensionValuesParams parameters = new()\n{\n    SubviewType = SubviewType.Rendition,\n    DimensionName = "country",\n};\n\nvar page = await client.Data.SubviewMetrics.ListDimensionValues(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
+      },
+    },
+  },
+  {
     name: 'retrieve_breakdown',
     endpoint: '/data/v1/realtime/metrics/{REALTIME_METRIC_ID}/breakdown',
     httpMethod: 'get',

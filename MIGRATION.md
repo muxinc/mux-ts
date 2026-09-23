@@ -136,6 +136,10 @@ client.example.list(undefined, { headers: { ... } });
 - `client.data.metrics.getOverallValues()`
 - `client.data.metrics.getInsights()`
 - `client.data.metrics.getTimeseries()`
+- `client.data.subviewMetrics.getOverallValues()`
+- `client.data.subviewMetrics.listBreakdownValues()`
+- `client.data.subviewMetrics.getBreakdownTimeseries()`
+- `client.data.subviewMetrics.listDimensionValues()`
 - `client.data.realTime.retrieveBreakdown()`
 - `client.data.realTime.retrieveTimeseries()`
 - `client.data.realTime.retrieveHistogramTimeseries()`

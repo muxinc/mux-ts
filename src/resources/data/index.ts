@@ -67,6 +67,26 @@ export {
   type RealTimeRetrieveHistogramTimeseriesParams,
 } from './real-time';
 export {
+  SubviewMetrics,
+  type SubviewBreakdownTimeseriesDatapoint,
+  type SubviewBreakdownTimeseriesResponse,
+  type SubviewBreakdownValue,
+  type SubviewBreakdownValuesResponse,
+  type SubviewComparisonGroup,
+  type SubviewComparisonValuesResponse,
+  type SubviewDimensionValue,
+  type SubviewDimensionValuesResponse,
+  type SubviewDimensionsResponse,
+  type SubviewOverallValuesResponse,
+  type SubviewMetricGetOverallValuesParams,
+  type SubviewMetricListBreakdownValuesParams,
+  type SubviewMetricListComparisonValuesParams,
+  type SubviewMetricGetBreakdownTimeseriesParams,
+  type SubviewMetricListDimensionValuesParams,
+  type SubviewBreakdownValuesBasePage,
+  type SubviewDimensionValuesBasePage,
+} from './subview-metrics';
+export {
   VideoViews,
   type AbridgedVideoView,
   type VideoViewResponse,
