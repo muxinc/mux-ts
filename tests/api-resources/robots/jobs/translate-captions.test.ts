@@ -33,6 +33,7 @@ describe('resource translateCaptions', () => {
         to_language_code: 'es',
         track_id: 'track_en_abc123',
         never_translate: ['Mux'],
+        replace_existing_tracks: 'fail',
         upload_to_mux: true,
       },
       passthrough: 'passthrough',

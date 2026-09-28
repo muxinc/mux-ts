@@ -70,6 +70,7 @@ import {
   GeneratePremiumCaptionsJob,
   GeneratePremiumCaptionsJobOutputs,
   GeneratePremiumCaptionsJobParameters,
+  GeneratePremiumCaptionsReplaceExistingTracks,
 } from './generate-premium-captions';
 import * as ModerateAPI from './moderate';
 import {
@@ -98,6 +99,7 @@ import {
   TranslateAudioJob,
   TranslateAudioJobOutputs,
   TranslateAudioJobParameters,
+  TranslateAudioReplaceExistingTracks,
 } from './translate-audio';
 import * as TranslateCaptionsAPI from './translate-captions';
 import {
@@ -106,6 +108,7 @@ import {
   TranslateCaptionsJob,
   TranslateCaptionsJobOutputs,
   TranslateCaptionsJobParameters,
+  TranslateCaptionsReplaceExistingTracks,
 } from './translate-captions';
 import { APIPromise } from '../../../core/api-promise';
 import { BasePage, type BasePageParams, PagePromise } from '../../../core/pagination';
@@ -350,6 +353,39 @@ export interface OutputSteeringTaxonomyValue {
   description?: string;
 }
 
+export interface ReplacedTrack {
+  /**
+   * Mux track ID of the deleted track.
+   */
+  id: string;
+
+  /**
+   * Language code of the deleted track.
+   */
+  language_code?: string;
+
+  /**
+   * Name of the deleted track.
+   */
+  name?: string;
+
+  /**
+   * `passthrough` value the deleted track carried, if any.
+   */
+  passthrough?: string;
+
+  /**
+   * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+   * Absent for audio tracks.
+   */
+  text_source?: string;
+
+  /**
+   * Mux track type of the deleted track.
+   */
+  type?: 'text' | 'audio';
+}
+
 export interface SlimlineAsset {
   /**
    * Mux asset ID.
@@ -462,6 +498,7 @@ export declare namespace Jobs {
     type OutputSteeringScope as OutputSteeringScope,
     type OutputSteeringTaxonomy as OutputSteeringTaxonomy,
     type OutputSteeringTaxonomyValue as OutputSteeringTaxonomyValue,
+    type ReplacedTrack as ReplacedTrack,
     type SlimlineAsset as SlimlineAsset,
     type JobSummariesBasePage as JobSummariesBasePage,
     type JobListParams as JobListParams,
@@ -519,6 +556,7 @@ export declare namespace Jobs {
     type TranslateCaptionsJob as TranslateCaptionsJob,
     type TranslateCaptionsJobOutputs as TranslateCaptionsJobOutputs,
     type TranslateCaptionsJobParameters as TranslateCaptionsJobParameters,
+    type TranslateCaptionsReplaceExistingTracks as TranslateCaptionsReplaceExistingTracks,
     type TranslateCaptionCreateParams as TranslateCaptionCreateParams,
   };
 
@@ -562,6 +600,7 @@ export declare namespace Jobs {
     type GeneratePremiumCaptionsJob as GeneratePremiumCaptionsJob,
     type GeneratePremiumCaptionsJobOutputs as GeneratePremiumCaptionsJobOutputs,
     type GeneratePremiumCaptionsJobParameters as GeneratePremiumCaptionsJobParameters,
+    type GeneratePremiumCaptionsReplaceExistingTracks as GeneratePremiumCaptionsReplaceExistingTracks,
     type GeneratePremiumCaptionCreateParams as GeneratePremiumCaptionCreateParams,
   };
 
@@ -570,6 +609,7 @@ export declare namespace Jobs {
     type TranslateAudioJob as TranslateAudioJob,
     type TranslateAudioJobOutputs as TranslateAudioJobOutputs,
     type TranslateAudioJobParameters as TranslateAudioJobParameters,
+    type TranslateAudioReplaceExistingTracks as TranslateAudioReplaceExistingTracks,
     type TranslateAudioCreateParams as TranslateAudioCreateParams,
   };
 }

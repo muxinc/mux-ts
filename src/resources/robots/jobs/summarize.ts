@@ -173,8 +173,7 @@ export interface SummarizeJobParameters {
   output_steering?: SummarizeOutputSteering;
 
   /**
-   * Legacy/internal prompt-section overrides. Prefer output_steering for new
-   * integrations.
+   * @deprecated Use `output_steering` instead.
    */
   prompt_overrides?: SummarizeJobParameters.PromptOverrides;
 
@@ -205,8 +204,7 @@ export interface SummarizeJobParameters {
 
 export namespace SummarizeJobParameters {
   /**
-   * Legacy/internal prompt-section overrides. Prefer output_steering for new
-   * integrations.
+   * @deprecated Use `output_steering` instead.
    */
   export interface PromptOverrides {
     /**

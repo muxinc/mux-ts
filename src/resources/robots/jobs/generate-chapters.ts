@@ -202,8 +202,7 @@ export interface GenerateChaptersJobParameters {
   output_steering?: GenerateChaptersOutputSteering;
 
   /**
-   * Legacy/internal prompt-section overrides. Prefer output_steering for new
-   * integrations.
+   * @deprecated Use `output_steering` instead.
    */
   prompt_overrides?: GenerateChaptersJobParameters.PromptOverrides;
 
@@ -221,8 +220,7 @@ export interface GenerateChaptersJobParameters {
 
 export namespace GenerateChaptersJobParameters {
   /**
-   * Legacy/internal prompt-section overrides. Prefer output_steering for new
-   * integrations.
+   * @deprecated Use `output_steering` instead.
    */
   export interface PromptOverrides {
     /**

@@ -26,6 +26,7 @@ import {
   OutputSteeringScope,
   OutputSteeringTaxonomy,
   OutputSteeringTaxonomyValue,
+  ReplacedTrack,
   SlimlineAsset,
 } from './jobs/jobs';
 
@@ -48,6 +49,7 @@ export declare namespace Robots {
     type OutputSteeringScope as OutputSteeringScope,
     type OutputSteeringTaxonomy as OutputSteeringTaxonomy,
     type OutputSteeringTaxonomyValue as OutputSteeringTaxonomyValue,
+    type ReplacedTrack as ReplacedTrack,
     type SlimlineAsset as SlimlineAsset,
     type JobSummariesBasePage as JobSummariesBasePage,
     type JobListParams as JobListParams,

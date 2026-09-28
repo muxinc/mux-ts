@@ -21,6 +21,7 @@ export {
   type OutputSteeringScope,
   type OutputSteeringTaxonomy,
   type OutputSteeringTaxonomyValue,
+  type ReplacedTrack,
   type SlimlineAsset,
   type JobListParams,
   type JobSummariesBasePage,

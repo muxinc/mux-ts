@@ -21,7 +21,7 @@ export class GeneratePremiumCaptions extends APIResource {
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
    *       language_code: 'en',
-   *       replace_existing: false,
+   *       replace_existing_tracks: 'fail',
    *       include_speakers: false,
    *       include_words: false,
    *       upload_to_mux: true,
@@ -148,9 +148,16 @@ export interface GeneratePremiumCaptionsJobOutputs {
   detected_language?: string;
 
   /**
-   * Mux track ID of the deleted track when replace_existing was true.
+   * @deprecated Use `replaced_tracks` instead.
    */
   replaced_track_id?: string;
+
+  /**
+   * Every track deleted before the new track was created. Present when
+   * `replace_existing_tracks` was a deleting policy and at least one track was
+   * removed.
+   */
+  replaced_tracks?: Array<JobsAPI.ReplacedTrack>;
 
   /**
    * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -196,7 +203,10 @@ export interface GeneratePremiumCaptionsJobParameters {
    * biases transcription toward this language — it is not verified against the audio
    * and does not guarantee the output language. When supplied, language detection is
    * skipped and the captions are labeled with this code. The language will be
-   * auto-detected when omitted.
+   * auto-detected when omitted; existing tracks are then checked against
+   * `replace_existing_tracks` after transcription, so a same-language conflict
+   * errors the job at track creation instead of being rejected up front, and a
+   * deleting policy only applies when the detection is confident.
    */
   language_code?: string;
 
@@ -210,25 +220,48 @@ export interface GeneratePremiumCaptionsJobParameters {
   phrases?: Array<string>;
 
   /**
-   * When true, any existing text track with the same language code is deleted before
-   * uploading the new caption track. When false (default), the request is rejected
-   * if a matching track already exists.
+   * @deprecated Use `replace_existing_tracks` instead.
    */
   replace_existing?: boolean;
 
   /**
+   * What to do when the asset already has a text track in the same language as, or
+   * with the same name as, the new caption track. Defaults to `fail`, which rejects
+   * the request before any work is billed. `replace_all` deletes every such track
+   * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+   * rejects if an uploaded track is in the way. Existing tracks are matched by
+   * language ignoring region subtags, and by name ignoring case, in any status. When
+   * `language_code` is omitted the detected language is used, and tracks are only
+   * deleted when the detection is confident; otherwise the job behaves as `fail`.
+   */
+  replace_existing_tracks?: GeneratePremiumCaptionsReplaceExistingTracks;
+
+  /**
    * Custom name for the uploaded Mux text track. Defaults to "{Language}
-   * (Generated)" using the resolved language code.
+   * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+   * unique on an asset.
    */
   track_name?: string;
 
   /**
    * Whether to upload the generated VTT to the Mux asset as a new text track.
-   * Defaults to true. When false, no track is created and `replace_existing` must
-   * also be false; the generated SRT remains available via `temporary_srt_url`.
+   * Defaults to true. When false, no track is created and `replace_existing_tracks`
+   * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
    */
   upload_to_mux?: boolean;
 }
+
+/**
+ * What to do when the asset already has a text track in the same language as, or
+ * with the same name as, the new caption track. Defaults to `fail`, which rejects
+ * the request before any work is billed. `replace_all` deletes every such track
+ * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+ * rejects if an uploaded track is in the way. Existing tracks are matched by
+ * language ignoring region subtags, and by name ignoring case, in any status. When
+ * `language_code` is omitted the detected language is used, and tracks are only
+ * deleted when the detection is confident; otherwise the job behaves as `fail`.
+ */
+export type GeneratePremiumCaptionsReplaceExistingTracks = 'fail' | 'replace_all' | 'replace_generated';
 
 export interface GeneratePremiumCaptionCreateParams {
   parameters: GeneratePremiumCaptionsJobParameters;
@@ -245,6 +278,7 @@ export declare namespace GeneratePremiumCaptions {
     type GeneratePremiumCaptionsJob as GeneratePremiumCaptionsJob,
     type GeneratePremiumCaptionsJobOutputs as GeneratePremiumCaptionsJobOutputs,
     type GeneratePremiumCaptionsJobParameters as GeneratePremiumCaptionsJobParameters,
+    type GeneratePremiumCaptionsReplaceExistingTracks as GeneratePremiumCaptionsReplaceExistingTracks,
     type GeneratePremiumCaptionCreateParams as GeneratePremiumCaptionCreateParams,
   };
 }

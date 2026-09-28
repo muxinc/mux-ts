@@ -2958,8 +2958,7 @@ export namespace WebhookGenerateChaptersJob {
     output_steering?: Parameters.OutputSteering;
 
     /**
-     * Legacy/internal prompt-section overrides. Prefer output_steering for new
-     * integrations.
+     * @deprecated Use `output_steering` instead.
      */
     prompt_overrides?: Parameters.PromptOverrides;
 
@@ -3005,8 +3004,7 @@ export namespace WebhookGenerateChaptersJob {
     }
 
     /**
-     * Legacy/internal prompt-section overrides. Prefer output_steering for new
-     * integrations.
+     * @deprecated Use `output_steering` instead.
      */
     export interface PromptOverrides {
       /**
@@ -4497,8 +4495,7 @@ export namespace WebhookSummarizeJob {
     output_steering?: Parameters.OutputSteering;
 
     /**
-     * Legacy/internal prompt-section overrides. Prefer output_steering for new
-     * integrations.
+     * @deprecated Use `output_steering` instead.
      */
     prompt_overrides?: Parameters.PromptOverrides;
 
@@ -4632,8 +4629,7 @@ export namespace WebhookSummarizeJob {
     }
 
     /**
-     * Legacy/internal prompt-section overrides. Prefer output_steering for new
-     * integrations.
+     * @deprecated Use `output_steering` instead.
      */
     export interface PromptOverrides {
       /**
@@ -4860,8 +4856,9 @@ export namespace WebhookTranslateCaptionsJob {
     asset_id: string;
 
     /**
-     * BCP 47 language code for the translated output (e.g. "es", "ja"). The asset must
-     * not already have a text track for this language.
+     * BCP 47 language code for the translated output (e.g. "es", "ja"). Unless
+     * replace_existing_tracks allows replacement, the asset must not already have a
+     * text track for this language.
      */
     to_language_code: string;
 
@@ -4878,6 +4875,17 @@ export namespace WebhookTranslateCaptionsJob {
      * normalization.
      */
     never_translate?: Array<string>;
+
+    /**
+     * What to do when the asset already has a text track in the same language as, or
+     * with the same name as, the translated track. Defaults to `fail`, which rejects
+     * the request before any translation is billed. `replace_all` deletes every such
+     * track first. `replace_generated` deletes only Mux Video auto-generated tracks
+     * and rejects if an uploaded track is in the way. Any value other than `fail`
+     * requires `upload_to_mux` to be true. Existing tracks are matched by language
+     * ignoring region subtags, and by name ignoring case, in any status.
+     */
+    replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
 
     /**
      * Whether to upload the translated VTT and attach it as a text track on the Mux
@@ -4931,6 +4939,13 @@ export namespace WebhookTranslateCaptionsJob {
     never_translate_terms_preserved?: boolean;
 
     /**
+     * Every track deleted before the new track was created. Present when
+     * `replace_existing_tracks` was a deleting policy and at least one track was
+     * removed.
+     */
+    replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+    /**
      * Temporary pre-signed URL to download the translated VTT file. Present when
      * upload_to_mux is true. Expires 7 days after the job completes.
      */
@@ -4941,6 +4956,41 @@ export namespace WebhookTranslateCaptionsJob {
      * upload_to_mux is true.
      */
     uploaded_track_id?: string;
+  }
+
+  export namespace Outputs {
+    export interface ReplacedTrack {
+      /**
+       * Mux track ID of the deleted track.
+       */
+      id: string;
+
+      /**
+       * Language code of the deleted track.
+       */
+      language_code?: string;
+
+      /**
+       * Name of the deleted track.
+       */
+      name?: string;
+
+      /**
+       * `passthrough` value the deleted track carried, if any.
+       */
+      passthrough?: string;
+
+      /**
+       * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+       * Absent for audio tracks.
+       */
+      text_source?: string;
+
+      /**
+       * Mux track type of the deleted track.
+       */
+      type?: 'text' | 'audio';
+    }
   }
 
   /**
@@ -12120,7 +12170,10 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
        * biases transcription toward this language — it is not verified against the audio
        * and does not guarantee the output language. When supplied, language detection is
        * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted.
+       * auto-detected when omitted; existing tracks are then checked against
+       * `replace_existing_tracks` after transcription, so a same-language conflict
+       * errors the job at track creation instead of being rejected up front, and a
+       * deleting policy only applies when the detection is confident.
        */
       language_code?: string;
 
@@ -12134,22 +12187,33 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
       phrases?: Array<string>;
 
       /**
-       * When true, any existing text track with the same language code is deleted before
-       * uploading the new caption track. When false (default), the request is rejected
-       * if a matching track already exists.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       replace_existing?: boolean;
 
       /**
+       * What to do when the asset already has a text track in the same language as, or
+       * with the same name as, the new caption track. Defaults to `fail`, which rejects
+       * the request before any work is billed. `replace_all` deletes every such track
+       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+       * rejects if an uploaded track is in the way. Existing tracks are matched by
+       * language ignoring region subtags, and by name ignoring case, in any status. When
+       * `language_code` is omitted the detected language is used, and tracks are only
+       * deleted when the detection is confident; otherwise the job behaves as `fail`.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)" using the resolved language code.
+       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+       * unique on an asset.
        */
       track_name?: string;
 
       /**
        * Whether to upload the generated VTT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing` must
-       * also be false; the generated SRT remains available via `temporary_srt_url`.
+       * Defaults to true. When false, no track is created and `replace_existing_tracks`
+       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
       upload_to_mux?: boolean;
     }
@@ -12212,9 +12276,16 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
       detected_language?: string;
 
       /**
-       * Mux track ID of the deleted track when replace_existing was true.
+       * @deprecated Use `replaced_tracks` instead.
        */
       replaced_track_id?: string;
+
+      /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
       /**
        * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -12234,6 +12305,41 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
        * upload_to_mux is false.
        */
       track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -12411,7 +12517,10 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
        * biases transcription toward this language — it is not verified against the audio
        * and does not guarantee the output language. When supplied, language detection is
        * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted.
+       * auto-detected when omitted; existing tracks are then checked against
+       * `replace_existing_tracks` after transcription, so a same-language conflict
+       * errors the job at track creation instead of being rejected up front, and a
+       * deleting policy only applies when the detection is confident.
        */
       language_code?: string;
 
@@ -12425,22 +12534,33 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
       phrases?: Array<string>;
 
       /**
-       * When true, any existing text track with the same language code is deleted before
-       * uploading the new caption track. When false (default), the request is rejected
-       * if a matching track already exists.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       replace_existing?: boolean;
 
       /**
+       * What to do when the asset already has a text track in the same language as, or
+       * with the same name as, the new caption track. Defaults to `fail`, which rejects
+       * the request before any work is billed. `replace_all` deletes every such track
+       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+       * rejects if an uploaded track is in the way. Existing tracks are matched by
+       * language ignoring region subtags, and by name ignoring case, in any status. When
+       * `language_code` is omitted the detected language is used, and tracks are only
+       * deleted when the detection is confident; otherwise the job behaves as `fail`.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)" using the resolved language code.
+       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+       * unique on an asset.
        */
       track_name?: string;
 
       /**
        * Whether to upload the generated VTT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing` must
-       * also be false; the generated SRT remains available via `temporary_srt_url`.
+       * Defaults to true. When false, no track is created and `replace_existing_tracks`
+       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
       upload_to_mux?: boolean;
     }
@@ -12503,9 +12623,16 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
       detected_language?: string;
 
       /**
-       * Mux track ID of the deleted track when replace_existing was true.
+       * @deprecated Use `replaced_tracks` instead.
        */
       replaced_track_id?: string;
+
+      /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
       /**
        * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -12525,6 +12652,41 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
        * upload_to_mux is false.
        */
       track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -12701,7 +12863,10 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
        * biases transcription toward this language — it is not verified against the audio
        * and does not guarantee the output language. When supplied, language detection is
        * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted.
+       * auto-detected when omitted; existing tracks are then checked against
+       * `replace_existing_tracks` after transcription, so a same-language conflict
+       * errors the job at track creation instead of being rejected up front, and a
+       * deleting policy only applies when the detection is confident.
        */
       language_code?: string;
 
@@ -12715,22 +12880,33 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
       phrases?: Array<string>;
 
       /**
-       * When true, any existing text track with the same language code is deleted before
-       * uploading the new caption track. When false (default), the request is rejected
-       * if a matching track already exists.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       replace_existing?: boolean;
 
       /**
+       * What to do when the asset already has a text track in the same language as, or
+       * with the same name as, the new caption track. Defaults to `fail`, which rejects
+       * the request before any work is billed. `replace_all` deletes every such track
+       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+       * rejects if an uploaded track is in the way. Existing tracks are matched by
+       * language ignoring region subtags, and by name ignoring case, in any status. When
+       * `language_code` is omitted the detected language is used, and tracks are only
+       * deleted when the detection is confident; otherwise the job behaves as `fail`.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)" using the resolved language code.
+       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+       * unique on an asset.
        */
       track_name?: string;
 
       /**
        * Whether to upload the generated VTT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing` must
-       * also be false; the generated SRT remains available via `temporary_srt_url`.
+       * Defaults to true. When false, no track is created and `replace_existing_tracks`
+       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
       upload_to_mux?: boolean;
     }
@@ -12793,9 +12969,16 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
       detected_language?: string;
 
       /**
-       * Mux track ID of the deleted track when replace_existing was true.
+       * @deprecated Use `replaced_tracks` instead.
        */
       replaced_track_id?: string;
+
+      /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
       /**
        * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -12815,6 +12998,41 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
        * upload_to_mux is false.
        */
       track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -12991,7 +13209,10 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
        * biases transcription toward this language — it is not verified against the audio
        * and does not guarantee the output language. When supplied, language detection is
        * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted.
+       * auto-detected when omitted; existing tracks are then checked against
+       * `replace_existing_tracks` after transcription, so a same-language conflict
+       * errors the job at track creation instead of being rejected up front, and a
+       * deleting policy only applies when the detection is confident.
        */
       language_code?: string;
 
@@ -13005,22 +13226,33 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
       phrases?: Array<string>;
 
       /**
-       * When true, any existing text track with the same language code is deleted before
-       * uploading the new caption track. When false (default), the request is rejected
-       * if a matching track already exists.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       replace_existing?: boolean;
 
       /**
+       * What to do when the asset already has a text track in the same language as, or
+       * with the same name as, the new caption track. Defaults to `fail`, which rejects
+       * the request before any work is billed. `replace_all` deletes every such track
+       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+       * rejects if an uploaded track is in the way. Existing tracks are matched by
+       * language ignoring region subtags, and by name ignoring case, in any status. When
+       * `language_code` is omitted the detected language is used, and tracks are only
+       * deleted when the detection is confident; otherwise the job behaves as `fail`.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)" using the resolved language code.
+       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+       * unique on an asset.
        */
       track_name?: string;
 
       /**
        * Whether to upload the generated VTT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing` must
-       * also be false; the generated SRT remains available via `temporary_srt_url`.
+       * Defaults to true. When false, no track is created and `replace_existing_tracks`
+       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
       upload_to_mux?: boolean;
     }
@@ -13083,9 +13315,16 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
       detected_language?: string;
 
       /**
-       * Mux track ID of the deleted track when replace_existing was true.
+       * @deprecated Use `replaced_tracks` instead.
        */
       replaced_track_id?: string;
+
+      /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
       /**
        * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -13105,6 +13344,41 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
        * upload_to_mux is false.
        */
       track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -13282,7 +13556,10 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
        * biases transcription toward this language — it is not verified against the audio
        * and does not guarantee the output language. When supplied, language detection is
        * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted.
+       * auto-detected when omitted; existing tracks are then checked against
+       * `replace_existing_tracks` after transcription, so a same-language conflict
+       * errors the job at track creation instead of being rejected up front, and a
+       * deleting policy only applies when the detection is confident.
        */
       language_code?: string;
 
@@ -13296,22 +13573,33 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
       phrases?: Array<string>;
 
       /**
-       * When true, any existing text track with the same language code is deleted before
-       * uploading the new caption track. When false (default), the request is rejected
-       * if a matching track already exists.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       replace_existing?: boolean;
 
       /**
+       * What to do when the asset already has a text track in the same language as, or
+       * with the same name as, the new caption track. Defaults to `fail`, which rejects
+       * the request before any work is billed. `replace_all` deletes every such track
+       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+       * rejects if an uploaded track is in the way. Existing tracks are matched by
+       * language ignoring region subtags, and by name ignoring case, in any status. When
+       * `language_code` is omitted the detected language is used, and tracks are only
+       * deleted when the detection is confident; otherwise the job behaves as `fail`.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)" using the resolved language code.
+       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+       * unique on an asset.
        */
       track_name?: string;
 
       /**
        * Whether to upload the generated VTT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing` must
-       * also be false; the generated SRT remains available via `temporary_srt_url`.
+       * Defaults to true. When false, no track is created and `replace_existing_tracks`
+       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
       upload_to_mux?: boolean;
     }
@@ -13374,9 +13662,16 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
       detected_language?: string;
 
       /**
-       * Mux track ID of the deleted track when replace_existing was true.
+       * @deprecated Use `replaced_tracks` instead.
        */
       replaced_track_id?: string;
+
+      /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
       /**
        * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
@@ -13396,6 +13691,41 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
        * upload_to_mux is false.
        */
       track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -13671,6 +14001,18 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
       to_language_code: string;
 
       /**
+       * What to do when the asset already has an audio track in the same language as, or
+       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+       * the request before any dubbing is billed. `replace_all` deletes every such track
+       * first. Audio tracks are never auto-generated by Mux Video, so
+       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+       * Existing tracks are matched by language ignoring region subtags, and by name
+       * ignoring case, in any status.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -13715,6 +14057,13 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
      */
     export interface Outputs {
       /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+      /**
        * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
        * the job completes.
        */
@@ -13724,6 +14073,41 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
        * Mux audio track ID, present when upload_to_mux is true.
        */
       uploaded_track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -13889,6 +14273,18 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
       to_language_code: string;
 
       /**
+       * What to do when the asset already has an audio track in the same language as, or
+       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+       * the request before any dubbing is billed. `replace_all` deletes every such track
+       * first. Audio tracks are never auto-generated by Mux Video, so
+       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+       * Existing tracks are matched by language ignoring region subtags, and by name
+       * ignoring case, in any status.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -13933,6 +14329,13 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
      */
     export interface Outputs {
       /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+      /**
        * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
        * the job completes.
        */
@@ -13942,6 +14345,41 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
        * Mux audio track ID, present when upload_to_mux is true.
        */
       uploaded_track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -14107,6 +14545,18 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
       to_language_code: string;
 
       /**
+       * What to do when the asset already has an audio track in the same language as, or
+       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+       * the request before any dubbing is billed. `replace_all` deletes every such track
+       * first. Audio tracks are never auto-generated by Mux Video, so
+       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+       * Existing tracks are matched by language ignoring region subtags, and by name
+       * ignoring case, in any status.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -14151,6 +14601,13 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
      */
     export interface Outputs {
       /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+      /**
        * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
        * the job completes.
        */
@@ -14160,6 +14617,41 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
        * Mux audio track ID, present when upload_to_mux is true.
        */
       uploaded_track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -14325,6 +14817,18 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
       to_language_code: string;
 
       /**
+       * What to do when the asset already has an audio track in the same language as, or
+       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+       * the request before any dubbing is billed. `replace_all` deletes every such track
+       * first. Audio tracks are never auto-generated by Mux Video, so
+       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+       * Existing tracks are matched by language ignoring region subtags, and by name
+       * ignoring case, in any status.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -14369,6 +14873,13 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
      */
     export interface Outputs {
       /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+      /**
        * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
        * the job completes.
        */
@@ -14378,6 +14889,41 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
        * Mux audio track ID, present when upload_to_mux is true.
        */
       uploaded_track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**
@@ -14543,6 +15089,18 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
       to_language_code: string;
 
       /**
+       * What to do when the asset already has an audio track in the same language as, or
+       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+       * the request before any dubbing is billed. `replace_all` deletes every such track
+       * first. Audio tracks are never auto-generated by Mux Video, so
+       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+       * Existing tracks are matched by language ignoring region subtags, and by name
+       * ignoring case, in any status.
+       */
+      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -14587,6 +15145,13 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
      */
     export interface Outputs {
       /**
+       * Every track deleted before the new track was created. Present when
+       * `replace_existing_tracks` was a deleting policy and at least one track was
+       * removed.
+       */
+      replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+      /**
        * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
        * the job completes.
        */
@@ -14596,6 +15161,41 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
        * Mux audio track ID, present when upload_to_mux is true.
        */
       uploaded_track_id?: string;
+    }
+
+    export namespace Outputs {
+      export interface ReplacedTrack {
+        /**
+         * Mux track ID of the deleted track.
+         */
+        id: string;
+
+        /**
+         * Language code of the deleted track.
+         */
+        language_code?: string;
+
+        /**
+         * Name of the deleted track.
+         */
+        name?: string;
+
+        /**
+         * `passthrough` value the deleted track carried, if any.
+         */
+        passthrough?: string;
+
+        /**
+         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+         * Absent for audio tracks.
+         */
+        text_source?: string;
+
+        /**
+         * Mux track type of the deleted track.
+         */
+        type?: 'text' | 'audio';
+      }
     }
 
     /**

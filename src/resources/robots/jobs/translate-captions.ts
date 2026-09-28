@@ -24,6 +24,7 @@ export class TranslateCaptions extends APIResource {
    *       to_language_code: 'es',
    *       upload_to_mux: true,
    *       never_translate: ['Mux'],
+   *       replace_existing_tracks: 'fail',
    *     },
    *   });
    * ```
@@ -128,6 +129,13 @@ export interface TranslateCaptionsJobOutputs {
   never_translate_terms_preserved?: boolean;
 
   /**
+   * Every track deleted before the new track was created. Present when
+   * `replace_existing_tracks` was a deleting policy and at least one track was
+   * removed.
+   */
+  replaced_tracks?: Array<JobsAPI.ReplacedTrack>;
+
+  /**
    * Temporary pre-signed URL to download the translated VTT file. Present when
    * upload_to_mux is true. Expires 7 days after the job completes.
    */
@@ -147,8 +155,9 @@ export interface TranslateCaptionsJobParameters {
   asset_id: string;
 
   /**
-   * BCP 47 language code for the translated output (e.g. "es", "ja"). The asset must
-   * not already have a text track for this language.
+   * BCP 47 language code for the translated output (e.g. "es", "ja"). Unless
+   * replace_existing_tracks allows replacement, the asset must not already have a
+   * text track for this language.
    */
   to_language_code: string;
 
@@ -167,11 +176,33 @@ export interface TranslateCaptionsJobParameters {
   never_translate?: Array<string>;
 
   /**
+   * What to do when the asset already has a text track in the same language as, or
+   * with the same name as, the translated track. Defaults to `fail`, which rejects
+   * the request before any translation is billed. `replace_all` deletes every such
+   * track first. `replace_generated` deletes only Mux Video auto-generated tracks
+   * and rejects if an uploaded track is in the way. Any value other than `fail`
+   * requires `upload_to_mux` to be true. Existing tracks are matched by language
+   * ignoring region subtags, and by name ignoring case, in any status.
+   */
+  replace_existing_tracks?: TranslateCaptionsReplaceExistingTracks;
+
+  /**
    * Whether to upload the translated VTT and attach it as a text track on the Mux
    * asset. Defaults to true.
    */
   upload_to_mux?: boolean;
 }
+
+/**
+ * What to do when the asset already has a text track in the same language as, or
+ * with the same name as, the translated track. Defaults to `fail`, which rejects
+ * the request before any translation is billed. `replace_all` deletes every such
+ * track first. `replace_generated` deletes only Mux Video auto-generated tracks
+ * and rejects if an uploaded track is in the way. Any value other than `fail`
+ * requires `upload_to_mux` to be true. Existing tracks are matched by language
+ * ignoring region subtags, and by name ignoring case, in any status.
+ */
+export type TranslateCaptionsReplaceExistingTracks = 'fail' | 'replace_all' | 'replace_generated';
 
 export interface TranslateCaptionCreateParams {
   parameters: TranslateCaptionsJobParameters;
@@ -188,6 +219,7 @@ export declare namespace TranslateCaptions {
     type TranslateCaptionsJob as TranslateCaptionsJob,
     type TranslateCaptionsJobOutputs as TranslateCaptionsJobOutputs,
     type TranslateCaptionsJobParameters as TranslateCaptionsJobParameters,
+    type TranslateCaptionsReplaceExistingTracks as TranslateCaptionsReplaceExistingTracks,
     type TranslateCaptionCreateParams as TranslateCaptionCreateParams,
   };
 }

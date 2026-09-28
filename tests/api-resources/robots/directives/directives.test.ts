@@ -46,6 +46,7 @@ describe('resource directives', () => {
             language_code: 'en',
             phrases: ['Mux', 'API'],
             replace_existing: true,
+            replace_existing_tracks: 'fail',
             track_name: 'x',
             upload_to_mux: true,
           },
@@ -54,6 +55,7 @@ describe('resource directives', () => {
           params: {
             to_language_code: 'es',
             never_translate: ['Mux', 'Springfield'],
+            replace_existing_tracks: 'fail',
             upload_to_mux: true,
           },
           reference_id: 'translate_es',

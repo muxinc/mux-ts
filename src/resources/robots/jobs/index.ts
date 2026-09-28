@@ -60,6 +60,7 @@ export {
   type GeneratePremiumCaptionsJob,
   type GeneratePremiumCaptionsJobOutputs,
   type GeneratePremiumCaptionsJobParameters,
+  type GeneratePremiumCaptionsReplaceExistingTracks,
   type GeneratePremiumCaptionCreateParams,
 } from './generate-premium-captions';
 export {
@@ -72,6 +73,7 @@ export {
   type OutputSteeringScope,
   type OutputSteeringTaxonomy,
   type OutputSteeringTaxonomyValue,
+  type ReplacedTrack,
   type SlimlineAsset,
   type JobListParams,
   type JobSummariesBasePage,
@@ -99,6 +101,7 @@ export {
   type TranslateAudioJob,
   type TranslateAudioJobOutputs,
   type TranslateAudioJobParameters,
+  type TranslateAudioReplaceExistingTracks,
   type TranslateAudioCreateParams,
 } from './translate-audio';
 export {
@@ -106,5 +109,6 @@ export {
   type TranslateCaptionsJob,
   type TranslateCaptionsJobOutputs,
   type TranslateCaptionsJobParameters,
+  type TranslateCaptionsReplaceExistingTracks,
   type TranslateCaptionCreateParams,
 } from './translate-captions';

@@ -12,6 +12,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/jobs.ts">OutputSteeringScope</a></code>
 - <code><a href="./src/resources/robots/jobs/jobs.ts">OutputSteeringTaxonomy</a></code>
 - <code><a href="./src/resources/robots/jobs/jobs.ts">OutputSteeringTaxonomyValue</a></code>
+- <code><a href="./src/resources/robots/jobs/jobs.ts">ReplacedTrack</a></code>
 - <code><a href="./src/resources/robots/jobs/jobs.ts">SlimlineAsset</a></code>
 
 Methods:
@@ -98,6 +99,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/translate-captions.ts">TranslateCaptionsJob</a></code>
 - <code><a href="./src/resources/robots/jobs/translate-captions.ts">TranslateCaptionsJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/translate-captions.ts">TranslateCaptionsJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/translate-captions.ts">TranslateCaptionsReplaceExistingTracks</a></code>
 
 Methods:
 
@@ -166,6 +168,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/generate-premium-captions.ts">GeneratePremiumCaptionsJob</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-premium-captions.ts">GeneratePremiumCaptionsJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-premium-captions.ts">GeneratePremiumCaptionsJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/generate-premium-captions.ts">GeneratePremiumCaptionsReplaceExistingTracks</a></code>
 
 Methods:
 
@@ -179,6 +182,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/translate-audio.ts">TranslateAudioJob</a></code>
 - <code><a href="./src/resources/robots/jobs/translate-audio.ts">TranslateAudioJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/translate-audio.ts">TranslateAudioJobParameters</a></code>
+- <code><a href="./src/resources/robots/jobs/translate-audio.ts">TranslateAudioReplaceExistingTracks</a></code>
 
 Methods:
 
