@@ -1,5 +1,22 @@
 # Changelog
 
+## [15.4.0](https://github.com/muxinc/mux-ts/compare/v15.3.0...v15.4.0) (2026-09-30)
+
+
+### Features
+
+* **robots:** New `replace_existing_track` APIs in Mux Robots, and explicitly flag some legacy Robots API fields as deprecated ([3203632](https://github.com/muxinc/mux-ts/commit/32036321d30cc31e4162c49edf7b8088925e9bfd))
+
+
+### Bug Fixes
+
+* **data:** correct types and responses for heatmaps and hotspots ([5151220](https://github.com/muxinc/mux-ts/commit/51512200a81d8cfb76f56f522de4b094ab780854))
+
+
+### Documentation
+
+* **video:** Replace myVideo_en and myVIdeo_en with my-video-en.srt ([5471e7c](https://github.com/muxinc/mux-ts/commit/5471e7cb263ff2cee74aaa61215f72478fbb72fa))
+
 ## [15.3.0](https://github.com/muxinc/mux-ts/compare/v15.2.0...v15.3.0) (2026-09-23)
 
 
