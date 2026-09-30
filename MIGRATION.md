@@ -1,6 +1,6 @@
 # Migration guide
 
-This guide covers the two most recent major migrations of the Mux TypeScript SDK: v14 → v15 (the rename to `@mux/ts`), and the earlier v13 → v14 core migration.
+This guide covers the two most recent major migrations of the Mux TypeScript SDK: v14 → v15 (the rename to `@mux/ts`), and the earlier v12 → v14 core migration.
 
 ## Migrating from v14 to v15 (`@mux/ts`)
 
@@ -34,9 +34,9 @@ Some TypeScript declarations moved or were renamed with the new generation pipel
 
 Everything else in v15 is additive (engagement analytics, asset shots, track updates, named webhook payload models) and needs no migration.
 
-## Migrating from v13 to v14
+## Migrating from v12 to v14
 
-The sections below describe the earlier v13 → v14 migration, when the package was published as `@mux/mux-node` — they apply when upgrading from v13. The main changes were that the SDK moved to the [builtin Web fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of `node-fetch` and dropped to zero dependencies.
+No 13.x was ever published: `@mux/mux-node` went from 12.8.1 straight to 14.0.0, so there is no separate v13 guide. The sections below describe the v12 → v14 migration, when the package was published as `@mux/mux-node` — they apply when upgrading from 12.x. The main changes were that the SDK moved to the [builtin Web fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of `node-fetch` and dropped to zero dependencies.
 
 ## Migration CLI
 
@@ -71,6 +71,20 @@ Readable.fromWeb(res.body).pipe(process.stdout);
 ```
 
 Additionally, the `headers` property on `APIError` objects is now an instance of the Web [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers) class. It was previously defined as `Record<string, string | null | undefined>`.
+
+### Webhook helpers are now async
+
+`client.webhooks.unwrap()` and `client.webhooks.verifySignature()` return Promises since 14.0.1; in 12.x they returned synchronously. A caller that does not `await` gets a Promise where it expects the payload, and nothing throws, because a Promise is truthy.
+
+```ts
+// Before:
+const event = client.webhooks.unwrap(body, headers);
+
+// After:
+const event = await client.webhooks.unwrap(body, headers);
+```
+
+`verifySignature()` needs the same `await`; without it a bad signature becomes an unhandled rejection instead of a thrown error.
 
 ### URI encoded path parameters
 
