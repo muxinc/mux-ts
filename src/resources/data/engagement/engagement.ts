@@ -34,25 +34,51 @@ export class Engagement extends APIResource {
 
 export interface EngagementHeatmap {
   /**
-   * Total number of views the heatmap was calculated from.
-   */
-  total_views: number;
-
-  /**
    * Per-bucket engagement values across the content timeline, ordered from the start
    * to the end of the content. The number of buckets is dynamic (between 10
    * and 1000) and scales with the content duration.
    */
-  value: Array<number>;
+  heatmap: Array<number>;
+
+  /**
+   * The asset ID for which the heatmap was calculated. Omitted if the heatmap is
+   * associated with a video_id or playback_id.
+   */
+  asset_id?: string | null;
+
+  /**
+   * The playback ID for which the heatmap was calculated. Omitted if the heatmap is
+   * associated with a video_id or asset_id.
+   */
+  playback_id?: string | null;
+
+  /**
+   * The video ID for which the heatmap was calculated. Omitted if the heatmap is
+   * associated with a playback_id or asset_id.
+   */
+  video_id?: string | null;
 }
 
 export interface EngagementHotspots {
   hotspots: Array<Hotspot>;
 
   /**
-   * Total number of views the hotspots were calculated from.
+   * The asset ID for which the hotspots were calculated. Omitted if the hotspots are
+   * associated with a video_id or playback_id.
    */
-  total_views: number;
+  asset_id?: string | null;
+
+  /**
+   * The playback ID for which the hotspots were calculated. Omitted if the hotspots
+   * are associated with a video_id or asset_id.
+   */
+  playback_id?: string | null;
+
+  /**
+   * The video ID for which the hotspots were calculated. Omitted if the hotspots are
+   * associated with a playback_id or asset_id.
+   */
+  video_id?: string | null;
 }
 
 export interface Hotspot {
