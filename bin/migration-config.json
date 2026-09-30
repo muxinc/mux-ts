@@ -1,6 +1,0 @@
-{
-  "pkg": "@mux/mux-node",
-  "githubRepo": "https://github.com/muxinc/mux-ts",
-  "clientClass": "Mux",
-  "methods": []
-}

@@ -69,8 +69,7 @@ describe('resource playback', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
-  // Prism routes incorrectly
-  test.skip('storyboardVtt', async () => {
+  test('storyboardVtt', async () => {
     const responsePromise = client.video.playback.storyboardVtt('PLAYBACK_ID');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -81,8 +80,7 @@ describe('resource playback', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism routes incorrectly
-  test.skip('storyboardVtt: request options and params are passed correctly', async () => {
+  test('storyboardVtt: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
       client.video.playback.storyboardVtt(
@@ -99,8 +97,7 @@ describe('resource playback', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
-  // Prism routes incorrectly
-  test.skip('storyboardMeta', async () => {
+  test('storyboardMeta', async () => {
     const responsePromise = client.video.playback.storyboardMeta('PLAYBACK_ID');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -111,8 +108,7 @@ describe('resource playback', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism routes incorrectly
-  test.skip('storyboardMeta: request options and params are passed correctly', async () => {
+  test('storyboardMeta: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
       client.video.playback.storyboardMeta(

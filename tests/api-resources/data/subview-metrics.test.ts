@@ -61,8 +61,7 @@ describe('resource subviewMetrics', () => {
     ).rejects.toThrow(Mux.NotFoundError);
   });
 
-  // Steady fails to recognize the required values[] bracket-array query param as present even when sent correctly (confirmed: identical request passes once required is dropped)
-  test.skip('listComparisonValues: only required params', async () => {
+  test('listComparisonValues: only required params', async () => {
     const responsePromise = client.data.subviewMetrics.listComparisonValues('playing_time', 'rendition', {
       dimension: 'dimension',
       values: ['string'],
@@ -76,8 +75,7 @@ describe('resource subviewMetrics', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Steady fails to recognize the required values[] bracket-array query param as present even when sent correctly (confirmed: identical request passes once required is dropped)
-  test.skip('listComparisonValues: required and optional params', async () => {
+  test('listComparisonValues: required and optional params', async () => {
     const response = await client.data.subviewMetrics.listComparisonValues('playing_time', 'rendition', {
       dimension: 'dimension',
       values: ['string'],
