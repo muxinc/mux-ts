@@ -203,7 +203,7 @@ export class Assets extends APIResource {
    *   {
    *     language_code: 'en-US',
    *     type: 'text',
-   *     url: 'https://example.com/myVideo_en.srt',
+   *     url: 'https://example.com/my-video-en.srt',
    *     closed_captions: true,
    *     name: 'English',
    *     passthrough: 'English',

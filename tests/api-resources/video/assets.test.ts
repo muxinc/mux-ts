@@ -200,7 +200,7 @@ describe('resource assets', () => {
     const responsePromise = client.video.assets.createTrack('ASSET_ID', {
       language_code: 'en-US',
       type: 'text',
-      url: 'https://example.com/myVideo_en.srt',
+      url: 'https://example.com/my-video-en.srt',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -215,7 +215,7 @@ describe('resource assets', () => {
     const response = await client.video.assets.createTrack('ASSET_ID', {
       language_code: 'en-US',
       type: 'text',
-      url: 'https://example.com/myVideo_en.srt',
+      url: 'https://example.com/my-video-en.srt',
       closed_captions: true,
       name: 'English',
       passthrough: 'English',
