@@ -56,6 +56,8 @@ export enum TypeToken {
 export type TypeTokenValues = (typeof TypeToken)[keyof typeof TypeToken];
 export type Tokens = Partial<Record<TypeTokenValues, string>>;
 // ['thumbnail', { time: 2 }]
+/** Extra JWT claims; `custom` may be a nested object. */
+export type MuxJWTParams = Record<string, string | Record<string, string>>;
 export type TypeWithParams<Type extends string = string> = [Type, MuxJWTSignOptions<Type>['params']];
 
 interface MuxJWTSignOptionsBase<Type extends string = string> {
@@ -64,7 +66,7 @@ interface MuxJWTSignOptionsBase<Type extends string = string> {
   keyFilePath?: string;
   type?: Type | Array<Type | TypeWithParams<Type>>;
   expiration?: string;
-  params?: Record<string, string>;
+  params?: MuxJWTParams;
 }
 export interface MuxJWTSignOptions<Type extends string = string> extends MuxJWTSignOptionsBase<Type> {
   type?: Type;

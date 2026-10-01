@@ -1,4 +1,4 @@
-import { sign, isMuxJWTSignOptionsMultiple } from '@mux/ts/lib/jwt';
+import { sign, isMuxJWTSignOptionsMultiple, type MuxJWTSignOptions } from '@mux/ts/lib/jwt';
 
 type CryptoKey = Awaited<ReturnType<typeof globalThis.crypto.subtle.importKey>>;
 
@@ -79,6 +79,15 @@ describe('jwt', () => {
         const payload = decodeJwtPart(payloadB64!);
         expect(payload['iat']).toBeGreaterThanOrEqual(before);
         expect(payload['iat']).toBeLessThanOrEqual(after);
+      });
+
+      test('nested custom claims pass through', async () => {
+        const params: MuxJWTSignOptions['params'] = { sub: 'abc', custom: { session_id: 'xyz' } };
+        const token = await sign(params!, privateKey, { noTimestamp: true });
+        const [, payloadB64] = token.split('.');
+        const payload = decodeJwtPart(payloadB64!);
+        expect(payload['sub']).toBe('abc');
+        expect(payload['custom']).toEqual({ session_id: 'xyz' });
       });
 
       test('noTimestamp omits iat', async () => {
