@@ -67,7 +67,7 @@ export class Jwt extends APIResource {
 
     for (const typeOption of config.type) {
       let type: keyof typeof TypeClaim;
-      let params: Record<string, string> | undefined;
+      let params: jwt.MuxJWTParams | undefined;
 
       if (Array.isArray(typeOption)) {
         [type, params] = typeOption;

@@ -225,7 +225,7 @@ Verifying Webhook Signatures is _optional but encouraged_. Learn more in our [We
     );
     - new Error('Could not find a mux-signature header');
     - new Error(
-      'Webhook body must be passed as the raw JSON string sent from the server (do not parse it first).',
+      'Webhook body must be the raw request body (string or bytes), not parsed JSON.',
     );
     - new Error('Unable to extract timestamp and signatures from header')
     - new Error('No v1 signatures found');
@@ -234,7 +234,7 @@ Verifying Webhook Signatures is _optional but encouraged_. Learn more in our [We
 */
 
 /*
-  `body` is the raw request body. It should be a string representation of a JSON object.
+  `body` is the raw request body, as a string or bytes (Buffer, Uint8Array, ArrayBuffer).
   `headers` is the value in request.headers
   `secret` is the signing secret for this configured webhook. You can find that in your webhooks dashboard
           (note that this secret is different than your API Secret Key)

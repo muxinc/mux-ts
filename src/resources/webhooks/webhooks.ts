@@ -3,14 +3,31 @@
 import { APIResource } from '../../core/resource';
 import { buildHeaders, HeadersLike } from '../../internal/headers';
 
+/** The raw request body as a string or bytes (`Buffer`, `Uint8Array`, `ArrayBuffer`). */
+export type WebhookBody = string | Uint8Array | ArrayBuffer;
+
 export class Webhooks extends APIResource {
   async unwrap(
-    body: string,
+    body: WebhookBody,
     headers: HeadersLike,
     secret: string | undefined | null = this._client.webhookSecret,
   ): Promise<UnwrapWebhookEvent> {
-    await this.verifySignature(body, headers, secret);
-    return JSON.parse(body) as UnwrapWebhookEvent;
+    const payload = this.bodyToString(body);
+    await this.verifySignature(payload, headers, secret);
+    return JSON.parse(payload) as UnwrapWebhookEvent;
+  }
+
+  private bodyToString(body: WebhookBody): string {
+    if (typeof body === 'string') {
+      return body;
+    }
+    if (body instanceof Uint8Array) {
+      return new TextDecoder().decode(body);
+    }
+    if (body instanceof ArrayBuffer) {
+      return new TextDecoder().decode(new Uint8Array(body));
+    }
+    throw new Error('Webhook body must be the raw request body (string or bytes), not parsed JSON.');
   }
 
   private getHeader(headers: HeadersLike, name: string): string | null {
@@ -97,7 +114,7 @@ export class Webhooks extends APIResource {
    * If it was not sent by Mux then an error will be raised.
    */
   async verifySignature(
-    body: string,
+    body: WebhookBody,
     headers: HeadersLike,
     secret: string | undefined | null = this._client.webhookSecret,
   ): Promise<void> {
@@ -112,11 +129,7 @@ export class Webhooks extends APIResource {
       throw new Error('Could not find a mux-signature header');
     }
 
-    if (typeof body !== 'string') {
-      throw new Error(
-        'Webhook body must be passed as the raw JSON string sent from the server (do not parse it first).',
-      );
-    }
+    const payload = this.bodyToString(body);
 
     const details = this.parseHeader(header, 'v1');
     if (!details || details.timestamp === -1) {
@@ -127,7 +140,7 @@ export class Webhooks extends APIResource {
       throw new Error('No v1 signatures found');
     }
 
-    const expectedSignature = await this.computeSignature(`${details.timestamp}.${body}`, secret);
+    const expectedSignature = await this.computeSignature(`${details.timestamp}.${payload}`, secret);
 
     const encoder = new TextEncoder();
     const signatureFound = !!details.signatures.filter((sig) =>
