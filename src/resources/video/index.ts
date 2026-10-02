@@ -61,7 +61,13 @@ export {
 } from './live-streams';
 export {
   Playback,
-  type PlaybackStoryboardMetaResponse,
+  type HlsChapter,
+  type HlsChapterImage,
+  type HlsChapterMetadata,
+  type HlsChapterTitle,
+  type StoryboardMetadata,
+  type StoryboardTile,
+  type PlaybackChaptersResponse,
   type PlaybackStoryboardVttResponse,
   type PlaybackTrackResponse,
   type PlaybackTranscriptResponse,
@@ -74,6 +80,7 @@ export {
   type PlaybackStaticRenditionParams,
   type PlaybackTrackParams,
   type PlaybackTranscriptParams,
+  type PlaybackChaptersParams,
 } from './playback';
 export { PlaybackIds, type PlaybackIdsRetrieveResponse } from './playback-ids';
 export {

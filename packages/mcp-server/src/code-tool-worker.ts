@@ -168,6 +168,7 @@ const fuse = new Fuse(
     'client.video.drmConfigurations.list',
     'client.video.drmConfigurations.retrieve',
     'client.video.playback.animated',
+    'client.video.playback.chapters',
     'client.video.playback.hls',
     'client.video.playback.staticRendition',
     'client.video.playback.storyboard',

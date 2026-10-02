@@ -419,6 +419,12 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/{PLAYBACK_ID}/text/{TRACK_ID}.txt',
   },
   {
+    clientCallName: 'client.video.playback.chapters',
+    fullyQualifiedName: 'video.playback.chapters',
+    httpMethod: 'get',
+    httpPath: '/{PLAYBACK_ID}/chapters/{TRACK_ID}.json',
+  },
+  {
     clientCallName: 'client.robots.jobs.list',
     fullyQualifiedName: 'robots.jobs.list',
     httpMethod: 'get',

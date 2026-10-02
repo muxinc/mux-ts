@@ -158,7 +158,13 @@ Methods:
 
 Types:
 
-- <code><a href="./src/resources/video/playback.ts">PlaybackStoryboardMetaResponse</a></code>
+- <code><a href="./src/resources/video/playback.ts">HlsChapter</a></code>
+- <code><a href="./src/resources/video/playback.ts">HlsChapterImage</a></code>
+- <code><a href="./src/resources/video/playback.ts">HlsChapterMetadata</a></code>
+- <code><a href="./src/resources/video/playback.ts">HlsChapterTitle</a></code>
+- <code><a href="./src/resources/video/playback.ts">StoryboardMetadata</a></code>
+- <code><a href="./src/resources/video/playback.ts">StoryboardTile</a></code>
+- <code><a href="./src/resources/video/playback.ts">PlaybackChaptersResponse</a></code>
 - <code><a href="./src/resources/video/playback.ts">PlaybackStoryboardVttResponse</a></code>
 - <code><a href="./src/resources/video/playback.ts">PlaybackTrackResponse</a></code>
 - <code><a href="./src/resources/video/playback.ts">PlaybackTranscriptResponse</a></code>
@@ -169,8 +175,9 @@ Methods:
 - <code title="get /{PLAYBACK_ID}/animated.{EXTENSION}">client.video.playback.<a href="./src/resources/video/playback.ts">animated</a>(playbackId, extension, { ...params }) -> Response</code>
 - <code title="get /{PLAYBACK_ID}/storyboard.{EXTENSION}">client.video.playback.<a href="./src/resources/video/playback.ts">storyboard</a>(playbackId, extension, { ...params }) -> Response</code>
 - <code title="get /{PLAYBACK_ID}/storyboard.vtt">client.video.playback.<a href="./src/resources/video/playback.ts">storyboardVtt</a>(playbackId, { ...params }) -> string</code>
-- <code title="get /{PLAYBACK_ID}/storyboard.json">client.video.playback.<a href="./src/resources/video/playback.ts">storyboardMeta</a>(playbackId, { ...params }) -> string</code>
+- <code title="get /{PLAYBACK_ID}/storyboard.json">client.video.playback.<a href="./src/resources/video/playback.ts">storyboardMeta</a>(playbackId, { ...params }) -> StoryboardMetadata</code>
 - <code title="get /{PLAYBACK_ID}.m3u8">client.video.playback.<a href="./src/resources/video/playback.ts">hls</a>(playbackId, { ...params }) -> Response</code>
 - <code title="get /{PLAYBACK_ID}/{FILENAME}">client.video.playback.<a href="./src/resources/video/playback.ts">staticRendition</a>(playbackId, filename, { ...params }) -> Response</code>
 - <code title="get /{PLAYBACK_ID}/text/{TRACK_ID}.vtt">client.video.playback.<a href="./src/resources/video/playback.ts">track</a>(playbackId, trackId, { ...params }) -> string</code>
 - <code title="get /{PLAYBACK_ID}/text/{TRACK_ID}.txt">client.video.playback.<a href="./src/resources/video/playback.ts">transcript</a>(playbackId, trackId, { ...params }) -> string</code>
+- <code title="get /{PLAYBACK_ID}/chapters/{TRACK_ID}.json">client.video.playback.<a href="./src/resources/video/playback.ts">chapters</a>(playbackId, trackId, { ...params }) -> PlaybackChaptersResponse</code>

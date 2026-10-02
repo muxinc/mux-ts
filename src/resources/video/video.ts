@@ -66,12 +66,17 @@ import {
 } from './live-streams';
 import * as PlaybackAPI from './playback';
 import {
+  HlsChapter,
+  HlsChapterImage,
+  HlsChapterMetadata,
+  HlsChapterTitle,
   Playback,
   PlaybackAnimatedParams,
+  PlaybackChaptersParams,
+  PlaybackChaptersResponse,
   PlaybackHlsParams,
   PlaybackStaticRenditionParams,
   PlaybackStoryboardMetaParams,
-  PlaybackStoryboardMetaResponse,
   PlaybackStoryboardParams,
   PlaybackStoryboardVttParams,
   PlaybackStoryboardVttResponse,
@@ -80,6 +85,8 @@ import {
   PlaybackTrackResponse,
   PlaybackTranscriptParams,
   PlaybackTranscriptResponse,
+  StoryboardMetadata,
+  StoryboardTile,
 } from './playback';
 import * as PlaybackIdsAPI from './playback-ids';
 import { PlaybackIds, PlaybackIdsRetrieveResponse } from './playback-ids';
@@ -242,7 +249,13 @@ export declare namespace Video {
 
   export {
     Playback as Playback,
-    type PlaybackStoryboardMetaResponse as PlaybackStoryboardMetaResponse,
+    type HlsChapter as HlsChapter,
+    type HlsChapterImage as HlsChapterImage,
+    type HlsChapterMetadata as HlsChapterMetadata,
+    type HlsChapterTitle as HlsChapterTitle,
+    type StoryboardMetadata as StoryboardMetadata,
+    type StoryboardTile as StoryboardTile,
+    type PlaybackChaptersResponse as PlaybackChaptersResponse,
     type PlaybackStoryboardVttResponse as PlaybackStoryboardVttResponse,
     type PlaybackTrackResponse as PlaybackTrackResponse,
     type PlaybackTranscriptResponse as PlaybackTranscriptResponse,
@@ -255,5 +268,6 @@ export declare namespace Video {
     type PlaybackStaticRenditionParams as PlaybackStaticRenditionParams,
     type PlaybackTrackParams as PlaybackTrackParams,
     type PlaybackTranscriptParams as PlaybackTranscriptParams,
+    type PlaybackChaptersParams as PlaybackChaptersParams,
   };
 }

@@ -129,16 +129,15 @@ export class Playback extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.video.playback.storyboardMeta(
-   *   'PLAYBACK_ID',
-   * );
+   * const storyboardMetadata =
+   *   await client.video.playback.storyboardMeta('PLAYBACK_ID');
    * ```
    */
   storyboardMeta(
     playbackId: string,
     query: PlaybackStoryboardMetaParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<string> {
+  ): APIPromise<StoryboardMetadata> {
     return this._client.get(path`/${playbackId}/storyboard.json`, {
       query,
       defaultBaseURL: 'https://image.mux.com',
@@ -259,9 +258,180 @@ export class Playback extends APIResource {
       headers: buildHeaders([{ Accept: 'text/plain' }, options?.headers]),
     });
   }
+
+  /**
+   * Fetch the chapters for an asset as JSON. This is only possible for assets with a
+   * text track where `text_type` is `chapters`.
+   *
+   * @example
+   * ```ts
+   * const hlsChapters = await client.video.playback.chapters(
+   *   'PLAYBACK_ID',
+   *   'TRACK_ID',
+   * );
+   * ```
+   */
+  chapters(
+    playbackId: string,
+    trackId: string,
+    query: PlaybackChaptersParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<PlaybackChaptersResponse> {
+    return this._client.get(path`/${playbackId}/chapters/${trackId}.json`, {
+      query,
+      defaultBaseURL: 'https://stream.mux.com',
+      ...options,
+    });
+  }
 }
 
-export type PlaybackStoryboardMetaResponse = string;
+/**
+ * A chapter entry in the
+ * [HLS JSON chapters format](https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters).
+ * A chapter runs from its `start-time` to the `start-time` of the next chapter
+ * unless `duration` is set.
+ */
+export interface HlsChapter {
+  /**
+   * The chapter start time in seconds.
+   */
+  'start-time': number;
+
+  /**
+   * The chapter number.
+   */
+  chapter?: number;
+
+  /**
+   * The chapter duration in seconds. Only present when chapters overlap or nest.
+   */
+  duration?: number;
+
+  /**
+   * Images associated with the chapter.
+   */
+  images?: Array<HlsChapterImage>;
+
+  /**
+   * Arbitrary metadata associated with the chapter.
+   */
+  metadata?: Array<HlsChapterMetadata>;
+
+  /**
+   * The chapter title in each available language.
+   */
+  titles?: Array<HlsChapterTitle>;
+}
+
+export interface HlsChapterImage {
+  /**
+   * A category identifying similar images across chapters, for example `thumbnail`.
+   */
+  'image-category': string;
+
+  /**
+   * The height of the image in pixels.
+   */
+  'pixel-height': number;
+
+  /**
+   * The width of the image in pixels.
+   */
+  'pixel-width': number;
+
+  /**
+   * The absolute or relative URL of the image. Relative URLs are relative to the
+   * chapters document.
+   */
+  url: string;
+}
+
+export interface HlsChapterMetadata {
+  /**
+   * The metadata key.
+   */
+  key: string;
+
+  /**
+   * The metadata value. Can be a string, number, boolean, array, or object.
+   */
+  value: unknown;
+
+  /**
+   * The [BCP 47](https://tools.ietf.org/html/bcp47) language code of the value, if
+   * it is language-specific.
+   */
+  language?: string;
+}
+
+export interface HlsChapterTitle {
+  /**
+   * The [BCP 47](https://tools.ietf.org/html/bcp47) language code of the title, or
+   * `und` if the title is language-neutral.
+   */
+  language: string;
+
+  /**
+   * The chapter title in the given language.
+   */
+  title: string;
+}
+
+/**
+ * Metadata describing a
+ * [storyboard image](https://docs.mux.com/guides/create-timeline-hover-previews#json),
+ * including where each thumbnail tile sits within it and the time it represents.
+ */
+export interface StoryboardMetadata {
+  /**
+   * The duration of the asset in seconds.
+   */
+  duration: number;
+
+  /**
+   * The height of each tile in pixels.
+   */
+  tile_height: number;
+
+  /**
+   * The width of each tile in pixels.
+   */
+  tile_width: number;
+
+  /**
+   * The tiles that make up the storyboard, ordered by start time.
+   */
+  tiles: Array<StoryboardTile>;
+
+  /**
+   * The URL of the storyboard image, in the format requested with the `format` query
+   * parameter.
+   */
+  url: string;
+}
+
+export interface StoryboardTile {
+  /**
+   * The time in seconds within the asset that this tile represents.
+   */
+  start: number;
+
+  /**
+   * The horizontal offset of the tile within the storyboard image, in pixels.
+   */
+  x: number;
+
+  /**
+   * The vertical offset of the tile within the storyboard image, in pixels.
+   */
+  y: number;
+}
+
+/**
+ * The chapters of the asset in
+ * [HLS JSON chapters format](https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters).
+ */
+export type PlaybackChaptersResponse = Array<HlsChapter>;
 
 export type PlaybackStoryboardVttResponse = string;
 
@@ -591,9 +761,23 @@ export interface PlaybackTranscriptParams {
   token?: string;
 }
 
+export interface PlaybackChaptersParams {
+  /**
+   * Signed token (JWT) for
+   * [secure video playback](https://docs.mux.com/guides/secure-video-playback).
+   */
+  token?: string;
+}
+
 export declare namespace Playback {
   export {
-    type PlaybackStoryboardMetaResponse as PlaybackStoryboardMetaResponse,
+    type HlsChapter as HlsChapter,
+    type HlsChapterImage as HlsChapterImage,
+    type HlsChapterMetadata as HlsChapterMetadata,
+    type HlsChapterTitle as HlsChapterTitle,
+    type StoryboardMetadata as StoryboardMetadata,
+    type StoryboardTile as StoryboardTile,
+    type PlaybackChaptersResponse as PlaybackChaptersResponse,
     type PlaybackStoryboardVttResponse as PlaybackStoryboardVttResponse,
     type PlaybackTrackResponse as PlaybackTrackResponse,
     type PlaybackTranscriptResponse as PlaybackTranscriptResponse,
@@ -606,5 +790,6 @@ export declare namespace Playback {
     type PlaybackStaticRenditionParams as PlaybackStaticRenditionParams,
     type PlaybackTrackParams as PlaybackTrackParams,
     type PlaybackTranscriptParams as PlaybackTranscriptParams,
+    type PlaybackChaptersParams as PlaybackChaptersParams,
   };
 }

@@ -1312,12 +1312,13 @@ export interface InputSettings {
   start_time?: number;
 
   /**
-   * Type of text track. This parameter only supports subtitles value. For more
-   * information on Subtitles / Closed Captions,
+   * Type of text track. Use `subtitles` for subtitles and closed captions, or
+   * `chapters` for a chapters track. For more information on Subtitles / Closed
+   * Captions,
    * [see this blog post](https://mux.com/blog/subtitles-captions-webvtt-hls-and-those-magic-flags/).
    * This parameter is required for `text` type tracks.
    */
-  text_type?: 'subtitles';
+  text_type?: 'subtitles' | 'chapters';
 
   /**
    * This parameter is required for `text` type tracks.
@@ -1633,7 +1634,7 @@ export interface Track {
   /**
    * This parameter is only set for `text` type tracks.
    */
-  text_type?: 'subtitles';
+  text_type?: 'subtitles' | 'chapters';
 
   /**
    * The type of track
@@ -1879,7 +1880,11 @@ export interface AssetCreateTrackParams {
    */
   passthrough?: string;
 
-  text_type?: 'subtitles';
+  /**
+   * The type of text track. Required when `type` is `text`. Use `subtitles` for
+   * subtitles and closed captions, or `chapters` for a chapters track.
+   */
+  text_type?: 'subtitles' | 'chapters';
 }
 
 export interface AssetUpdateTrackParams {
