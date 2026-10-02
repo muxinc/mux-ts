@@ -1,5 +1,30 @@
 # Changelog
 
+## [15.5.0](https://github.com/muxinc/mux-ts/compare/v15.4.0...v15.5.0) (2026-10-02)
+
+
+### Features
+
+* **video:** add playback chapters endpoint and chapters text_type ([797ad8d](https://github.com/muxinc/mux-ts/commit/797ad8d87f0f9139ca94226734e990bf173e9cfb))
+
+
+### Bug Fixes
+
+* **jwt:** type nested custom claims in sign options ([#14](https://github.com/muxinc/mux-ts/issues/14)) ([65ea454](https://github.com/muxinc/mux-ts/commit/65ea4545366c8d34d56556851a2303e36a824baa))
+* **mock:** validate bracket-array query params in Steady; carry MIGRATION.md whole; pin the stlc-php array_format fix ([7603628](https://github.com/muxinc/mux-ts/commit/7603628463b45be345dd499ffed792caaa9f9547))
+* **video:** expose created_at for shots ([bbe0e54](https://github.com/muxinc/mux-ts/commit/bbe0e5489acc4c426201b61f6fdbc6c990e6ffa5))
+* **webhooks:** accept the raw body as bytes in verifySignature and unwrap ([#12](https://github.com/muxinc/mux-ts/issues/12)) ([bed79bf](https://github.com/muxinc/mux-ts/commit/bed79bf1783dbb59e61d454ea33c811e95c2b5db))
+
+
+### Chores
+
+* carry MIGRATION.md as custom code instead of regenerating it ([ea4702e](https://github.com/muxinc/mux-ts/commit/ea4702e3da4c25d1435d65d365742b017f8eb730))
+
+
+### Documentation
+
+* **migration:** document async webhook helpers; v12 → v14 heading ([77056b2](https://github.com/muxinc/mux-ts/commit/77056b20acf2e63a09ed5dc59cb1112c2542f9d3))
+
 ## [15.4.0](https://github.com/muxinc/mux-ts/compare/v15.3.0...v15.4.0) (2026-09-30)
 
 
