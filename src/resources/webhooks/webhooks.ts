@@ -1008,6 +1008,8 @@ export namespace WebhookAsset {
    * The results of generating shots on the video
    */
   export interface Shots {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */
@@ -5323,6 +5325,8 @@ export namespace VideoAssetShotsCreatedWebhookEvent {
    * The results of generating shots on the video
    */
   export interface Data {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */
@@ -5375,6 +5379,8 @@ export namespace VideoAssetShotsReadyWebhookEvent {
    * The results of generating shots on the video
    */
   export interface Data {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */
@@ -5427,6 +5433,8 @@ export namespace VideoAssetShotsSkippedWebhookEvent {
    * The results of generating shots on the video
    */
   export interface Data {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */
@@ -5479,6 +5487,8 @@ export namespace VideoAssetShotsErroredWebhookEvent {
    * The results of generating shots on the video
    */
   export interface Data {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */
@@ -5531,6 +5541,8 @@ export namespace VideoAssetShotsDeletedWebhookEvent {
    * The results of generating shots on the video
    */
   export interface Data {
+    created_at: number;
+
     /**
      * The status of the shot detection process
      */

@@ -1126,6 +1126,12 @@ export interface AssetResponse {
  */
 export interface AssetShots {
   /**
+   * Time the shot detection process was created, defined as a Unix timestamp
+   * (seconds since epoch).
+   */
+  created_at: string;
+
+  /**
    * The status of the shot detection process
    */
   status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
