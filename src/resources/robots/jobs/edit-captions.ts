@@ -35,7 +35,7 @@ export class EditCaptions extends APIResource {
    *         { find: 'speaker_0', replace: 'Alice' },
    *       ],
    *       upload_to_mux: true,
-   *       delete_original_track: true,
+   *       replace_existing_tracks: 'replace',
    *     },
    *   });
    * ```
@@ -137,6 +137,13 @@ export interface EditCaptionsJobOutputs {
   total_replacement_count: number;
 
   /**
+   * Every track deleted before the new track was created. Present when
+   * `replace_existing_tracks` was a deleting policy and at least one track was
+   * removed.
+   */
+  replaced_tracks?: Array<JobsAPI.ReplacedTrack>;
+
+  /**
    * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
    * after the job completes.
    */
@@ -167,10 +174,21 @@ export interface EditCaptionsJobParameters {
   auto_censor_profanity?: EditCaptionsJobParameters.AutoCensorProfanity;
 
   /**
-   * Whether to delete the original source text track after the edited track upload
-   * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+   * @deprecated Use `replace_existing_tracks` instead.
    */
   delete_original_track?: boolean;
+
+  /**
+   * What to do with the source track. Defaults to `replace`: the source is deleted
+   * and the edited track takes its place under the same name, language and
+   * closed-captions setting; no other track is touched, and the source is restored
+   * if the edited track can't be added. `fail` deletes nothing and adds the edited
+   * track alongside the source, so it requires a `track_name` different from the
+   * source's. Either way the request is rejected if a track other than the source
+   * already has the edited track's name. `replace` requires `upload_to_mux` to be
+   * true.
+   */
+  replace_existing_tracks?: 'replace' | 'fail';
 
   /**
    * Optional static word or phrase replacements applied directly to cue text.
@@ -185,14 +203,20 @@ export interface EditCaptionsJobParameters {
   speaker_replacements?: Array<EditCaptionsSpeakerReplacement>;
 
   /**
-   * Optional suffix appended to the uploaded replacement track name. Defaults to
-   * "edited".
+   * Name for the edited Mux text track. Defaults to the source track's name.
+   * Required and must differ from the source's name when `replace_existing_tracks`
+   * is `fail`. Mux requires text track names to be unique on an asset.
+   */
+  track_name?: string;
+
+  /**
+   * @deprecated Use `track_name` instead.
    */
   track_name_suffix?: string;
 
   /**
-   * Whether to upload the edited VTT back to the Mux asset as a new text track.
-   * Defaults to true.
+   * Whether to upload the edited VTT back to the Mux asset as a text track. Defaults
+   * to true.
    */
   upload_to_mux?: boolean;
 }

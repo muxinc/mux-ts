@@ -28,6 +28,7 @@ describe('resource translateAudio', () => {
         asset_id: 'mux_asset_123abc',
         to_language_code: 'es',
         replace_existing_tracks: 'fail',
+        track_name: 'x',
         upload_to_mux: true,
       },
       passthrough: 'passthrough',

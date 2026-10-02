@@ -187,6 +187,14 @@ export interface TranslateCaptionsJobParameters {
   replace_existing_tracks?: TranslateCaptionsReplaceExistingTracks;
 
   /**
+   * Name for the translated Mux text track. Defaults to "{Language}
+   * (Auto-translated)", e.g. "Spanish (Auto-translated)". Mux requires text track
+   * names to be unique on an asset, and an existing track with this name is handled
+   * according to `replace_existing_tracks`.
+   */
+  track_name?: string;
+
+  /**
    * Whether to upload the translated VTT and attach it as a text track on the Mux
    * asset. Defaults to true.
    */

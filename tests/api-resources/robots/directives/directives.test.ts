@@ -56,6 +56,7 @@ describe('resource directives', () => {
             to_language_code: 'es',
             never_translate: ['Mux', 'Springfield'],
             replace_existing_tracks: 'fail',
+            track_name: 'x',
             upload_to_mux: true,
           },
           reference_id: 'translate_es',

@@ -374,20 +374,16 @@ export namespace WebhookAskQuestionsJob {
      */
     export interface OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       scope?: OutputSteering.Scope;
     }
 
     export namespace OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       export interface Scope {
         /**
@@ -2198,10 +2194,21 @@ export namespace WebhookEditCaptionsJob {
     auto_censor_profanity?: Parameters.AutoCensorProfanity;
 
     /**
-     * Whether to delete the original source text track after the edited track upload
-     * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+     * @deprecated Use `replace_existing_tracks` instead.
      */
     delete_original_track?: boolean;
+
+    /**
+     * What to do with the source track. Defaults to `replace`: the source is deleted
+     * and the edited track takes its place under the same name, language and
+     * closed-captions setting; no other track is touched, and the source is restored
+     * if the edited track can't be added. `fail` deletes nothing and adds the edited
+     * track alongside the source, so it requires a `track_name` different from the
+     * source's. Either way the request is rejected if a track other than the source
+     * already has the edited track's name. `replace` requires `upload_to_mux` to be
+     * true.
+     */
+    replace_existing_tracks?: 'replace' | 'fail';
 
     /**
      * Optional static word or phrase replacements applied directly to cue text.
@@ -2216,14 +2223,20 @@ export namespace WebhookEditCaptionsJob {
     speaker_replacements?: Array<Parameters.SpeakerReplacement>;
 
     /**
-     * Optional suffix appended to the uploaded replacement track name. Defaults to
-     * "edited".
+     * Name for the edited Mux text track. Defaults to the source track's name.
+     * Required and must differ from the source's name when `replace_existing_tracks`
+     * is `fail`. Mux requires text track names to be unique on an asset.
+     */
+    track_name?: string;
+
+    /**
+     * @deprecated Use `track_name` instead.
      */
     track_name_suffix?: string;
 
     /**
-     * Whether to upload the edited VTT back to the Mux asset as a new text track.
-     * Defaults to true.
+     * Whether to upload the edited VTT back to the Mux asset as a text track. Defaults
+     * to true.
      */
     upload_to_mux?: boolean;
   }
@@ -2334,6 +2347,13 @@ export namespace WebhookEditCaptionsJob {
     total_replacement_count: number;
 
     /**
+     * Every track deleted before the new track was created. Present when
+     * `replace_existing_tracks` was a deleting policy and at least one track was
+     * removed.
+     */
+    replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+    /**
      * Temporary pre-signed URL for downloading the edited VTT file. Expires 7 days
      * after the job completes.
      */
@@ -2344,6 +2364,41 @@ export namespace WebhookEditCaptionsJob {
      * is true and the upload succeeds.
      */
     uploaded_track_id?: string;
+  }
+
+  export namespace Outputs {
+    export interface ReplacedTrack {
+      /**
+       * Mux track ID of the deleted track.
+       */
+      id: string;
+
+      /**
+       * Language code of the deleted track.
+       */
+      language_code?: string;
+
+      /**
+       * Name of the deleted track.
+       */
+      name?: string;
+
+      /**
+       * `passthrough` value the deleted track carried, if any.
+       */
+      passthrough?: string;
+
+      /**
+       * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+       * Absent for audio tracks.
+       */
+      text_source?: string;
+
+      /**
+       * Mux track type of the deleted track.
+       */
+      type?: 'text' | 'audio';
+    }
   }
 
   /**
@@ -2544,10 +2599,8 @@ export namespace WebhookFindKeyMomentsJob {
       >;
 
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -2567,18 +2620,16 @@ export namespace WebhookFindKeyMomentsJob {
       title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
 
       /**
-       * Controlled vocabulary used to steer scene concepts without changing the response
-       * schema.
+       * Controlled vocabulary used as best-effort guidance for generated labels and
+       * concepts.
        */
       topic_taxonomy?: OutputSteering.TopicTaxonomy;
     }
 
     export namespace OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       export interface Scope {
         /**
@@ -2595,8 +2646,8 @@ export namespace WebhookFindKeyMomentsJob {
       }
 
       /**
-       * Controlled vocabulary used to steer scene concepts without changing the response
-       * schema.
+       * Controlled vocabulary used as best-effort guidance for generated labels and
+       * concepts.
        */
       export interface TopicTaxonomy {
         /**
@@ -4121,20 +4172,16 @@ export namespace WebhookModerateJob {
      */
     export interface OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       scope?: OutputSteering.Scope;
     }
 
     export namespace OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       export interface Scope {
         /**
@@ -4560,10 +4607,8 @@ export namespace WebhookSummarizeJob {
       brand_terms?: Array<string>;
 
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -4582,10 +4627,8 @@ export namespace WebhookSummarizeJob {
 
     export namespace OutputSteering {
       /**
-       * Optional execution window in seconds on the original asset timeline. Omit
-       * start_time to begin at the asset start and omit end_time to continue through the
-       * asset end. The summary and tags are generated only from media within this
-       * window.
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
        */
       export interface Scope {
         /**
@@ -4903,6 +4946,14 @@ export namespace WebhookTranslateCaptionsJob {
      * ignoring region subtags, and by name ignoring case, in any status.
      */
     replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+    /**
+     * Name for the translated Mux text track. Defaults to "{Language}
+     * (Auto-translated)", e.g. "Spanish (Auto-translated)". Mux requires text track
+     * names to be unique on an asset, and an existing track with this name is handled
+     * according to `replace_existing_tracks`.
+     */
+    track_name?: string;
 
     /**
      * Whether to upload the translated VTT and attach it as a text track on the Mux
@@ -6757,10 +6808,8 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -6784,10 +6833,8 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -7116,10 +7163,8 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -7143,10 +7188,8 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -7475,10 +7518,8 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -7502,10 +7543,8 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -7834,10 +7873,8 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -7861,10 +7898,8 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -8193,10 +8228,8 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
         looking_for?: string;
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -8220,10 +8253,8 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -8612,10 +8643,8 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -8635,18 +8664,16 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
         title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         topic_taxonomy?: OutputSteering.TopicTaxonomy;
       }
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -8663,8 +8690,8 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
         }
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         export interface TopicTaxonomy {
           /**
@@ -9080,10 +9107,8 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -9103,18 +9128,16 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
         title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         topic_taxonomy?: OutputSteering.TopicTaxonomy;
       }
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -9131,8 +9154,8 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
         }
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         export interface TopicTaxonomy {
           /**
@@ -9548,10 +9571,8 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -9571,18 +9592,16 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
         title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         topic_taxonomy?: OutputSteering.TopicTaxonomy;
       }
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -9599,8 +9618,8 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
         }
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         export interface TopicTaxonomy {
           /**
@@ -10016,10 +10035,8 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -10039,18 +10056,16 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
         title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         topic_taxonomy?: OutputSteering.TopicTaxonomy;
       }
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -10067,8 +10082,8 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
         }
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         export interface TopicTaxonomy {
           /**
@@ -10484,10 +10499,8 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
         narration_detail?: 'concise' | 'balanced' | 'detailed';
 
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         scope?: OutputSteering.Scope;
 
@@ -10507,18 +10520,16 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
         title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         topic_taxonomy?: OutputSteering.TopicTaxonomy;
       }
 
       export namespace OutputSteering {
         /**
-         * Optional execution window in seconds on the original asset timeline. Omit
-         * start_time to begin at the asset start and omit end_time to continue through the
-         * asset end. The summary and tags are generated only from media within this
-         * window.
+         * Optional media execution window. Results remain timestamped against the original
+         * media timeline.
          */
         export interface Scope {
           /**
@@ -10535,8 +10546,8 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
         }
 
         /**
-         * Controlled vocabulary used to steer scene concepts without changing the response
-         * schema.
+         * Controlled vocabulary used as best-effort guidance for generated labels and
+         * concepts.
          */
         export interface TopicTaxonomy {
           /**
@@ -14040,6 +14051,14 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
       replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
 
       /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -14310,6 +14329,14 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
        * ignoring case, in any status.
        */
       replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
@@ -14584,6 +14611,14 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
       replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
 
       /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -14856,6 +14891,14 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
       replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
 
       /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
+
+      /**
        * Whether to automatically upload the translated audio track to the Mux asset.
        * Defaults to true.
        */
@@ -15126,6 +15169,14 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
        * ignoring case, in any status.
        */
       replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+      /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.

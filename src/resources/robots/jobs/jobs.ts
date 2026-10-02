@@ -295,10 +295,8 @@ export namespace JobSummary {
 }
 
 /**
- * Optional execution window in seconds on the original asset timeline. Omit
- * start_time to begin at the asset start and omit end_time to continue through the
- * asset end. The summary and tags are generated only from media within this
- * window.
+ * Optional media execution window. Results remain timestamped against the original
+ * media timeline.
  */
 export interface OutputSteeringScope {
   /**
@@ -315,8 +313,8 @@ export interface OutputSteeringScope {
 }
 
 /**
- * Controlled vocabulary used to steer scene concepts without changing the response
- * schema.
+ * Controlled vocabulary used as best-effort guidance for generated labels and
+ * concepts.
  */
 export interface OutputSteeringTaxonomy {
   /**

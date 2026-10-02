@@ -163,6 +163,14 @@ export interface TranslateAudioJobParameters {
   replace_existing_tracks?: TranslateAudioReplaceExistingTracks;
 
   /**
+   * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+   * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+   * asset, and an existing track with this name is handled according to
+   * `replace_existing_tracks`.
+   */
+  track_name?: string;
+
+  /**
    * Whether to automatically upload the translated audio track to the Mux asset.
    * Defaults to true.
    */

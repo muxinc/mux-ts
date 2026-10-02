@@ -937,10 +937,21 @@ export namespace WorkflowBinding {
       auto_censor_profanity?: Params.AutoCensorProfanity;
 
       /**
-       * Whether to delete the original source text track after the edited track upload
-       * succeeds. Has effect only when upload_to_mux is true. Defaults to true.
+       * @deprecated Use `replace_existing_tracks` instead.
        */
       delete_original_track?: boolean;
+
+      /**
+       * What to do with the source track. Defaults to `replace`: the source is deleted
+       * and the edited track takes its place under the same name, language and
+       * closed-captions setting; no other track is touched, and the source is restored
+       * if the edited track can't be added. `fail` deletes nothing and adds the edited
+       * track alongside the source, so it requires a `track_name` different from the
+       * source's. Either way the request is rejected if a track other than the source
+       * already has the edited track's name. `replace` requires `upload_to_mux` to be
+       * true.
+       */
+      replace_existing_tracks?: 'replace' | 'fail';
 
       /**
        * Optional static word or phrase replacements applied directly to cue text.
@@ -955,14 +966,20 @@ export namespace WorkflowBinding {
       speaker_replacements?: Array<EditCaptionsAPI.EditCaptionsSpeakerReplacement>;
 
       /**
-       * Optional suffix appended to the uploaded replacement track name. Defaults to
-       * "edited".
+       * Name for the edited Mux text track. Defaults to the source track's name.
+       * Required and must differ from the source's name when `replace_existing_tracks`
+       * is `fail`. Mux requires text track names to be unique on an asset.
+       */
+      track_name?: string;
+
+      /**
+       * @deprecated Use `track_name` instead.
        */
       track_name_suffix?: string;
 
       /**
-       * Whether to upload the edited VTT back to the Mux asset as a new text track.
-       * Defaults to true.
+       * Whether to upload the edited VTT back to the Mux asset as a text track. Defaults
+       * to true.
        */
       upload_to_mux?: boolean;
     }
@@ -1078,6 +1095,14 @@ export namespace WorkflowBinding {
       replace_existing_tracks?: TranslateCaptionsAPI.TranslateCaptionsReplaceExistingTracks;
 
       /**
+       * Name for the translated Mux text track. Defaults to "{Language}
+       * (Auto-translated)", e.g. "Spanish (Auto-translated)". Mux requires text track
+       * names to be unique on an asset, and an existing track with this name is handled
+       * according to `replace_existing_tracks`.
+       */
+      track_name?: string;
+
+      /**
        * Whether to upload the translated VTT and attach it as a text track on the Mux
        * asset. Defaults to true.
        */
@@ -1134,6 +1159,14 @@ export namespace WorkflowBinding {
        * ignoring case, in any status.
        */
       replace_existing_tracks?: TranslateAudioAPI.TranslateAudioReplaceExistingTracks;
+
+      /**
+       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+       * asset, and an existing track with this name is handled according to
+       * `replace_existing_tracks`.
+       */
+      track_name?: string;
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.

@@ -318,10 +318,8 @@ export interface FindScenesOutputSteering {
   narration_detail?: 'concise' | 'balanced' | 'detailed';
 
   /**
-   * Optional execution window in seconds on the original asset timeline. Omit
-   * start_time to begin at the asset start and omit end_time to continue through the
-   * asset end. The summary and tags are generated only from media within this
-   * window.
+   * Optional media execution window. Results remain timestamped against the original
+   * media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 
@@ -341,8 +339,8 @@ export interface FindScenesOutputSteering {
   title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
 
   /**
-   * Controlled vocabulary used to steer scene concepts without changing the response
-   * schema.
+   * Controlled vocabulary used as best-effort guidance for generated labels and
+   * concepts.
    */
   topic_taxonomy?: JobsAPI.OutputSteeringTaxonomy;
 }

@@ -250,10 +250,8 @@ export interface FindBestThumbnailsOutputSteering {
   looking_for?: string;
 
   /**
-   * Optional execution window in seconds on the original asset timeline. Omit
-   * start_time to begin at the asset start and omit end_time to continue through the
-   * asset end. The summary and tags are generated only from media within this
-   * window.
+   * Optional media execution window. Results remain timestamped against the original
+   * media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

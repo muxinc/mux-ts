@@ -34,6 +34,7 @@ describe('resource editCaptions', () => {
           never_censor: ['x'],
         },
         delete_original_track: true,
+        replace_existing_tracks: 'replace',
         replacements: [
           {
             find: 'Mucks',
@@ -47,6 +48,7 @@ describe('resource editCaptions', () => {
           },
         ],
         speaker_replacements: [{ find: 'speaker_0', replace: 'Alice' }],
+        track_name: 'x',
         track_name_suffix: 'x',
         upload_to_mux: true,
       },

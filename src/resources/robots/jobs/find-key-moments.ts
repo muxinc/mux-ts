@@ -332,10 +332,8 @@ export interface FindKeyMomentsOutputSteering {
   rubric_priorities?: Array<'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'>;
 
   /**
-   * Optional execution window in seconds on the original asset timeline. Omit
-   * start_time to begin at the asset start and omit end_time to continue through the
-   * asset end. The summary and tags are generated only from media within this
-   * window.
+   * Optional media execution window. Results remain timestamped against the original
+   * media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 
@@ -355,8 +353,8 @@ export interface FindKeyMomentsOutputSteering {
   title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
 
   /**
-   * Controlled vocabulary used to steer scene concepts without changing the response
-   * schema.
+   * Controlled vocabulary used as best-effort guidance for generated labels and
+   * concepts.
    */
   topic_taxonomy?: JobsAPI.OutputSteeringTaxonomy;
 }
