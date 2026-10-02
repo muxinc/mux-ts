@@ -4,7 +4,7 @@ This guide covers the two most recent major migrations of the Mux TypeScript SDK
 
 ## Migrating from v14 to v15 (`@mux/ts`)
 
-v15 renames the package: the SDK is now published as [`@mux/ts`](https://www.npmjs.com/package/@mux/ts). For v15, the same artifact is also published as `@mux/mux-node` at the same version, so you can upgrade first and rename at your convenience — the alias is expected to stop after v15.
+v15 renames the package: the SDK is now published as [`@mux/ts`](https://www.npmjs.com/package/@mux/ts). `@mux/mux-node` received the same artifact at the same version through 15.5.0, which is its final release; the package is deprecated on npm and gets no further updates. Rename the dependency to `@mux/ts` to keep receiving releases.
 
 ### Package rename
 

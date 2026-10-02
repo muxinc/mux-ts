@@ -1,7 +1,7 @@
 name: Publish NPM
 
-# Publishes the released tree as @mux/ts, @mux/mux-node (same-version alias),
-# and @mux/mcp (packages/mcp-server) via npm trusted publishing (OIDC) — no
+# Publishes the released tree as @mux/ts and @mux/mcp (packages/mcp-server)
+# via npm trusted publishing (OIDC) — no
 # npm token exists anywhere. The publish logic lives in bin/publish-npm-all.
 # On release events the MCP desktop-extension bundle (mux.mcpb, produced by
 # the @mux/mcp build) is also attached to the GitHub Release. Announcing the
@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Publish @mux/ts, @mux/mux-node alias, @mux/mcp
+      - name: Publish @mux/ts and @mux/mcp
         run: bash ./bin/publish-npm-all
 
       - name: Upload MCP server .mcpb release asset
