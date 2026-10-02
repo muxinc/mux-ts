@@ -1,5 +1,18 @@
 # Changelog
 
+## [15.6.0](https://github.com/muxinc/mux-ts/compare/v15.5.0...v15.6.0) (2026-10-02)
+
+
+### Features
+
+* **robots:** Expose new `track_name` parameters on Robots workflows, and improve handling of track replacement for `edit-captions` ([63a16cb](https://github.com/muxinc/mux-ts/commit/63a16cba7cf11d310eaa8c953e13232afd19a509))
+
+
+### Chores
+
+* **ci:** publish workflow on checkout@v7 and setup-node@v7 like the other workflows ([#17](https://github.com/muxinc/mux-ts/issues/17)) ([56d5982](https://github.com/muxinc/mux-ts/commit/56d5982715dc32332fc5333876f5b6737872d4cb))
+* **publish:** stop publishing the @mux/mux-node alias; 15.5.0 was its final release ([#16](https://github.com/muxinc/mux-ts/issues/16)) ([8a8af54](https://github.com/muxinc/mux-ts/commit/8a8af54e0ff6dcbc9b9c3c9d810e1b967fb6f35f))
+
 ## [15.5.0](https://github.com/muxinc/mux-ts/compare/v15.4.0...v15.5.0) (2026-10-02)
 
 
