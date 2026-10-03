@@ -1,6 +1,6 @@
 name: Release Doctor
 on:
-  pull_request:
+  push:
     branches:
       - main
   workflow_dispatch:
@@ -9,13 +9,21 @@ jobs:
   release_doctor:
     name: release doctor
     runs-on: ubuntu-latest
-    if: github.repository == 'muxinc/mux-ts' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release-please') || github.head_ref == 'next')
+    if: github.repository == 'muxinc/mux-ts'
+    # Main-only environment, hence no pull_request trigger.
+    environment: release
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ vars.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
 
       - name: Check release environment
         run: |
           bash ./bin/check-release-environment
         env:
-          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          RELEASE_BOT_TOKEN: ${{ steps.app-token.outputs.token }}

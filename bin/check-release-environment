@@ -2,14 +2,15 @@
 
 errors=()
 
-# release-please and the publish trigger both ride RELEASE_PLEASE_TOKEN (a
-# fine-grained PAT with a ~1 year expiry). An expired token is non-empty but
-# dead and its failure mode post-merge is silent, so validate it can actually
-# read the repo rather than only checking it is set.
-if [ -z "${RELEASE_PLEASE_TOKEN:-}" ]; then
-  errors+=("The RELEASE_PLEASE_TOKEN secret has not been set. Create a fine-grained GitHub PAT (Contents + Pull requests, read/write, this repository only) and add it as a repository secret.")
-elif ! curl -sf -o /dev/null -H "Authorization: Bearer ${RELEASE_PLEASE_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY:-muxinc/mux-ts}"; then
-  errors+=("RELEASE_PLEASE_TOKEN is set but cannot read ${GITHUB_REPOSITORY:-muxinc/mux-ts} — expired or under-scoped? Rotate the fine-grained PAT.")
+# Minting proved the key exists; a read-only installation would only fail at release time.
+if [ -z "${RELEASE_BOT_TOKEN:-}" ]; then
+  errors+=("No release App token was minted. Check the release environment's RELEASE_BOT_APP_ID variable and RELEASE_BOT_PRIVATE_KEY secret.")
+else
+  repo="${GITHUB_REPOSITORY:-muxinc/mux-ts}"
+  push="$(curl -sf -H "Authorization: Bearer ${RELEASE_BOT_TOKEN}" "https://api.github.com/repos/${repo}" | jq -r '.permissions.push // false')"
+  if [ "$push" != "true" ]; then
+    errors+=("The release App token cannot push to ${repo} — is the App installed on this repo with Contents and Pull requests read/write?")
+  fi
 fi
 
 lenErrors=${#errors[@]}
