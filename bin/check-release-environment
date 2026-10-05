@@ -2,14 +2,15 @@
 
 errors=()
 
-# Minting proved the key exists; a read-only installation would only fail at release time.
+# Minting proved the key exists; this proves the installation covers this
+# repo. Repository-object permissions are not reported for App tokens.
 if [ -z "${RELEASE_BOT_TOKEN:-}" ]; then
   errors+=("No release App token was minted. Check the release environment's RELEASE_BOT_APP_ID variable and RELEASE_BOT_PRIVATE_KEY secret.")
 else
   repo="${GITHUB_REPOSITORY:-muxinc/mux-ts}"
-  push="$(curl -sf -H "Authorization: Bearer ${RELEASE_BOT_TOKEN}" "https://api.github.com/repos/${repo}" | jq -r '.permissions.push // false')"
-  if [ "$push" != "true" ]; then
-    errors+=("The release App token cannot push to ${repo} — is the App installed on this repo with Contents and Pull requests read/write?")
+  if ! curl -sf -H "Authorization: Bearer ${RELEASE_BOT_TOKEN}" "https://api.github.com/installation/repositories?per_page=100" \
+      | jq -e --arg repo "$repo" '.repositories[] | select(.full_name == $repo)' >/dev/null; then
+    errors+=("The release App is not installed on ${repo} — install it with Contents and Pull requests read/write.")
   fi
 fi
 
