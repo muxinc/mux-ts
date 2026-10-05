@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      release-as:
+        description: Exact version to release, for a dependency-only or otherwise bump-less release
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -27,3 +33,4 @@ jobs:
         id: release
         with:
           token: ${{ steps.app-token.outputs.token }}
+          release-as: ${{ inputs.release-as }}
