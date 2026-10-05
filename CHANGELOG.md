@@ -1,5 +1,14 @@
 # Changelog
 
+## [15.6.1](https://github.com/muxinc/mux-ts/compare/v15.6.0...v15.6.1) (2026-10-05)
+
+
+### Chores
+
+* **deps:** pin stlc-mcp to the template dependency bump (muxinc/stlc-mcp[#11](https://github.com/muxinc/mux-ts/issues/11)) ([64a25c5](https://github.com/muxinc/mux-ts/commit/64a25c5879e985cb2dccdcd75bbbc4c5be6ab07c))
+* **release:** add a release-as dispatch to release-please ([#20](https://github.com/muxinc/mux-ts/issues/20)) ([dd3e5d9](https://github.com/muxinc/mux-ts/commit/dd3e5d972baaca1c962fa37d16a66b629cb2099a))
+* **release:** mint release-please from the mux-release-bot App ([#18](https://github.com/muxinc/mux-ts/issues/18)) ([961f6eb](https://github.com/muxinc/mux-ts/commit/961f6eba61b8d7bb31f6df9e8ad31e83913f4d4c))
+
 ## [15.6.0](https://github.com/muxinc/mux-ts/compare/v15.5.0...v15.6.0) (2026-10-02)
 
 
