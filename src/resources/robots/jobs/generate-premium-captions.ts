@@ -11,8 +11,7 @@ import { path } from '../../../internal/utils/path';
  */
 export class GeneratePremiumCaptions extends APIResource {
   /**
-   * Creates a new job that generates high-quality captions for a Mux Video asset and
-   * uploads the resulting VTT as a text track.
+   * Creates a new job that generates high-quality captions for a Mux Video asset.
    *
    * @example
    * ```ts
@@ -244,7 +243,7 @@ export interface GeneratePremiumCaptionsJobParameters {
   track_name?: string;
 
   /**
-   * Whether to upload the generated VTT to the Mux asset as a new text track.
+   * Whether to upload the generated SRT to the Mux asset as a new text track.
    * Defaults to true. When false, no track is created and `replace_existing_tracks`
    * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
    */

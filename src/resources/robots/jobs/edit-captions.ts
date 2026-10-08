@@ -51,7 +51,8 @@ export class EditCaptions extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of an 'edit-captions' job.
+   * Retrieves the current status and results of an 'edit-captions' job. Jobs are
+   * automatically deleted after 30 days.
    *
    * @example
    * ```ts

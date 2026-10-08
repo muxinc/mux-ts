@@ -129,10 +129,14 @@ export interface GenerateChaptersJobOutputs {
   chapters: Array<GenerateChaptersJobOutputs.Chapter>;
 
   /**
-   * What happened when the generated chapters were written back to the Mux asset.
-   * Present only when update_asset_chapters was true.
+   * @deprecated Use `asset_updates.chapters` instead.
    */
   asset_update?: GenerateChaptersJobOutputs.AssetUpdate;
+
+  /**
+   * Recorded chapters track update outcome. Omitted when no outcome was recorded.
+   */
+  asset_updates?: GenerateChaptersJobOutputs.AssetUpdates;
 }
 
 export namespace GenerateChaptersJobOutputs {
@@ -149,8 +153,7 @@ export namespace GenerateChaptersJobOutputs {
   }
 
   /**
-   * What happened when the generated chapters were written back to the Mux asset.
-   * Present only when update_asset_chapters was true.
+   * @deprecated Use `asset_updates.chapters` instead.
    */
   export interface AssetUpdate {
     /**
@@ -174,6 +177,46 @@ export namespace GenerateChaptersJobOutputs {
      */
     track_id?: string;
   }
+
+  /**
+   * Recorded chapters track update outcome. Omitted when no outcome was recorded.
+   */
+  export interface AssetUpdates {
+    /**
+     * What happened when the generated chapters were written back to the Mux asset.
+     * Present only when update_asset_chapters was true.
+     */
+    chapters?: AssetUpdates.Chapters;
+  }
+
+  export namespace AssetUpdates {
+    /**
+     * What happened when the generated chapters were written back to the Mux asset.
+     * Present only when update_asset_chapters was true.
+     */
+    export interface Chapters {
+      /**
+       * Outcome of the chapters track write. `created` means the asset now carries these
+       * chapters. `failed` means the write was attempted and errored; the chapters in
+       * this response are still valid and can be applied manually.
+       */
+      status: 'created' | 'failed';
+
+      /**
+       * Mux text track ID of the chapters track that was deleted to make room for the
+       * new one. Absent when the asset had no chapters track. On a `failed` status it
+       * means the delete succeeded but the create did not, leaving the asset with no
+       * chapters track.
+       */
+      replaced_track_id?: string;
+
+      /**
+       * Mux text track ID of the chapters track created on the asset. Present when
+       * status is `created`.
+       */
+      track_id?: string;
+    }
+  }
 }
 
 export interface GenerateChaptersJobParameters {
@@ -184,7 +227,7 @@ export interface GenerateChaptersJobParameters {
 
   /**
    * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-   * omitted, the SDK prefers English if available.
+   * omitted, the first ready text track on the asset is selected.
    */
   language_code?: string;
 
@@ -212,8 +255,8 @@ export interface GenerateChaptersJobParameters {
    * asset. Overwrites existing chapters: an asset holds a single chapters track, so
    * any chapters track already on the asset is deleted and replaced — including one
    * in a different language, and one you created yourself. Best-effort — a failed
-   * write does not fail the job — so check `asset_update` in the job outputs for the
-   * outcome.
+   * write does not fail the job — so check `asset_updates.chapters` in the job
+   * outputs for the outcome.
    */
   update_asset_chapters?: boolean;
 }

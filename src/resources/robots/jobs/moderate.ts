@@ -209,8 +209,8 @@ export interface ModerateJobParameters {
 
   /**
    * BCP 47 language code for transcript analysis. Used only for audio-only assets;
-   * ignored for video assets with visual content. If omitted for audio-only assets,
-   * the first ready text track is used. Defaults to "en".
+   * ignored for video assets with visual content. Defaults to "en" for audio-only
+   * transcript analysis.
    */
   language_code?: string;
 

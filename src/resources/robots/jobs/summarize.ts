@@ -140,6 +140,31 @@ export interface SummarizeJobOutputs {
    * Generated title capturing the essence of the video.
    */
   title: string;
+
+  /**
+   * Recorded asset title update outcome. Omitted when no outcome was recorded,
+   * including historical jobs.
+   */
+  asset_updates?: SummarizeJobOutputs.AssetUpdates;
+}
+
+export namespace SummarizeJobOutputs {
+  /**
+   * Recorded asset title update outcome. Omitted when no outcome was recorded,
+   * including historical jobs.
+   */
+  export interface AssetUpdates {
+    title?: AssetUpdates.Title;
+  }
+
+  export namespace AssetUpdates {
+    export interface Title {
+      /**
+       * Outcome of the requested asset title update.
+       */
+      status: 'updated' | 'failed';
+    }
+  }
 }
 
 export interface SummarizeJobParameters {
@@ -155,7 +180,8 @@ export interface SummarizeJobParameters {
 
   /**
    * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-   * omitted, the SDK uses the default track.
+   * omitted, English subtitles are preferred when available, otherwise the first
+   * ready text track is selected.
    */
   language_code?: string;
 

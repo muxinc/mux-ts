@@ -166,8 +166,8 @@ export interface Directive {
 
 export interface DirectiveSubject {
   /**
-   * The entity type each run targets. V1 accepts "video.asset" only;
-   * "video.live_stream" is reserved and rejected at save time.
+   * The entity type each run targets. The directive engine accepts "video.asset"
+   * only; "video.live_stream" is reserved and rejected at save time.
    */
   type: 'video.asset' | 'video.live_stream';
 }
@@ -532,7 +532,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'summarize';
 
@@ -545,7 +546,7 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the summarize workflow — the same fields accepted by POST
-     * /jobs/summarize, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/summarize, minus engine-supplied fields such as asset_id.
      */
     params?: SummarizeBinding.Params;
   }
@@ -553,7 +554,7 @@ export namespace WorkflowBinding {
   export namespace SummarizeBinding {
     /**
      * Parameters for the summarize workflow — the same fields accepted by POST
-     * /jobs/summarize, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/summarize, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
@@ -563,7 +564,8 @@ export namespace WorkflowBinding {
 
       /**
        * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-       * omitted, the SDK uses the default track.
+       * omitted, English subtitles are preferred when available, otherwise the first
+       * ready text track is selected.
        */
       language_code?: string;
 
@@ -651,7 +653,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'moderate';
 
@@ -664,7 +667,7 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the moderate workflow — the same fields accepted by POST
-     * /jobs/moderate, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/moderate, minus engine-supplied fields such as asset_id.
      */
     params?: ModerateBinding.Params;
   }
@@ -672,13 +675,13 @@ export namespace WorkflowBinding {
   export namespace ModerateBinding {
     /**
      * Parameters for the moderate workflow — the same fields accepted by POST
-     * /jobs/moderate, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/moderate, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
        * BCP 47 language code for transcript analysis. Used only for audio-only assets;
-       * ignored for video assets with visual content. If omitted for audio-only assets,
-       * the first ready text track is used. Defaults to "en".
+       * ignored for video assets with visual content. Defaults to "en" for audio-only
+       * transcript analysis.
        */
       language_code?: string;
 
@@ -749,7 +752,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'generate-chapters';
 
@@ -762,7 +766,8 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the generate-chapters workflow — the same fields accepted by POST
-     * /jobs/generate-chapters, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/generate-chapters, minus engine-supplied fields such as
+     * asset_id.
      */
     params?: GenerateChaptersBinding.Params;
   }
@@ -770,12 +775,13 @@ export namespace WorkflowBinding {
   export namespace GenerateChaptersBinding {
     /**
      * Parameters for the generate-chapters workflow — the same fields accepted by POST
-     * /jobs/generate-chapters, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/generate-chapters, minus engine-supplied fields such as
+     * asset_id.
      */
     export interface Params {
       /**
        * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-       * omitted, the SDK prefers English if available.
+       * omitted, the first ready text track on the asset is selected.
        */
       language_code?: string;
 
@@ -803,8 +809,8 @@ export namespace WorkflowBinding {
        * asset. Overwrites existing chapters: an asset holds a single chapters track, so
        * any chapters track already on the asset is deleted and replaced — including one
        * in a different language, and one you created yourself. Best-effort — a failed
-       * write does not fail the job — so check `asset_update` in the job outputs for the
-       * outcome.
+       * write does not fail the job — so check `asset_updates.chapters` in the job
+       * outputs for the outcome.
        */
       update_asset_chapters?: boolean;
     }
@@ -845,7 +851,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'find-scenes';
 
@@ -858,7 +865,7 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the find-scenes workflow — the same fields accepted by POST
-     * /jobs/find-scenes, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/find-scenes, minus engine-supplied fields such as asset_id.
      */
     params?: FindScenesBinding.Params;
   }
@@ -866,7 +873,7 @@ export namespace WorkflowBinding {
   export namespace FindScenesBinding {
     /**
      * Parameters for the find-scenes workflow — the same fields accepted by POST
-     * /jobs/find-scenes, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/find-scenes, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
@@ -906,7 +913,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'edit-captions';
 
@@ -919,7 +927,9 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the edit-captions workflow — the same fields accepted by POST
-     * /jobs/edit-captions, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/edit-captions, minus engine-supplied fields such as asset_id.
+     * The engine selects the first ready subtitle track in asset track order; track_id
+     * cannot be supplied.
      */
     params?: EditCaptionsBinding.Params;
   }
@@ -927,7 +937,9 @@ export namespace WorkflowBinding {
   export namespace EditCaptionsBinding {
     /**
      * Parameters for the edit-captions workflow — the same fields accepted by POST
-     * /jobs/edit-captions, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/edit-captions, minus engine-supplied fields such as asset_id.
+     * The engine selects the first ready subtitle track in asset track order; track_id
+     * cannot be supplied.
      */
     export interface Params {
       /**
@@ -1039,7 +1051,10 @@ export namespace WorkflowBinding {
   export interface TranslateCaptionsBinding {
     /**
      * Parameters for the translate-captions workflow — the same fields accepted by
-     * POST /jobs/translate-captions, minus engine-supplied fields such as asset_id.
+     * POST /robots/v0/jobs/translate-captions, minus engine-supplied fields such as
+     * asset_id. The engine selects the first ready subtitle track in asset track order
+     * whose language differs from to_language_code, ignoring region subtags; track_id
+     * cannot be supplied.
      */
     params: TranslateCaptionsBinding.Params;
 
@@ -1050,7 +1065,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'translate-captions';
 
@@ -1065,7 +1081,10 @@ export namespace WorkflowBinding {
   export namespace TranslateCaptionsBinding {
     /**
      * Parameters for the translate-captions workflow — the same fields accepted by
-     * POST /jobs/translate-captions, minus engine-supplied fields such as asset_id.
+     * POST /robots/v0/jobs/translate-captions, minus engine-supplied fields such as
+     * asset_id. The engine selects the first ready subtitle track in asset track order
+     * whose language differs from to_language_code, ignoring region subtags; track_id
+     * cannot be supplied.
      */
     export interface Params {
       /**
@@ -1113,7 +1132,7 @@ export namespace WorkflowBinding {
   export interface TranslateAudioBinding {
     /**
      * Parameters for the translate-audio workflow — the same fields accepted by POST
-     * /jobs/translate-audio, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/translate-audio, minus engine-supplied fields such as asset_id.
      */
     params: TranslateAudioBinding.Params;
 
@@ -1124,7 +1143,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'translate-audio';
 
@@ -1139,7 +1159,7 @@ export namespace WorkflowBinding {
   export namespace TranslateAudioBinding {
     /**
      * Parameters for the translate-audio workflow — the same fields accepted by POST
-     * /jobs/translate-audio, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/translate-audio, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
@@ -1170,7 +1190,8 @@ export namespace WorkflowBinding {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -1179,7 +1200,7 @@ export namespace WorkflowBinding {
   export interface AskQuestionsBinding {
     /**
      * Parameters for the ask-questions workflow — the same fields accepted by POST
-     * /jobs/ask-questions, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/ask-questions, minus engine-supplied fields such as asset_id.
      */
     params: AskQuestionsBinding.Params;
 
@@ -1190,7 +1211,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'ask-questions';
 
@@ -1205,7 +1227,7 @@ export namespace WorkflowBinding {
   export namespace AskQuestionsBinding {
     /**
      * Parameters for the ask-questions workflow — the same fields accepted by POST
-     * /jobs/ask-questions, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/ask-questions, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
@@ -1217,7 +1239,8 @@ export namespace WorkflowBinding {
 
       /**
        * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-       * omitted, the SDK uses the default track.
+       * omitted, English subtitles are preferred when available, otherwise the first
+       * ready text track is selected.
        */
       language_code?: string;
 
@@ -1266,7 +1289,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'find-key-moments';
 
@@ -1279,7 +1303,7 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the find-key-moments workflow — the same fields accepted by POST
-     * /jobs/find-key-moments, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/find-key-moments, minus engine-supplied fields such as asset_id.
      */
     params?: FindKeyMomentsBinding.Params;
   }
@@ -1287,7 +1311,7 @@ export namespace WorkflowBinding {
   export namespace FindKeyMomentsBinding {
     /**
      * Parameters for the find-key-moments workflow — the same fields accepted by POST
-     * /jobs/find-key-moments, minus engine-supplied fields such as asset_id.
+     * /robots/v0/jobs/find-key-moments, minus engine-supplied fields such as asset_id.
      */
     export interface Params {
       /**
@@ -1345,7 +1369,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'generate-engagement-insights';
 
@@ -1358,8 +1383,8 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the generate-engagement-insights workflow — the same fields
-     * accepted by POST /jobs/generate-engagement-insights, minus engine-supplied
-     * fields such as asset_id.
+     * accepted by POST /robots/v0/jobs/generate-engagement-insights, minus
+     * engine-supplied fields such as asset_id.
      */
     params?: unknown;
   }
@@ -1372,7 +1397,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'generate-premium-captions';
 
@@ -1385,8 +1411,8 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the generate-premium-captions workflow — the same fields accepted
-     * by POST /jobs/generate-premium-captions, minus engine-supplied fields such as
-     * asset_id.
+     * by POST /robots/v0/jobs/generate-premium-captions, minus engine-supplied fields
+     * such as asset_id.
      */
     params?: GeneratePremiumCaptionsBinding.Params;
   }
@@ -1394,8 +1420,8 @@ export namespace WorkflowBinding {
   export namespace GeneratePremiumCaptionsBinding {
     /**
      * Parameters for the generate-premium-captions workflow — the same fields accepted
-     * by POST /jobs/generate-premium-captions, minus engine-supplied fields such as
-     * asset_id.
+     * by POST /robots/v0/jobs/generate-premium-captions, minus engine-supplied fields
+     * such as asset_id.
      */
     export interface Params {
       /**
@@ -1457,7 +1483,7 @@ export namespace WorkflowBinding {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -1473,7 +1499,8 @@ export namespace WorkflowBinding {
     reference_id: string;
 
     /**
-     * The Robots workflow to dispatch — the same identifier as POST /jobs/{workflow}.
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
      */
     workflow: 'find-best-thumbnails';
 
@@ -1486,7 +1513,8 @@ export namespace WorkflowBinding {
 
     /**
      * Parameters for the find-best-thumbnails workflow — the same fields accepted by
-     * POST /jobs/find-best-thumbnails, minus engine-supplied fields such as asset_id.
+     * POST /robots/v0/jobs/find-best-thumbnails, minus engine-supplied fields such as
+     * asset_id.
      */
     params?: FindBestThumbnailsBinding.Params;
   }
@@ -1494,11 +1522,12 @@ export namespace WorkflowBinding {
   export namespace FindBestThumbnailsBinding {
     /**
      * Parameters for the find-best-thumbnails workflow — the same fields accepted by
-     * POST /jobs/find-best-thumbnails, minus engine-supplied fields such as asset_id.
+     * POST /robots/v0/jobs/find-best-thumbnails, minus engine-supplied fields such as
+     * asset_id.
      */
     export interface Params {
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 

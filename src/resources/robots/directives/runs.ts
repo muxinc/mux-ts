@@ -143,7 +143,7 @@ export type NodeState =
 export namespace NodeState {
   export interface NodeStateDispatched {
     /**
-     * Encoded workflow job identifier (rjob\_...).
+     * Workflow job ID (rjob\_...).
      */
     job_id: string;
 

@@ -172,7 +172,8 @@ export interface TranslateAudioJobParameters {
 
   /**
    * Whether to automatically upload the translated audio track to the Mux asset.
-   * Defaults to true.
+   * Defaults to true. Must be false for audio-only assets; the job returns
+   * downloadable audio instead.
    */
   upload_to_mux?: boolean;
 }

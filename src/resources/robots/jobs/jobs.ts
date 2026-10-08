@@ -259,7 +259,7 @@ export interface JobSummary {
   updated_at: number;
 
   /**
-   * Workflow type that created this job.
+   * The Robots workflow for this binding.
    */
   workflow:
     | 'summarize'

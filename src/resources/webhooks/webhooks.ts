@@ -251,9 +251,8 @@ export namespace BaseWebhookEvent {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookAskQuestionsJob {
   /**
@@ -329,7 +328,8 @@ export namespace WebhookAskQuestionsJob {
 
     /**
      * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-     * omitted, the SDK uses the default track.
+     * omitted, English subtitles are preferred when available, otherwise the first
+     * ready text track is selected.
      */
     language_code?: string;
 
@@ -2113,9 +2113,8 @@ export namespace WebhookDirectUpload {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookEditCaptionsJob {
   /**
@@ -2475,9 +2474,8 @@ export namespace WebhookEditCaptionsJob {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookFindKeyMomentsJob {
   /**
@@ -2936,9 +2934,8 @@ export namespace WebhookFindKeyMomentsJob {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookGenerateChaptersJob {
   /**
@@ -3007,7 +3004,7 @@ export namespace WebhookGenerateChaptersJob {
 
     /**
      * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-     * omitted, the SDK prefers English if available.
+     * omitted, the first ready text track on the asset is selected.
      */
     language_code?: string;
 
@@ -3035,8 +3032,8 @@ export namespace WebhookGenerateChaptersJob {
      * asset. Overwrites existing chapters: an asset holds a single chapters track, so
      * any chapters track already on the asset is deleted and replaced — including one
      * in a different language, and one you created yourself. Best-effort — a failed
-     * write does not fail the job — so check `asset_update` in the job outputs for the
-     * outcome.
+     * write does not fail the job — so check `asset_updates.chapters` in the job
+     * outputs for the outcome.
      */
     update_asset_chapters?: boolean;
   }
@@ -3139,10 +3136,14 @@ export namespace WebhookGenerateChaptersJob {
     chapters: Array<Outputs.Chapter>;
 
     /**
-     * What happened when the generated chapters were written back to the Mux asset.
-     * Present only when update_asset_chapters was true.
+     * @deprecated Use `asset_updates.chapters` instead.
      */
     asset_update?: Outputs.AssetUpdate;
+
+    /**
+     * Recorded chapters track update outcome. Omitted when no outcome was recorded.
+     */
+    asset_updates?: Outputs.AssetUpdates;
   }
 
   export namespace Outputs {
@@ -3159,8 +3160,7 @@ export namespace WebhookGenerateChaptersJob {
     }
 
     /**
-     * What happened when the generated chapters were written back to the Mux asset.
-     * Present only when update_asset_chapters was true.
+     * @deprecated Use `asset_updates.chapters` instead.
      */
     export interface AssetUpdate {
       /**
@@ -3183,6 +3183,46 @@ export namespace WebhookGenerateChaptersJob {
        * status is `created`.
        */
       track_id?: string;
+    }
+
+    /**
+     * Recorded chapters track update outcome. Omitted when no outcome was recorded.
+     */
+    export interface AssetUpdates {
+      /**
+       * What happened when the generated chapters were written back to the Mux asset.
+       * Present only when update_asset_chapters was true.
+       */
+      chapters?: AssetUpdates.Chapters;
+    }
+
+    export namespace AssetUpdates {
+      /**
+       * What happened when the generated chapters were written back to the Mux asset.
+       * Present only when update_asset_chapters was true.
+       */
+      export interface Chapters {
+        /**
+         * Outcome of the chapters track write. `created` means the asset now carries these
+         * chapters. `failed` means the write was attempted and errored; the chapters in
+         * this response are still valid and can be applied manually.
+         */
+        status: 'created' | 'failed';
+
+        /**
+         * Mux text track ID of the chapters track that was deleted to make room for the
+         * new one. Absent when the asset had no chapters track. On a `failed` status it
+         * means the delete succeeded but the create did not, leaving the asset with no
+         * chapters track.
+         */
+        replaced_track_id?: string;
+
+        /**
+         * Mux text track ID of the chapters track created on the asset. Present when
+         * status is `created`.
+         */
+        track_id?: string;
+      }
     }
   }
 
@@ -4039,9 +4079,8 @@ export namespace WebhookLiveStreamWarning {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookModerateJob {
   /**
@@ -4110,8 +4149,8 @@ export namespace WebhookModerateJob {
 
     /**
      * BCP 47 language code for transcript analysis. Used only for audio-only assets;
-     * ignored for video assets with visual content. If omitted for audio-only assets,
-     * the first ready text track is used. Defaults to "en".
+     * ignored for video assets with visual content. Defaults to "en" for audio-only
+     * transcript analysis.
      */
     language_code?: string;
 
@@ -4465,9 +4504,8 @@ export interface WebhookSimulcastTarget {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookSummarizeJob {
   /**
@@ -4541,7 +4579,8 @@ export namespace WebhookSummarizeJob {
 
     /**
      * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-     * omitted, the SDK uses the default track.
+     * omitted, English subtitles are preferred when available, otherwise the first
+     * ready text track is selected.
      */
     language_code?: string;
 
@@ -4770,6 +4809,31 @@ export namespace WebhookSummarizeJob {
      * Generated title capturing the essence of the video.
      */
     title: string;
+
+    /**
+     * Recorded asset title update outcome. Omitted when no outcome was recorded,
+     * including historical jobs.
+     */
+    asset_updates?: Outputs.AssetUpdates;
+  }
+
+  export namespace Outputs {
+    /**
+     * Recorded asset title update outcome. Omitted when no outcome was recorded,
+     * including historical jobs.
+     */
+    export interface AssetUpdates {
+      title?: AssetUpdates.Title;
+    }
+
+    export namespace AssetUpdates {
+      export interface Title {
+        /**
+         * Outcome of the requested asset title update.
+         */
+        status: 'updated' | 'failed';
+      }
+    }
   }
 
   /**
@@ -4846,9 +4910,8 @@ export namespace WebhookSummarizeJob {
 }
 
 /**
- * The job that triggered the webhook event. In the actual payload this is nested
- * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
- * the top level.
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
  */
 export interface WebhookTranslateCaptionsJob {
   /**
@@ -5014,8 +5077,8 @@ export namespace WebhookTranslateCaptionsJob {
     replaced_tracks?: Array<Outputs.ReplacedTrack>;
 
     /**
-     * Temporary pre-signed URL to download the translated VTT file. Present when
-     * upload_to_mux is true. Expires 7 days after the job completes.
+     * Temporary pre-signed URL to download the translated VTT file, including when
+     * upload_to_mux is false. Expires 7 days after the job completes.
      */
     temporary_vtt_url?: string;
 
@@ -5816,762 +5879,661 @@ export interface VideoDeliveryHighTrafficWebhookEvent extends Omit<BaseWebhookEv
 }
 
 export interface RobotsDirectiveRunCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   data: RobotsDirectiveRunCompletedWebhookEvent.Data;
 
   type: 'robots.directive_run.completed';
 }
 
 export namespace RobotsDirectiveRunCompletedWebhookEvent {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   export interface Data {
     /**
-     * Unix timestamp (seconds) when the webhook event was created.
+     * Unique run identifier (drvrun\_...).
      */
-    created_at: number;
+    id: string;
 
     /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
+     * The Mux asset ID this run targeted.
      */
-    directive_run: Data.DirectiveRun;
+    asset_id: string;
 
     /**
-     * Mux environment that owns the directive run.
+     * Unix timestamp (seconds) when the run reached terminal state. Null if still in
+     * progress.
      */
-    environment_id: string;
+    completed_at: number | null;
 
     /**
-     * Unique identifier for this webhook event.
+     * The directive this run belongs to (drv\_...).
      */
-    internal_id: string;
+    directive_id: string;
+
+    /**
+     * Per-binding status entries, one per binding, in the order the bindings appear in
+     * `directive.workflows[]`.
+     */
+    node_states: Array<
+      | Data.NodeStateDispatched
+      | Data.NodeStateFailed
+      | Data.NodeStateWaitingForResources
+      | Data.NodeStateWaitingForSourceWorkflow
+    >;
+
+    /**
+     * Unix timestamp (seconds) when the run started.
+     */
+    started_at: number;
+
+    /**
+     * Run status.
+     */
+    status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
   }
 
   export namespace Data {
-    /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
-     */
-    export interface DirectiveRun {
+    export interface NodeStateDispatched {
       /**
-       * Unique run identifier (drvrun\_...).
+       * Workflow job ID (rjob\_...).
        */
-      id: string;
+      job_id: string;
 
       /**
-       * The Mux asset ID this run targeted.
+       * Declared binding id from `directive.workflows[]`.
        */
-      asset_id: string;
+      reference_id: string;
+
+      status: 'dispatched';
 
       /**
-       * Unix timestamp (seconds) when the run reached terminal state. Null if still in
-       * progress.
+       * The Robots workflow for this binding.
        */
-      completed_at: number | null;
-
-      /**
-       * The directive this run belongs to (drv\_...).
-       */
-      directive_id: string;
-
-      /**
-       * Per-binding status entries, one per binding, in the order the bindings appear in
-       * `directive.workflows[]`.
-       */
-      node_states: Array<
-        | DirectiveRun.NodeStateDispatched
-        | DirectiveRun.NodeStateFailed
-        | DirectiveRun.NodeStateWaitingForResources
-        | DirectiveRun.NodeStateWaitingForSourceWorkflow
-      >;
-
-      /**
-       * Unix timestamp (seconds) when the run started.
-       */
-      started_at: number;
-
-      /**
-       * Run status.
-       */
-      status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
 
-    export namespace DirectiveRun {
-      export interface NodeStateDispatched {
-        /**
-         * Encoded workflow job identifier (rjob\_...).
-         */
-        job_id: string;
+    export interface NodeStateFailed {
+      /**
+       * Human-readable diagnostic explaining why the binding didn't dispatch.
+       */
+      reason: string;
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-        status: 'dispatched';
+      status: 'failed';
+    }
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+    export interface NodeStateWaitingForResources {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateFailed {
-        /**
-         * Human-readable diagnostic explaining why the binding didn't dispatch.
-         */
-        reason: string;
+      status: 'waiting_for_resources';
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
+    }
 
-        status: 'failed';
-      }
+    export interface NodeStateWaitingForSourceWorkflow {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateWaitingForResources {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * reference_ids of producer bindings within this directive that must complete
+       * before this binding can dispatch.
+       */
+      source_workflows: Array<string>;
 
-        status: 'waiting_for_resources';
+      status: 'waiting_for_source_workflow';
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
-
-      export interface NodeStateWaitingForSourceWorkflow {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
-
-        /**
-         * reference_ids of producer bindings within this directive that must complete
-         * before this binding can dispatch.
-         */
-        source_workflows: Array<string>;
-
-        status: 'waiting_for_source_workflow';
-
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
   }
 }
 
 export interface RobotsDirectiveRunCreatedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   data: RobotsDirectiveRunCreatedWebhookEvent.Data;
 
   type: 'robots.directive_run.created';
 }
 
 export namespace RobotsDirectiveRunCreatedWebhookEvent {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   export interface Data {
     /**
-     * Unix timestamp (seconds) when the webhook event was created.
+     * Unique run identifier (drvrun\_...).
      */
-    created_at: number;
+    id: string;
 
     /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
+     * The Mux asset ID this run targeted.
      */
-    directive_run: Data.DirectiveRun;
+    asset_id: string;
 
     /**
-     * Mux environment that owns the directive run.
+     * Unix timestamp (seconds) when the run reached terminal state. Null if still in
+     * progress.
      */
-    environment_id: string;
+    completed_at: number | null;
 
     /**
-     * Unique identifier for this webhook event.
+     * The directive this run belongs to (drv\_...).
      */
-    internal_id: string;
+    directive_id: string;
+
+    /**
+     * Per-binding status entries, one per binding, in the order the bindings appear in
+     * `directive.workflows[]`.
+     */
+    node_states: Array<
+      | Data.NodeStateDispatched
+      | Data.NodeStateFailed
+      | Data.NodeStateWaitingForResources
+      | Data.NodeStateWaitingForSourceWorkflow
+    >;
+
+    /**
+     * Unix timestamp (seconds) when the run started.
+     */
+    started_at: number;
+
+    /**
+     * Run status.
+     */
+    status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
   }
 
   export namespace Data {
-    /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
-     */
-    export interface DirectiveRun {
+    export interface NodeStateDispatched {
       /**
-       * Unique run identifier (drvrun\_...).
+       * Workflow job ID (rjob\_...).
        */
-      id: string;
+      job_id: string;
 
       /**
-       * The Mux asset ID this run targeted.
+       * Declared binding id from `directive.workflows[]`.
        */
-      asset_id: string;
+      reference_id: string;
+
+      status: 'dispatched';
 
       /**
-       * Unix timestamp (seconds) when the run reached terminal state. Null if still in
-       * progress.
+       * The Robots workflow for this binding.
        */
-      completed_at: number | null;
-
-      /**
-       * The directive this run belongs to (drv\_...).
-       */
-      directive_id: string;
-
-      /**
-       * Per-binding status entries, one per binding, in the order the bindings appear in
-       * `directive.workflows[]`.
-       */
-      node_states: Array<
-        | DirectiveRun.NodeStateDispatched
-        | DirectiveRun.NodeStateFailed
-        | DirectiveRun.NodeStateWaitingForResources
-        | DirectiveRun.NodeStateWaitingForSourceWorkflow
-      >;
-
-      /**
-       * Unix timestamp (seconds) when the run started.
-       */
-      started_at: number;
-
-      /**
-       * Run status.
-       */
-      status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
 
-    export namespace DirectiveRun {
-      export interface NodeStateDispatched {
-        /**
-         * Encoded workflow job identifier (rjob\_...).
-         */
-        job_id: string;
+    export interface NodeStateFailed {
+      /**
+       * Human-readable diagnostic explaining why the binding didn't dispatch.
+       */
+      reason: string;
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-        status: 'dispatched';
+      status: 'failed';
+    }
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+    export interface NodeStateWaitingForResources {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateFailed {
-        /**
-         * Human-readable diagnostic explaining why the binding didn't dispatch.
-         */
-        reason: string;
+      status: 'waiting_for_resources';
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
+    }
 
-        status: 'failed';
-      }
+    export interface NodeStateWaitingForSourceWorkflow {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateWaitingForResources {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * reference_ids of producer bindings within this directive that must complete
+       * before this binding can dispatch.
+       */
+      source_workflows: Array<string>;
 
-        status: 'waiting_for_resources';
+      status: 'waiting_for_source_workflow';
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
-
-      export interface NodeStateWaitingForSourceWorkflow {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
-
-        /**
-         * reference_ids of producer bindings within this directive that must complete
-         * before this binding can dispatch.
-         */
-        source_workflows: Array<string>;
-
-        status: 'waiting_for_source_workflow';
-
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
   }
 }
 
 export interface RobotsDirectiveRunErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   data: RobotsDirectiveRunErroredWebhookEvent.Data;
 
   type: 'robots.directive_run.errored';
 }
 
 export namespace RobotsDirectiveRunErroredWebhookEvent {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   export interface Data {
     /**
-     * Unix timestamp (seconds) when the webhook event was created.
+     * Unique run identifier (drvrun\_...).
      */
-    created_at: number;
+    id: string;
 
     /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
+     * The Mux asset ID this run targeted.
      */
-    directive_run: Data.DirectiveRun;
+    asset_id: string;
 
     /**
-     * Mux environment that owns the directive run.
+     * Unix timestamp (seconds) when the run reached terminal state. Null if still in
+     * progress.
      */
-    environment_id: string;
+    completed_at: number | null;
 
     /**
-     * Unique identifier for this webhook event.
+     * The directive this run belongs to (drv\_...).
      */
-    internal_id: string;
+    directive_id: string;
+
+    /**
+     * Per-binding status entries, one per binding, in the order the bindings appear in
+     * `directive.workflows[]`.
+     */
+    node_states: Array<
+      | Data.NodeStateDispatched
+      | Data.NodeStateFailed
+      | Data.NodeStateWaitingForResources
+      | Data.NodeStateWaitingForSourceWorkflow
+    >;
+
+    /**
+     * Unix timestamp (seconds) when the run started.
+     */
+    started_at: number;
+
+    /**
+     * Run status.
+     */
+    status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
   }
 
   export namespace Data {
-    /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
-     */
-    export interface DirectiveRun {
+    export interface NodeStateDispatched {
       /**
-       * Unique run identifier (drvrun\_...).
+       * Workflow job ID (rjob\_...).
        */
-      id: string;
+      job_id: string;
 
       /**
-       * The Mux asset ID this run targeted.
+       * Declared binding id from `directive.workflows[]`.
        */
-      asset_id: string;
+      reference_id: string;
+
+      status: 'dispatched';
 
       /**
-       * Unix timestamp (seconds) when the run reached terminal state. Null if still in
-       * progress.
+       * The Robots workflow for this binding.
        */
-      completed_at: number | null;
-
-      /**
-       * The directive this run belongs to (drv\_...).
-       */
-      directive_id: string;
-
-      /**
-       * Per-binding status entries, one per binding, in the order the bindings appear in
-       * `directive.workflows[]`.
-       */
-      node_states: Array<
-        | DirectiveRun.NodeStateDispatched
-        | DirectiveRun.NodeStateFailed
-        | DirectiveRun.NodeStateWaitingForResources
-        | DirectiveRun.NodeStateWaitingForSourceWorkflow
-      >;
-
-      /**
-       * Unix timestamp (seconds) when the run started.
-       */
-      started_at: number;
-
-      /**
-       * Run status.
-       */
-      status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
 
-    export namespace DirectiveRun {
-      export interface NodeStateDispatched {
-        /**
-         * Encoded workflow job identifier (rjob\_...).
-         */
-        job_id: string;
+    export interface NodeStateFailed {
+      /**
+       * Human-readable diagnostic explaining why the binding didn't dispatch.
+       */
+      reason: string;
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-        status: 'dispatched';
+      status: 'failed';
+    }
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+    export interface NodeStateWaitingForResources {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateFailed {
-        /**
-         * Human-readable diagnostic explaining why the binding didn't dispatch.
-         */
-        reason: string;
+      status: 'waiting_for_resources';
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
+    }
 
-        status: 'failed';
-      }
+    export interface NodeStateWaitingForSourceWorkflow {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateWaitingForResources {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * reference_ids of producer bindings within this directive that must complete
+       * before this binding can dispatch.
+       */
+      source_workflows: Array<string>;
 
-        status: 'waiting_for_resources';
+      status: 'waiting_for_source_workflow';
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
-
-      export interface NodeStateWaitingForSourceWorkflow {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
-
-        /**
-         * reference_ids of producer bindings within this directive that must complete
-         * before this binding can dispatch.
-         */
-        source_workflows: Array<string>;
-
-        status: 'waiting_for_source_workflow';
-
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
   }
 }
 
 export interface RobotsDirectiveRunPartialWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   data: RobotsDirectiveRunPartialWebhookEvent.Data;
 
   type: 'robots.directive_run.partial';
 }
 
 export namespace RobotsDirectiveRunPartialWebhookEvent {
+  /**
+   * Directive run object delivered in the Mux webhook event's data field.
+   */
   export interface Data {
     /**
-     * Unix timestamp (seconds) when the webhook event was created.
+     * Unique run identifier (drvrun\_...).
      */
-    created_at: number;
+    id: string;
 
     /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
+     * The Mux asset ID this run targeted.
      */
-    directive_run: Data.DirectiveRun;
+    asset_id: string;
 
     /**
-     * Mux environment that owns the directive run.
+     * Unix timestamp (seconds) when the run reached terminal state. Null if still in
+     * progress.
      */
-    environment_id: string;
+    completed_at: number | null;
 
     /**
-     * Unique identifier for this webhook event.
+     * The directive this run belongs to (drv\_...).
      */
-    internal_id: string;
+    directive_id: string;
+
+    /**
+     * Per-binding status entries, one per binding, in the order the bindings appear in
+     * `directive.workflows[]`.
+     */
+    node_states: Array<
+      | Data.NodeStateDispatched
+      | Data.NodeStateFailed
+      | Data.NodeStateWaitingForResources
+      | Data.NodeStateWaitingForSourceWorkflow
+    >;
+
+    /**
+     * Unix timestamp (seconds) when the run started.
+     */
+    started_at: number;
+
+    /**
+     * Run status.
+     */
+    status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
   }
 
   export namespace Data {
-    /**
-     * The directive run that triggered the event. In the delivered payload this is
-     * nested under a dynamic event-name key (e.g. `robots.directive_run.completed`),
-     * not at the top level.
-     */
-    export interface DirectiveRun {
+    export interface NodeStateDispatched {
       /**
-       * Unique run identifier (drvrun\_...).
+       * Workflow job ID (rjob\_...).
        */
-      id: string;
+      job_id: string;
 
       /**
-       * The Mux asset ID this run targeted.
+       * Declared binding id from `directive.workflows[]`.
        */
-      asset_id: string;
+      reference_id: string;
+
+      status: 'dispatched';
 
       /**
-       * Unix timestamp (seconds) when the run reached terminal state. Null if still in
-       * progress.
+       * The Robots workflow for this binding.
        */
-      completed_at: number | null;
-
-      /**
-       * The directive this run belongs to (drv\_...).
-       */
-      directive_id: string;
-
-      /**
-       * Per-binding status entries, one per binding, in the order the bindings appear in
-       * `directive.workflows[]`.
-       */
-      node_states: Array<
-        | DirectiveRun.NodeStateDispatched
-        | DirectiveRun.NodeStateFailed
-        | DirectiveRun.NodeStateWaitingForResources
-        | DirectiveRun.NodeStateWaitingForSourceWorkflow
-      >;
-
-      /**
-       * Unix timestamp (seconds) when the run started.
-       */
-      started_at: number;
-
-      /**
-       * Run status.
-       */
-      status: 'pending' | 'dispatching' | 'running' | 'waiting' | 'completed' | 'partial' | 'errored';
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
 
-    export namespace DirectiveRun {
-      export interface NodeStateDispatched {
-        /**
-         * Encoded workflow job identifier (rjob\_...).
-         */
-        job_id: string;
+    export interface NodeStateFailed {
+      /**
+       * Human-readable diagnostic explaining why the binding didn't dispatch.
+       */
+      reason: string;
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-        status: 'dispatched';
+      status: 'failed';
+    }
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+    export interface NodeStateWaitingForResources {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateFailed {
-        /**
-         * Human-readable diagnostic explaining why the binding didn't dispatch.
-         */
-        reason: string;
+      status: 'waiting_for_resources';
 
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
+    }
 
-        status: 'failed';
-      }
+    export interface NodeStateWaitingForSourceWorkflow {
+      /**
+       * Declared binding id from `directive.workflows[]`.
+       */
+      reference_id: string;
 
-      export interface NodeStateWaitingForResources {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
+      /**
+       * reference_ids of producer bindings within this directive that must complete
+       * before this binding can dispatch.
+       */
+      source_workflows: Array<string>;
 
-        status: 'waiting_for_resources';
+      status: 'waiting_for_source_workflow';
 
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
-
-      export interface NodeStateWaitingForSourceWorkflow {
-        /**
-         * Declared binding id from `directive.workflows[]`.
-         */
-        reference_id: string;
-
-        /**
-         * reference_ids of producer bindings within this directive that must complete
-         * before this binding can dispatch.
-         */
-        source_workflows: Array<string>;
-
-        status: 'waiting_for_source_workflow';
-
-        /**
-         * The Robots workflow for this binding.
-         */
-        workflow_name:
-          | 'summarize'
-          | 'moderate'
-          | 'generate-chapters'
-          | 'find-scenes'
-          | 'edit-captions'
-          | 'translate-captions'
-          | 'translate-audio'
-          | 'ask-questions'
-          | 'find-key-moments'
-          | 'generate-engagement-insights'
-          | 'generate-premium-captions'
-          | 'find-best-thumbnails';
-      }
+      /**
+       * The Robots workflow for this binding.
+       */
+      workflow_name:
+        | 'summarize'
+        | 'moderate'
+        | 'generate-chapters'
+        | 'find-scenes'
+        | 'edit-captions'
+        | 'translate-captions'
+        | 'translate-audio'
+        | 'ask-questions'
+        | 'find-key-moments'
+        | 'generate-engagement-insights'
+        | 'generate-premium-captions'
+        | 'find-best-thumbnails';
     }
   }
 }
 
 export interface RobotsJobAskQuestionsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookAskQuestionsJob;
 
@@ -6580,9 +6542,8 @@ export interface RobotsJobAskQuestionsCancelledWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobAskQuestionsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookAskQuestionsJob;
 
@@ -6591,9 +6552,8 @@ export interface RobotsJobAskQuestionsCompletedWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobAskQuestionsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookAskQuestionsJob;
 
@@ -6602,9 +6562,8 @@ export interface RobotsJobAskQuestionsErroredWebhookEvent extends Omit<BaseWebho
 
 export interface RobotsJobAskQuestionsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookAskQuestionsJob;
 
@@ -6613,9 +6572,8 @@ export interface RobotsJobAskQuestionsPendingWebhookEvent extends Omit<BaseWebho
 
 export interface RobotsJobAskQuestionsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookAskQuestionsJob;
 
@@ -6624,9 +6582,8 @@ export interface RobotsJobAskQuestionsProcessingWebhookEvent extends Omit<BaseWe
 
 export interface RobotsJobEditCaptionsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookEditCaptionsJob;
 
@@ -6635,9 +6592,8 @@ export interface RobotsJobEditCaptionsCancelledWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobEditCaptionsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookEditCaptionsJob;
 
@@ -6646,9 +6602,8 @@ export interface RobotsJobEditCaptionsCompletedWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobEditCaptionsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookEditCaptionsJob;
 
@@ -6657,9 +6612,8 @@ export interface RobotsJobEditCaptionsErroredWebhookEvent extends Omit<BaseWebho
 
 export interface RobotsJobEditCaptionsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookEditCaptionsJob;
 
@@ -6668,9 +6622,8 @@ export interface RobotsJobEditCaptionsPendingWebhookEvent extends Omit<BaseWebho
 
 export interface RobotsJobEditCaptionsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookEditCaptionsJob;
 
@@ -6679,9 +6632,8 @@ export interface RobotsJobEditCaptionsProcessingWebhookEvent extends Omit<BaseWe
 
 export interface RobotsJobFindBestThumbnailsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindBestThumbnailsCancelledWebhookEvent.Data;
 
@@ -6690,9 +6642,8 @@ export interface RobotsJobFindBestThumbnailsCancelledWebhookEvent extends Omit<B
 
 export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -6755,12 +6706,12 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
   export namespace Data {
     export interface Parameters {
       /**
-       * Mux asset ID.
+       * The Mux asset ID of the video to find thumbnails for.
        */
       asset_id: string;
 
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 
@@ -6894,6 +6845,12 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
        * worst by overall quality score.
        */
       best_thumbnails: Array<Outputs.BestThumbnail>;
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      asset_updates?: Outputs.AssetUpdates;
     }
 
     export namespace Outputs {
@@ -6954,6 +6911,23 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
            * Sharpness and focus quality score (0-1).
            */
           focus: number;
+        }
+      }
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      export interface AssetUpdates {
+        thumbnail?: AssetUpdates.Thumbnail;
+      }
+
+      export namespace AssetUpdates {
+        export interface Thumbnail {
+          /**
+           * Outcome of the requested asset thumbnail update.
+           */
+          status: 'updated' | 'failed';
         }
       }
     }
@@ -7034,9 +7008,8 @@ export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
 
 export interface RobotsJobFindBestThumbnailsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindBestThumbnailsCompletedWebhookEvent.Data;
 
@@ -7045,9 +7018,8 @@ export interface RobotsJobFindBestThumbnailsCompletedWebhookEvent extends Omit<B
 
 export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -7110,12 +7082,12 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
   export namespace Data {
     export interface Parameters {
       /**
-       * Mux asset ID.
+       * The Mux asset ID of the video to find thumbnails for.
        */
       asset_id: string;
 
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 
@@ -7249,6 +7221,12 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
        * worst by overall quality score.
        */
       best_thumbnails: Array<Outputs.BestThumbnail>;
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      asset_updates?: Outputs.AssetUpdates;
     }
 
     export namespace Outputs {
@@ -7309,6 +7287,23 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
            * Sharpness and focus quality score (0-1).
            */
           focus: number;
+        }
+      }
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      export interface AssetUpdates {
+        thumbnail?: AssetUpdates.Thumbnail;
+      }
+
+      export namespace AssetUpdates {
+        export interface Thumbnail {
+          /**
+           * Outcome of the requested asset thumbnail update.
+           */
+          status: 'updated' | 'failed';
         }
       }
     }
@@ -7389,9 +7384,8 @@ export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
 
 export interface RobotsJobFindBestThumbnailsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindBestThumbnailsErroredWebhookEvent.Data;
 
@@ -7400,9 +7394,8 @@ export interface RobotsJobFindBestThumbnailsErroredWebhookEvent extends Omit<Bas
 
 export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -7465,12 +7458,12 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
   export namespace Data {
     export interface Parameters {
       /**
-       * Mux asset ID.
+       * The Mux asset ID of the video to find thumbnails for.
        */
       asset_id: string;
 
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 
@@ -7604,6 +7597,12 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
        * worst by overall quality score.
        */
       best_thumbnails: Array<Outputs.BestThumbnail>;
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      asset_updates?: Outputs.AssetUpdates;
     }
 
     export namespace Outputs {
@@ -7664,6 +7663,23 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
            * Sharpness and focus quality score (0-1).
            */
           focus: number;
+        }
+      }
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      export interface AssetUpdates {
+        thumbnail?: AssetUpdates.Thumbnail;
+      }
+
+      export namespace AssetUpdates {
+        export interface Thumbnail {
+          /**
+           * Outcome of the requested asset thumbnail update.
+           */
+          status: 'updated' | 'failed';
         }
       }
     }
@@ -7744,9 +7760,8 @@ export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
 
 export interface RobotsJobFindBestThumbnailsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindBestThumbnailsPendingWebhookEvent.Data;
 
@@ -7755,9 +7770,8 @@ export interface RobotsJobFindBestThumbnailsPendingWebhookEvent extends Omit<Bas
 
 export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -7820,12 +7834,12 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
   export namespace Data {
     export interface Parameters {
       /**
-       * Mux asset ID.
+       * The Mux asset ID of the video to find thumbnails for.
        */
       asset_id: string;
 
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 
@@ -7959,6 +7973,12 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
        * worst by overall quality score.
        */
       best_thumbnails: Array<Outputs.BestThumbnail>;
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      asset_updates?: Outputs.AssetUpdates;
     }
 
     export namespace Outputs {
@@ -8019,6 +8039,23 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
            * Sharpness and focus quality score (0-1).
            */
           focus: number;
+        }
+      }
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      export interface AssetUpdates {
+        thumbnail?: AssetUpdates.Thumbnail;
+      }
+
+      export namespace AssetUpdates {
+        export interface Thumbnail {
+          /**
+           * Outcome of the requested asset thumbnail update.
+           */
+          status: 'updated' | 'failed';
         }
       }
     }
@@ -8099,9 +8136,8 @@ export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
 
 export interface RobotsJobFindBestThumbnailsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindBestThumbnailsProcessingWebhookEvent.Data;
 
@@ -8110,9 +8146,8 @@ export interface RobotsJobFindBestThumbnailsProcessingWebhookEvent extends Omit<
 
 export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -8175,12 +8210,12 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
   export namespace Data {
     export interface Parameters {
       /**
-       * Mux asset ID.
+       * The Mux asset ID of the video to find thumbnails for.
        */
       asset_id: string;
 
       /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
        */
       max_thumbnails?: number;
 
@@ -8314,6 +8349,12 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
        * worst by overall quality score.
        */
       best_thumbnails: Array<Outputs.BestThumbnail>;
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      asset_updates?: Outputs.AssetUpdates;
     }
 
     export namespace Outputs {
@@ -8374,6 +8415,23 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
            * Sharpness and focus quality score (0-1).
            */
           focus: number;
+        }
+      }
+
+      /**
+       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+       * including historical jobs.
+       */
+      export interface AssetUpdates {
+        thumbnail?: AssetUpdates.Thumbnail;
+      }
+
+      export namespace AssetUpdates {
+        export interface Thumbnail {
+          /**
+           * Outcome of the requested asset thumbnail update.
+           */
+          status: 'updated' | 'failed';
         }
       }
     }
@@ -8454,9 +8512,8 @@ export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
 
 export interface RobotsJobFindKeyMomentsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookFindKeyMomentsJob;
 
@@ -8465,9 +8522,8 @@ export interface RobotsJobFindKeyMomentsCancelledWebhookEvent extends Omit<BaseW
 
 export interface RobotsJobFindKeyMomentsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookFindKeyMomentsJob;
 
@@ -8476,9 +8532,8 @@ export interface RobotsJobFindKeyMomentsCompletedWebhookEvent extends Omit<BaseW
 
 export interface RobotsJobFindKeyMomentsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookFindKeyMomentsJob;
 
@@ -8487,9 +8542,8 @@ export interface RobotsJobFindKeyMomentsErroredWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobFindKeyMomentsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookFindKeyMomentsJob;
 
@@ -8498,9 +8552,8 @@ export interface RobotsJobFindKeyMomentsPendingWebhookEvent extends Omit<BaseWeb
 
 export interface RobotsJobFindKeyMomentsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookFindKeyMomentsJob;
 
@@ -8509,9 +8562,8 @@ export interface RobotsJobFindKeyMomentsProcessingWebhookEvent extends Omit<Base
 
 export interface RobotsJobFindScenesCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindScenesCancelledWebhookEvent.Data;
 
@@ -8520,9 +8572,8 @@ export interface RobotsJobFindScenesCancelledWebhookEvent extends Omit<BaseWebho
 
 export namespace RobotsJobFindScenesCancelledWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -8973,9 +9024,8 @@ export namespace RobotsJobFindScenesCancelledWebhookEvent {
 
 export interface RobotsJobFindScenesCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindScenesCompletedWebhookEvent.Data;
 
@@ -8984,9 +9034,8 @@ export interface RobotsJobFindScenesCompletedWebhookEvent extends Omit<BaseWebho
 
 export namespace RobotsJobFindScenesCompletedWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -9437,9 +9486,8 @@ export namespace RobotsJobFindScenesCompletedWebhookEvent {
 
 export interface RobotsJobFindScenesErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindScenesErroredWebhookEvent.Data;
 
@@ -9448,9 +9496,8 @@ export interface RobotsJobFindScenesErroredWebhookEvent extends Omit<BaseWebhook
 
 export namespace RobotsJobFindScenesErroredWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -9901,9 +9948,8 @@ export namespace RobotsJobFindScenesErroredWebhookEvent {
 
 export interface RobotsJobFindScenesPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindScenesPendingWebhookEvent.Data;
 
@@ -9912,9 +9958,8 @@ export interface RobotsJobFindScenesPendingWebhookEvent extends Omit<BaseWebhook
 
 export namespace RobotsJobFindScenesPendingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -10365,9 +10410,8 @@ export namespace RobotsJobFindScenesPendingWebhookEvent {
 
 export interface RobotsJobFindScenesProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobFindScenesProcessingWebhookEvent.Data;
 
@@ -10376,9 +10420,8 @@ export interface RobotsJobFindScenesProcessingWebhookEvent extends Omit<BaseWebh
 
 export namespace RobotsJobFindScenesProcessingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -10829,9 +10872,8 @@ export namespace RobotsJobFindScenesProcessingWebhookEvent {
 
 export interface RobotsJobGenerateChaptersCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookGenerateChaptersJob;
 
@@ -10840,9 +10882,8 @@ export interface RobotsJobGenerateChaptersCancelledWebhookEvent extends Omit<Bas
 
 export interface RobotsJobGenerateChaptersCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookGenerateChaptersJob;
 
@@ -10851,9 +10892,8 @@ export interface RobotsJobGenerateChaptersCompletedWebhookEvent extends Omit<Bas
 
 export interface RobotsJobGenerateChaptersErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookGenerateChaptersJob;
 
@@ -10862,9 +10902,8 @@ export interface RobotsJobGenerateChaptersErroredWebhookEvent extends Omit<BaseW
 
 export interface RobotsJobGenerateChaptersPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookGenerateChaptersJob;
 
@@ -10873,9 +10912,8 @@ export interface RobotsJobGenerateChaptersPendingWebhookEvent extends Omit<BaseW
 
 export interface RobotsJobGenerateChaptersProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookGenerateChaptersJob;
 
@@ -10885,9 +10923,8 @@ export interface RobotsJobGenerateChaptersProcessingWebhookEvent extends Omit<Ba
 export interface RobotsJobGenerateEngagementInsightsCancelledWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGenerateEngagementInsightsCancelledWebhookEvent.Data;
 
@@ -10896,9 +10933,8 @@ export interface RobotsJobGenerateEngagementInsightsCancelledWebhookEvent
 
 export namespace RobotsJobGenerateEngagementInsightsCancelledWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -11130,9 +11166,8 @@ export namespace RobotsJobGenerateEngagementInsightsCancelledWebhookEvent {
 export interface RobotsJobGenerateEngagementInsightsCompletedWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGenerateEngagementInsightsCompletedWebhookEvent.Data;
 
@@ -11141,9 +11176,8 @@ export interface RobotsJobGenerateEngagementInsightsCompletedWebhookEvent
 
 export namespace RobotsJobGenerateEngagementInsightsCompletedWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -11375,9 +11409,8 @@ export namespace RobotsJobGenerateEngagementInsightsCompletedWebhookEvent {
 export interface RobotsJobGenerateEngagementInsightsErroredWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGenerateEngagementInsightsErroredWebhookEvent.Data;
 
@@ -11386,9 +11419,8 @@ export interface RobotsJobGenerateEngagementInsightsErroredWebhookEvent
 
 export namespace RobotsJobGenerateEngagementInsightsErroredWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -11620,9 +11652,8 @@ export namespace RobotsJobGenerateEngagementInsightsErroredWebhookEvent {
 export interface RobotsJobGenerateEngagementInsightsPendingWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGenerateEngagementInsightsPendingWebhookEvent.Data;
 
@@ -11631,9 +11662,8 @@ export interface RobotsJobGenerateEngagementInsightsPendingWebhookEvent
 
 export namespace RobotsJobGenerateEngagementInsightsPendingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -11865,9 +11895,8 @@ export namespace RobotsJobGenerateEngagementInsightsPendingWebhookEvent {
 export interface RobotsJobGenerateEngagementInsightsProcessingWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGenerateEngagementInsightsProcessingWebhookEvent.Data;
 
@@ -11876,9 +11905,8 @@ export interface RobotsJobGenerateEngagementInsightsProcessingWebhookEvent
 
 export namespace RobotsJobGenerateEngagementInsightsProcessingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -12110,9 +12138,8 @@ export namespace RobotsJobGenerateEngagementInsightsProcessingWebhookEvent {
 export interface RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent.Data;
 
@@ -12121,9 +12148,8 @@ export interface RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent
 
 export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -12249,7 +12275,7 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -12457,9 +12483,8 @@ export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
 export interface RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent.Data;
 
@@ -12468,9 +12493,8 @@ export interface RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent
 
 export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -12596,7 +12620,7 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -12803,9 +12827,8 @@ export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
 
 export interface RobotsJobGeneratePremiumCaptionsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGeneratePremiumCaptionsErroredWebhookEvent.Data;
 
@@ -12814,9 +12837,8 @@ export interface RobotsJobGeneratePremiumCaptionsErroredWebhookEvent extends Omi
 
 export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -12942,7 +12964,7 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -13149,9 +13171,8 @@ export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
 
 export interface RobotsJobGeneratePremiumCaptionsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGeneratePremiumCaptionsPendingWebhookEvent.Data;
 
@@ -13160,9 +13181,8 @@ export interface RobotsJobGeneratePremiumCaptionsPendingWebhookEvent extends Omi
 
 export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -13288,7 +13308,7 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -13496,9 +13516,8 @@ export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
 export interface RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent
   extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent.Data;
 
@@ -13507,9 +13526,8 @@ export interface RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent
 
 export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -13635,7 +13653,7 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
       track_name?: string;
 
       /**
-       * Whether to upload the generated VTT to the Mux asset as a new text track.
+       * Whether to upload the generated SRT to the Mux asset as a new text track.
        * Defaults to true. When false, no track is created and `replace_existing_tracks`
        * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
        */
@@ -13842,9 +13860,8 @@ export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
 
 export interface RobotsJobModerateCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookModerateJob;
 
@@ -13853,9 +13870,8 @@ export interface RobotsJobModerateCancelledWebhookEvent extends Omit<BaseWebhook
 
 export interface RobotsJobModerateCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookModerateJob;
 
@@ -13864,9 +13880,8 @@ export interface RobotsJobModerateCompletedWebhookEvent extends Omit<BaseWebhook
 
 export interface RobotsJobModerateErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookModerateJob;
 
@@ -13875,9 +13890,8 @@ export interface RobotsJobModerateErroredWebhookEvent extends Omit<BaseWebhookEv
 
 export interface RobotsJobModeratePendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookModerateJob;
 
@@ -13886,9 +13900,8 @@ export interface RobotsJobModeratePendingWebhookEvent extends Omit<BaseWebhookEv
 
 export interface RobotsJobModerateProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookModerateJob;
 
@@ -13897,9 +13910,8 @@ export interface RobotsJobModerateProcessingWebhookEvent extends Omit<BaseWebhoo
 
 export interface RobotsJobSummarizeCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookSummarizeJob;
 
@@ -13908,9 +13920,8 @@ export interface RobotsJobSummarizeCancelledWebhookEvent extends Omit<BaseWebhoo
 
 export interface RobotsJobSummarizeCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookSummarizeJob;
 
@@ -13919,9 +13930,8 @@ export interface RobotsJobSummarizeCompletedWebhookEvent extends Omit<BaseWebhoo
 
 export interface RobotsJobSummarizeErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookSummarizeJob;
 
@@ -13930,9 +13940,8 @@ export interface RobotsJobSummarizeErroredWebhookEvent extends Omit<BaseWebhookE
 
 export interface RobotsJobSummarizePendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookSummarizeJob;
 
@@ -13941,9 +13950,8 @@ export interface RobotsJobSummarizePendingWebhookEvent extends Omit<BaseWebhookE
 
 export interface RobotsJobSummarizeProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookSummarizeJob;
 
@@ -13952,9 +13960,8 @@ export interface RobotsJobSummarizeProcessingWebhookEvent extends Omit<BaseWebho
 
 export interface RobotsJobTranslateAudioCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobTranslateAudioCancelledWebhookEvent.Data;
 
@@ -13963,9 +13970,8 @@ export interface RobotsJobTranslateAudioCancelledWebhookEvent extends Omit<BaseW
 
 export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -14060,7 +14066,8 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -14232,9 +14239,8 @@ export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
 
 export interface RobotsJobTranslateAudioCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobTranslateAudioCompletedWebhookEvent.Data;
 
@@ -14243,9 +14249,8 @@ export interface RobotsJobTranslateAudioCompletedWebhookEvent extends Omit<BaseW
 
 export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -14340,7 +14345,8 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -14512,9 +14518,8 @@ export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
 
 export interface RobotsJobTranslateAudioErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobTranslateAudioErroredWebhookEvent.Data;
 
@@ -14523,9 +14528,8 @@ export interface RobotsJobTranslateAudioErroredWebhookEvent extends Omit<BaseWeb
 
 export namespace RobotsJobTranslateAudioErroredWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -14620,7 +14624,8 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -14792,9 +14797,8 @@ export namespace RobotsJobTranslateAudioErroredWebhookEvent {
 
 export interface RobotsJobTranslateAudioPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobTranslateAudioPendingWebhookEvent.Data;
 
@@ -14803,9 +14807,8 @@ export interface RobotsJobTranslateAudioPendingWebhookEvent extends Omit<BaseWeb
 
 export namespace RobotsJobTranslateAudioPendingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -14900,7 +14903,8 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -15072,9 +15076,8 @@ export namespace RobotsJobTranslateAudioPendingWebhookEvent {
 
 export interface RobotsJobTranslateAudioProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: RobotsJobTranslateAudioProcessingWebhookEvent.Data;
 
@@ -15083,9 +15086,8 @@ export interface RobotsJobTranslateAudioProcessingWebhookEvent extends Omit<Base
 
 export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   export interface Data {
     /**
@@ -15180,7 +15182,8 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true.
+       * Defaults to true. Must be false for audio-only assets; the job returns
+       * downloadable audio instead.
        */
       upload_to_mux?: boolean;
     }
@@ -15352,9 +15355,8 @@ export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
 
 export interface RobotsJobTranslateCaptionsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookTranslateCaptionsJob;
 
@@ -15363,9 +15365,8 @@ export interface RobotsJobTranslateCaptionsCancelledWebhookEvent extends Omit<Ba
 
 export interface RobotsJobTranslateCaptionsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookTranslateCaptionsJob;
 
@@ -15374,9 +15375,8 @@ export interface RobotsJobTranslateCaptionsCompletedWebhookEvent extends Omit<Ba
 
 export interface RobotsJobTranslateCaptionsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookTranslateCaptionsJob;
 
@@ -15385,9 +15385,8 @@ export interface RobotsJobTranslateCaptionsErroredWebhookEvent extends Omit<Base
 
 export interface RobotsJobTranslateCaptionsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookTranslateCaptionsJob;
 
@@ -15396,9 +15395,8 @@ export interface RobotsJobTranslateCaptionsPendingWebhookEvent extends Omit<Base
 
 export interface RobotsJobTranslateCaptionsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   /**
-   * The job that triggered the webhook event. In the actual payload this is nested
-   * under a dynamic event name key (e.g. `robots.job.summarize.completed`), not at
-   * the top level.
+   * Job object delivered in the Mux webhook event's data field. The event type
+   * identifies the workflow and transition.
    */
   data: WebhookTranslateCaptionsJob;
 

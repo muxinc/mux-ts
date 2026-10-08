@@ -193,7 +193,8 @@ export interface AskQuestionsJobParameters {
 
   /**
    * BCP 47 language code of the caption track to analyze (e.g. "en", "fr"). When
-   * omitted, the SDK uses the default track.
+   * omitted, English subtitles are preferred when available, otherwise the first
+   * ready text track is selected.
    */
   language_code?: string;
 

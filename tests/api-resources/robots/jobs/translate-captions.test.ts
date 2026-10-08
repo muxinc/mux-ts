@@ -14,7 +14,7 @@ describe('resource translateCaptions', () => {
       parameters: {
         asset_id: 'mux_asset_123abc',
         to_language_code: 'es',
-        track_id: 'track_en_abc123',
+        track_id: 'enabc123def456',
       },
     });
     const rawResponse = await responsePromise.asResponse();
@@ -31,7 +31,7 @@ describe('resource translateCaptions', () => {
       parameters: {
         asset_id: 'mux_asset_123abc',
         to_language_code: 'es',
-        track_id: 'track_en_abc123',
+        track_id: 'enabc123def456',
         never_translate: ['Mux'],
         replace_existing_tracks: 'fail',
         track_name: 'x',

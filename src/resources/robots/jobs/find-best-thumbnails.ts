@@ -132,6 +132,12 @@ export interface FindBestThumbnailsJobOutputs {
    * worst by overall quality score.
    */
   best_thumbnails: Array<FindBestThumbnailsJobOutputs.BestThumbnail>;
+
+  /**
+   * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+   * including historical jobs.
+   */
+  asset_updates?: FindBestThumbnailsJobOutputs.AssetUpdates;
 }
 
 export namespace FindBestThumbnailsJobOutputs {
@@ -194,16 +200,33 @@ export namespace FindBestThumbnailsJobOutputs {
       focus: number;
     }
   }
+
+  /**
+   * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+   * including historical jobs.
+   */
+  export interface AssetUpdates {
+    thumbnail?: AssetUpdates.Thumbnail;
+  }
+
+  export namespace AssetUpdates {
+    export interface Thumbnail {
+      /**
+       * Outcome of the requested asset thumbnail update.
+       */
+      status: 'updated' | 'failed';
+    }
+  }
 }
 
 export interface FindBestThumbnailsJobParameters {
   /**
-   * Mux asset ID.
+   * The Mux asset ID of the video to find thumbnails for.
    */
   asset_id: string;
 
   /**
-   * Maximum number of candidate thumbnails to return (1-5). Defaults to 1.
+   * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
    */
   max_thumbnails?: number;
 

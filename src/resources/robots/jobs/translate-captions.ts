@@ -20,7 +20,7 @@ export class TranslateCaptions extends APIResource {
    *   await client.robots.jobs.translateCaptions.create({
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
-   *       track_id: 'track_en_abc123',
+   *       track_id: 'enabc123def456',
    *       to_language_code: 'es',
    *       upload_to_mux: true,
    *       never_translate: ['Mux'],
@@ -136,8 +136,8 @@ export interface TranslateCaptionsJobOutputs {
   replaced_tracks?: Array<JobsAPI.ReplacedTrack>;
 
   /**
-   * Temporary pre-signed URL to download the translated VTT file. Present when
-   * upload_to_mux is true. Expires 7 days after the job completes.
+   * Temporary pre-signed URL to download the translated VTT file, including when
+   * upload_to_mux is false. Expires 7 days after the job completes.
    */
   temporary_vtt_url?: string;
 
