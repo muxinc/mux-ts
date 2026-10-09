@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 export const tool: Tool = {
   name: 'search_docs',
+  title: 'Search Mux docs',
   description:
     'Search SDK documentation to find methods, parameters, and usage examples for interacting with the API. Use this before writing code when you need to discover the right approach.',
   inputSchema: {
@@ -36,8 +37,13 @@ export const tool: Tool = {
     },
     required: ['query', 'language'],
   },
+  // Searches an in-memory index of the bundled SDK docs: no side effects and no external calls.
   annotations: {
+    title: 'Search Mux docs',
     readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
   },
 };
 

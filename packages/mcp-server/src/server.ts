@@ -16,6 +16,7 @@ import { LocalDocsSearch } from './local-docs-search';
 import { getInstructions } from './instructions';
 import { McpOptions } from './options';
 import { blockedMethodsForCodeTool } from './methods';
+import { operationTools } from './lib/operation-tools';
 import { HandlerFunction, McpRequestContext, ToolCallResult, McpTool } from './types';
 
 export const newMcpServer = async ({
@@ -213,6 +214,15 @@ export function selectTools(options?: McpOptions): McpTool[] {
   }
   if (options?.includeDocsTools ?? true) {
     includedTools.push(docsSearchTool);
+  }
+  // Per-operation tools are opt-in so existing clients keep the code-mode tools by default.
+  if (options?.includeOperationTools ?? false) {
+    includedTools.push(
+      ...operationTools({
+        names: options?.operationToolNames,
+        blockedMethods: blockedMethodsForCodeTool(options),
+      }),
+    );
   }
   return includedTools;
 }
