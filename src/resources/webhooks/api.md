@@ -3,22 +3,27 @@
 Types:
 
 - <code><a href="./src/resources/webhooks.ts">BaseWebhookEvent</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookAskQuestionsJob</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookAskQuestionsJobV0</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookAsset</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookAssetEmbeddedTrack</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookAssetStaticRendition</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookAssetTrack</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookAssetWarning</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookDirectUpload</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookEditCaptionsJob</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookFindKeyMomentsJob</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookGenerateChaptersJob</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookEditCaptionsJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookFindBestThumbnailsJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookFindKeyMomentsJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookFindScenesJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookGenerateChaptersJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookGenerateEngagementInsightsJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookGeneratePremiumCaptionsJobV0</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookLiveStream</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookLiveStreamWarning</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookModerateJob</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookModerateJobV0</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookSimulcastTarget</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookSummarizeJob</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookTranslateCaptionsJob</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookSummarizeJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookTranslateAudioJobV0</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookTranslateCaptionsJobV0</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookVideoDeliveryHighTraffic</a></code>
 - <code><a href="./src/resources/webhooks.ts">VideoAssetCreatedWebhookEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">VideoAssetReadyWebhookEvent</a></code>

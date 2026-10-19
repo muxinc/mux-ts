@@ -2,7 +2,7 @@
 
 export * from './shared';
 export { Data } from './data/data';
-export { Robots } from './robots/robots';
+export { RobotsV0 } from './robots-v0/robots-v0';
 export { Jwt } from './jwt';
 export { System } from './system/system';
 export { Video } from './video/video';

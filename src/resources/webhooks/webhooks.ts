@@ -254,7 +254,7 @@ export namespace BaseWebhookEvent {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookAskQuestionsJob {
+export interface WebhookAskQuestionsJobV0 {
   /**
    * Unique job identifier.
    */
@@ -265,7 +265,7 @@ export interface WebhookAskQuestionsJob {
    */
   created_at: number;
 
-  parameters: WebhookAskQuestionsJob.Parameters;
+  parameters: WebhookAskQuestionsJobV0.Parameters;
 
   /**
    * Current job status.
@@ -289,17 +289,17 @@ export interface WebhookAskQuestionsJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookAskQuestionsJob.Directive;
+  directive?: WebhookAskQuestionsJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookAskQuestionsJob.Error>;
+  errors?: Array<WebhookAskQuestionsJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookAskQuestionsJob.Outputs;
+  outputs?: WebhookAskQuestionsJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -309,10 +309,10 @@ export interface WebhookAskQuestionsJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookAskQuestionsJob.Resources;
+  resources?: WebhookAskQuestionsJobV0.Resources;
 }
 
-export namespace WebhookAskQuestionsJob {
+export namespace WebhookAskQuestionsJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video to analyze.
@@ -2116,7 +2116,7 @@ export namespace WebhookDirectUpload {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookEditCaptionsJob {
+export interface WebhookEditCaptionsJobV0 {
   /**
    * Unique job identifier.
    */
@@ -2127,7 +2127,7 @@ export interface WebhookEditCaptionsJob {
    */
   created_at: number;
 
-  parameters: WebhookEditCaptionsJob.Parameters;
+  parameters: WebhookEditCaptionsJobV0.Parameters;
 
   /**
    * Current job status.
@@ -2151,17 +2151,17 @@ export interface WebhookEditCaptionsJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookEditCaptionsJob.Directive;
+  directive?: WebhookEditCaptionsJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookEditCaptionsJob.Error>;
+  errors?: Array<WebhookEditCaptionsJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookEditCaptionsJob.Outputs;
+  outputs?: WebhookEditCaptionsJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -2171,10 +2171,10 @@ export interface WebhookEditCaptionsJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookEditCaptionsJob.Resources;
+  resources?: WebhookEditCaptionsJobV0.Resources;
 }
 
-export namespace WebhookEditCaptionsJob {
+export namespace WebhookEditCaptionsJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID whose existing text track should be edited.
@@ -2477,7 +2477,7 @@ export namespace WebhookEditCaptionsJob {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookFindKeyMomentsJob {
+export interface WebhookFindBestThumbnailsJobV0 {
   /**
    * Unique job identifier.
    */
@@ -2488,7 +2488,369 @@ export interface WebhookFindKeyMomentsJob {
    */
   created_at: number;
 
-  parameters: WebhookFindKeyMomentsJob.Parameters;
+  parameters: WebhookFindBestThumbnailsJobV0.Parameters;
+
+  /**
+   * Current job status.
+   */
+  status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'find-best-thumbnails';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: WebhookFindBestThumbnailsJobV0.Directive;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<WebhookFindBestThumbnailsJobV0.Error>;
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  outputs?: WebhookFindBestThumbnailsJobV0.Outputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: WebhookFindBestThumbnailsJobV0.Resources;
+}
+
+export namespace WebhookFindBestThumbnailsJobV0 {
+  export interface Parameters {
+    /**
+     * The Mux asset ID of the video to find thumbnails for.
+     */
+    asset_id: string;
+
+    /**
+     * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
+     */
+    max_thumbnails?: number;
+
+    /**
+     * Curated output_steering controls for execution scope, thumbnail scoring
+     * strategy, explicit user intent, audience, campaign style, and scoring
+     * priorities. Scope is enforced; other controls guide model behavior but do not
+     * guarantee exact output.
+     */
+    output_steering?: Parameters.OutputSteering;
+
+    /**
+     * When true, the highest-scoring thumbnail's timestamp is written to the Mux
+     * asset's thumbnail_time once the job completes, making that frame the asset's
+     * default poster image. The new thumbnail will appear for some clients sooner than
+     * others, depending on local cache settings.
+     */
+    update_asset_thumbnail?: boolean;
+  }
+
+  export namespace Parameters {
+    /**
+     * Curated output_steering controls for execution scope, thumbnail scoring
+     * strategy, explicit user intent, audience, campaign style, and scoring
+     * priorities. Scope is enforced; other controls guide model behavior but do not
+     * guarantee exact output.
+     */
+    export interface OutputSteering {
+      /**
+       * Intended audience used as best-effort scoring guidance. Does not change the
+       * output schema.
+       */
+      audience?: string;
+
+      /**
+       * Short description of the campaign/channel thumbnail style to prefer when
+       * supported by the frame.
+       */
+      campaign_style?: string;
+
+      /**
+       * Open-ended description of what the user is explicitly looking for in candidate
+       * thumbnails. Best-effort guidance only.
+       */
+      looking_for?: string;
+
+      /**
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
+       */
+      scope?: OutputSteering.Scope;
+
+      /**
+       * Rubric criteria to emphasize in close calls. Best-effort guidance only.
+       */
+      scoring_priorities?: Array<'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'>;
+
+      /**
+       * Best-effort guidance for what kind of thumbnail candidate should score highest.
+       */
+      selection_strategy?:
+        | 'face_or_action'
+        | 'clean_composition'
+        | 'high_contrast'
+        | 'brand_safe'
+        | 'campaign_thumbnail';
+    }
+
+    export namespace OutputSteering {
+      /**
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
+       */
+      export interface Scope {
+        /**
+         * End of the execution window in seconds from the beginning of the media. When
+         * omitted, the window extends to the end.
+         */
+        end_time?: number;
+
+        /**
+         * Start of the execution window in seconds from the beginning of the media. When
+         * omitted, the window starts at the beginning.
+         */
+        start_time?: number;
+      }
+    }
+  }
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
+  export interface Error {
+    /**
+     * Human-readable public error message.
+     */
+    message: string;
+
+    /**
+     * Stable public error category identifier.
+     */
+    type: string;
+
+    /**
+     * Whether retrying this job may resolve the error.
+     */
+    retryable?: boolean;
+  }
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  export interface Outputs {
+    /**
+     * Selected candidate thumbnails from the original asset timeline, ordered best to
+     * worst by overall quality score.
+     */
+    best_thumbnails: Array<Outputs.BestThumbnail>;
+
+    /**
+     * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+     * including historical jobs.
+     */
+    asset_updates?: Outputs.AssetUpdates;
+  }
+
+  export namespace Outputs {
+    export interface BestThumbnail {
+      /**
+       * AI-generated description of the frame content.
+       */
+      description: string;
+
+      /**
+       * Overall quality score from 0 to 1.
+       */
+      overall: number;
+
+      /**
+       * Per-category quality scores.
+       */
+      subscores: BestThumbnail.Subscores;
+
+      /**
+       * Absolute frame timestamp in whole milliseconds on the original asset timeline.
+       */
+      timestamp_ms: number;
+
+      /**
+       * Suggested alternative text for the candidate thumbnail image, suitable for use
+       * with the thumbnail URL in an accessible UI.
+       */
+      alt_text?: string;
+    }
+
+    export namespace BestThumbnail {
+      /**
+       * Per-category quality scores.
+       */
+      export interface Subscores {
+        /**
+         * Alignment with brand guidelines score (0-1).
+         */
+        brand_fit: number;
+
+        /**
+         * Visual composition and framing quality score (0-1).
+         */
+        composition: number;
+
+        /**
+         * Color contrast and vibrancy score (0-1).
+         */
+        contrast_color: number;
+
+        /**
+         * Presence of faces or dynamic action score (0-1).
+         */
+        face_or_action: number;
+
+        /**
+         * Sharpness and focus quality score (0-1).
+         */
+        focus: number;
+      }
+    }
+
+    /**
+     * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
+     * including historical jobs.
+     */
+    export interface AssetUpdates {
+      thumbnail?: AssetUpdates.Thumbnail;
+    }
+
+    export namespace AssetUpdates {
+      export interface Thumbnail {
+        /**
+         * Outcome of the requested asset thumbnail update.
+         */
+        status: 'updated' | 'failed';
+      }
+    }
+  }
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  export interface Resources {
+    /**
+     * Mux assets associated with this job.
+     */
+    assets: Array<Resources.Asset>;
+  }
+
+  export namespace Resources {
+    export interface Asset {
+      /**
+       * Mux asset ID.
+       */
+      id: string;
+
+      /**
+       * Hypermedia links for the asset.
+       */
+      _links: Asset._Links;
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      meta?: Asset.Meta;
+
+      /**
+       * Passthrough string from the Mux asset.
+       */
+      passthrough?: string;
+    }
+
+    export namespace Asset {
+      /**
+       * Hypermedia links for the asset.
+       */
+      export interface _Links {
+        self: _Links.Self;
+      }
+
+      export namespace _Links {
+        export interface Self {
+          /**
+           * URL to the Mux asset resource.
+           */
+          href: string;
+        }
+      }
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      export interface Meta {
+        /**
+         * Creator identifier from Mux metadata.
+         */
+        creator_id?: string;
+
+        /**
+         * External identifier from Mux metadata.
+         */
+        external_id?: string;
+
+        /**
+         * Asset title from Mux metadata.
+         */
+        title?: string;
+      }
+    }
+  }
+}
+
+/**
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
+ */
+export interface WebhookFindKeyMomentsJobV0 {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: WebhookFindKeyMomentsJobV0.Parameters;
 
   /**
    * Current job status.
@@ -2512,17 +2874,17 @@ export interface WebhookFindKeyMomentsJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookFindKeyMomentsJob.Directive;
+  directive?: WebhookFindKeyMomentsJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookFindKeyMomentsJob.Error>;
+  errors?: Array<WebhookFindKeyMomentsJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookFindKeyMomentsJob.Outputs;
+  outputs?: WebhookFindKeyMomentsJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -2532,10 +2894,10 @@ export interface WebhookFindKeyMomentsJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookFindKeyMomentsJob.Resources;
+  resources?: WebhookFindKeyMomentsJobV0.Resources;
 }
 
-export namespace WebhookFindKeyMomentsJob {
+export namespace WebhookFindKeyMomentsJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video to analyze.
@@ -2937,7 +3299,7 @@ export namespace WebhookFindKeyMomentsJob {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookGenerateChaptersJob {
+export interface WebhookFindScenesJobV0 {
   /**
    * Unique job identifier.
    */
@@ -2948,7 +3310,457 @@ export interface WebhookGenerateChaptersJob {
    */
   created_at: number;
 
-  parameters: WebhookGenerateChaptersJob.Parameters;
+  parameters: WebhookFindScenesJobV0.Parameters;
+
+  /**
+   * Current job status.
+   */
+  status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'find-scenes';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: WebhookFindScenesJobV0.Directive;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<WebhookFindScenesJobV0.Error>;
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  outputs?: WebhookFindScenesJobV0.Outputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: WebhookFindScenesJobV0.Resources;
+}
+
+export namespace WebhookFindScenesJobV0 {
+  export interface Parameters {
+    /**
+     * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
+     * are not supported.
+     */
+    asset_id: string;
+
+    /**
+     * Preferred transcript language code to analyze when a matching transcript track
+     * is available. Defaults to the first ready transcript track on the asset.
+     */
+    language_code?: string;
+
+    /**
+     * Preferred minimum scene duration in milliseconds for scaffolded transcript
+     * chunking. Defaults to 15000.
+     */
+    min_scene_duration_ms?: number;
+
+    /**
+     * Optional lower-bound hint for scene segmentation. When provided, the model
+     * should avoid collapsing clearly distinct beats below this count when the content
+     * supports more granular scene boundaries.
+     */
+    min_scenes?: number;
+
+    /**
+     * Curated output_steering controls for execution scope, segmentation strategy,
+     * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
+     * is enforced; other controls guide model behavior but do not guarantee exact
+     * output.
+     */
+    output_steering?: Parameters.OutputSteering;
+  }
+
+  export namespace Parameters {
+    /**
+     * Curated output_steering controls for execution scope, segmentation strategy,
+     * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
+     * is enforced; other controls guide model behavior but do not guarantee exact
+     * output.
+     */
+    export interface OutputSteering {
+      /**
+       * Intended audience used as best-effort model guidance. Does not change the output
+       * schema.
+       */
+      audience?: string;
+
+      /**
+       * Preferred brand or domain terms to use when supported by the source content.
+       */
+      brand_terms?: Array<string>;
+
+      /**
+       * Best-effort guidance for how much detail scene narratives should include.
+       */
+      narration_detail?: 'concise' | 'balanced' | 'detailed';
+
+      /**
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
+       */
+      scope?: OutputSteering.Scope;
+
+      /**
+       * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
+       */
+      segmentation_strategy?:
+        | 'editorial_beats'
+        | 'topic_changes'
+        | 'visual_transitions'
+        | 'action_progression'
+        | 'instructional_steps';
+
+      /**
+       * Best-effort title style guidance for generated scene titles.
+       */
+      title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
+
+      /**
+       * Controlled vocabulary used as best-effort guidance for generated labels and
+       * concepts.
+       */
+      topic_taxonomy?: OutputSteering.TopicTaxonomy;
+    }
+
+    export namespace OutputSteering {
+      /**
+       * Optional media execution window. Results remain timestamped against the original
+       * media timeline.
+       */
+      export interface Scope {
+        /**
+         * End of the execution window in seconds from the beginning of the media. When
+         * omitted, the window extends to the end.
+         */
+        end_time?: number;
+
+        /**
+         * Start of the execution window in seconds from the beginning of the media. When
+         * omitted, the window starts at the beginning.
+         */
+        start_time?: number;
+      }
+
+      /**
+       * Controlled vocabulary used as best-effort guidance for generated labels and
+       * concepts.
+       */
+      export interface TopicTaxonomy {
+        /**
+         * When false, the model should prefer values from the taxonomy. When true,
+         * non-taxonomy values may be used when no taxonomy value applies.
+         */
+        allow_other: boolean;
+
+        /**
+         * Controlled vocabulary values used as best-effort model guidance.
+         */
+        values: Array<TopicTaxonomy.Value>;
+
+        /**
+         * Optional customer-facing name for the taxonomy.
+         */
+        name?: string;
+      }
+
+      export namespace TopicTaxonomy {
+        export interface Value {
+          /**
+           * Canonical taxonomy value to prefer when supported by the source content.
+           */
+          label: string;
+
+          /**
+           * Accepted alternate names that should normalize to the canonical label.
+           */
+          aliases?: Array<string>;
+
+          /**
+           * Short explanation of when this value applies.
+           */
+          description?: string;
+        }
+      }
+    }
+  }
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
+  export interface Error {
+    /**
+     * Human-readable public error message.
+     */
+    message: string;
+
+    /**
+     * Stable public error category identifier.
+     */
+    type: string;
+
+    /**
+     * Whether retrying this job may resolve the error.
+     */
+    retryable?: boolean;
+  }
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  export interface Outputs {
+    /**
+     * Ordered scene segments extracted from the original asset timeline using shot
+     * boundaries plus any available transcript context.
+     */
+    scenes: Array<Outputs.Scene>;
+  }
+
+  export namespace Outputs {
+    export interface Scene {
+      /**
+       * Transcript cues that overlap the scene. Can be empty when no usable transcript
+       * is available.
+       */
+      cues: Array<Scene.Cue>;
+
+      /**
+       * Scene end time in milliseconds.
+       */
+      end_ms: number;
+
+      /**
+       * How many timed shot or beat entries make up the scene. When shots is present,
+       * this equals shots.length.
+       */
+      shot_count: number;
+
+      /**
+       * Scene start time in milliseconds.
+       */
+      start_ms: number;
+
+      /**
+       * Short human-readable title for the scene.
+       */
+      title: string;
+
+      /**
+       * One-sentence summary of what is being said during the scene. Present only when
+       * transcript cues are available.
+       */
+      audible_narrative?: string;
+
+      /**
+       * Combined audible and visual narrative for the scene when both signals are
+       * meaningfully available. Omit when no transcript-backed audible signal exists.
+       */
+      blended_narrative?: string;
+
+      /**
+       * Multi-word descriptive phrases capturing key audible concepts in the scene.
+       * Present only when transcript cues are available.
+       */
+      notable_audible_concepts?: Array<string>;
+
+      /**
+       * Scored visual concepts extracted from sampled scene frames. Present for video
+       * assets when visual enrichment succeeds.
+       */
+      notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
+
+      /**
+       * Optional ordered shot or beat breakdown within the scene, including timings and
+       * short visual descriptions.
+       */
+      shots?: Array<Scene.Shot>;
+
+      /**
+       * One-sentence summary of what is visually happening during the scene. Present for
+       * video assets when visual enrichment succeeds.
+       */
+      visual_narrative?: string;
+    }
+
+    export namespace Scene {
+      export interface Cue {
+        /**
+         * Cue end time in milliseconds.
+         */
+        end_ms: number;
+
+        /**
+         * Cue start time in milliseconds.
+         */
+        start_ms: number;
+
+        /**
+         * Transcript text for this cue.
+         */
+        text: string;
+      }
+
+      export interface NotableVisualConcept {
+        /**
+         * Multi-word visual concept (2-5 words).
+         */
+        concept: string;
+
+        /**
+         * Brief explanation of why the concept is visually important for the scene.
+         */
+        rationale: string;
+
+        /**
+         * Salience score from 0.0 to 1.0 measuring how visually important the concept is
+         * within the scene.
+         */
+        score: number;
+      }
+
+      export interface Shot {
+        /**
+         * Shot or beat end time in milliseconds within the scene.
+         */
+        end_ms: number;
+
+        /**
+         * Shot or beat start time in milliseconds within the scene.
+         */
+        start_ms: number;
+
+        /**
+         * Short visual description of what happens during this shot or beat.
+         */
+        visual_description: string;
+      }
+    }
+  }
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  export interface Resources {
+    /**
+     * Mux assets associated with this job.
+     */
+    assets: Array<Resources.Asset>;
+  }
+
+  export namespace Resources {
+    export interface Asset {
+      /**
+       * Mux asset ID.
+       */
+      id: string;
+
+      /**
+       * Hypermedia links for the asset.
+       */
+      _links: Asset._Links;
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      meta?: Asset.Meta;
+
+      /**
+       * Passthrough string from the Mux asset.
+       */
+      passthrough?: string;
+    }
+
+    export namespace Asset {
+      /**
+       * Hypermedia links for the asset.
+       */
+      export interface _Links {
+        self: _Links.Self;
+      }
+
+      export namespace _Links {
+        export interface Self {
+          /**
+           * URL to the Mux asset resource.
+           */
+          href: string;
+        }
+      }
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      export interface Meta {
+        /**
+         * Creator identifier from Mux metadata.
+         */
+        creator_id?: string;
+
+        /**
+         * External identifier from Mux metadata.
+         */
+        external_id?: string;
+
+        /**
+         * Asset title from Mux metadata.
+         */
+        title?: string;
+      }
+    }
+  }
+}
+
+/**
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
+ */
+export interface WebhookGenerateChaptersJobV0 {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: WebhookGenerateChaptersJobV0.Parameters;
 
   /**
    * Current job status.
@@ -2972,17 +3784,17 @@ export interface WebhookGenerateChaptersJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookGenerateChaptersJob.Directive;
+  directive?: WebhookGenerateChaptersJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookGenerateChaptersJob.Error>;
+  errors?: Array<WebhookGenerateChaptersJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookGenerateChaptersJob.Outputs;
+  outputs?: WebhookGenerateChaptersJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -2992,10 +3804,10 @@ export interface WebhookGenerateChaptersJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookGenerateChaptersJob.Resources;
+  resources?: WebhookGenerateChaptersJobV0.Resources;
 }
 
-export namespace WebhookGenerateChaptersJob {
+export namespace WebhookGenerateChaptersJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video to generate chapters for.
@@ -3223,6 +4035,568 @@ export namespace WebhookGenerateChaptersJob {
          */
         track_id?: string;
       }
+    }
+  }
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  export interface Resources {
+    /**
+     * Mux assets associated with this job.
+     */
+    assets: Array<Resources.Asset>;
+  }
+
+  export namespace Resources {
+    export interface Asset {
+      /**
+       * Mux asset ID.
+       */
+      id: string;
+
+      /**
+       * Hypermedia links for the asset.
+       */
+      _links: Asset._Links;
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      meta?: Asset.Meta;
+
+      /**
+       * Passthrough string from the Mux asset.
+       */
+      passthrough?: string;
+    }
+
+    export namespace Asset {
+      /**
+       * Hypermedia links for the asset.
+       */
+      export interface _Links {
+        self: _Links.Self;
+      }
+
+      export namespace _Links {
+        export interface Self {
+          /**
+           * URL to the Mux asset resource.
+           */
+          href: string;
+        }
+      }
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      export interface Meta {
+        /**
+         * Creator identifier from Mux metadata.
+         */
+        creator_id?: string;
+
+        /**
+         * External identifier from Mux metadata.
+         */
+        external_id?: string;
+
+        /**
+         * Asset title from Mux metadata.
+         */
+        title?: string;
+      }
+    }
+  }
+}
+
+/**
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
+ */
+export interface WebhookGenerateEngagementInsightsJobV0 {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: WebhookGenerateEngagementInsightsJobV0.Parameters;
+
+  /**
+   * Current job status.
+   */
+  status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'generate-engagement-insights';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: WebhookGenerateEngagementInsightsJobV0.Directive;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<WebhookGenerateEngagementInsightsJobV0.Error>;
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  outputs?: WebhookGenerateEngagementInsightsJobV0.Outputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: WebhookGenerateEngagementInsightsJobV0.Resources;
+}
+
+export namespace WebhookGenerateEngagementInsightsJobV0 {
+  export interface Parameters {
+    /**
+     * The Mux asset ID of the video to analyze engagement for.
+     */
+    asset_id: string;
+  }
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
+  export interface Error {
+    /**
+     * Human-readable public error message.
+     */
+    message: string;
+
+    /**
+     * Stable public error category identifier.
+     */
+    type: string;
+
+    /**
+     * Whether retrying this job may resolve the error.
+     */
+    retryable?: boolean;
+  }
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  export interface Outputs {
+    /**
+     * Per-moment engagement insights for identified hotspots.
+     */
+    moment_insights: Array<Outputs.MomentInsight>;
+
+    /**
+     * Overall engagement analysis across the video.
+     */
+    overall_insight: Outputs.OverallInsight;
+  }
+
+  export namespace Outputs {
+    export interface MomentInsight {
+      /**
+       * End time in milliseconds.
+       */
+      end_ms: number;
+
+      /**
+       * Normalized engagement score (0-1).
+       */
+      engagement_score: number;
+
+      /**
+       * Primary insight explaining the engagement pattern.
+       */
+      insight: string;
+
+      /**
+       * Start time in milliseconds.
+       */
+      start_ms: number;
+    }
+
+    /**
+     * Overall engagement analysis across the video.
+     */
+    export interface OverallInsight {
+      /**
+       * Summary of overall engagement patterns.
+       */
+      summary: string;
+
+      /**
+       * Key trends identified across the video.
+       */
+      trends: Array<string>;
+    }
+  }
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  export interface Resources {
+    /**
+     * Mux assets associated with this job.
+     */
+    assets: Array<Resources.Asset>;
+  }
+
+  export namespace Resources {
+    export interface Asset {
+      /**
+       * Mux asset ID.
+       */
+      id: string;
+
+      /**
+       * Hypermedia links for the asset.
+       */
+      _links: Asset._Links;
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      meta?: Asset.Meta;
+
+      /**
+       * Passthrough string from the Mux asset.
+       */
+      passthrough?: string;
+    }
+
+    export namespace Asset {
+      /**
+       * Hypermedia links for the asset.
+       */
+      export interface _Links {
+        self: _Links.Self;
+      }
+
+      export namespace _Links {
+        export interface Self {
+          /**
+           * URL to the Mux asset resource.
+           */
+          href: string;
+        }
+      }
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      export interface Meta {
+        /**
+         * Creator identifier from Mux metadata.
+         */
+        creator_id?: string;
+
+        /**
+         * External identifier from Mux metadata.
+         */
+        external_id?: string;
+
+        /**
+         * Asset title from Mux metadata.
+         */
+        title?: string;
+      }
+    }
+  }
+}
+
+/**
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
+ */
+export interface WebhookGeneratePremiumCaptionsJobV0 {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: WebhookGeneratePremiumCaptionsJobV0.Parameters;
+
+  /**
+   * Current job status.
+   */
+  status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'generate-premium-captions';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: WebhookGeneratePremiumCaptionsJobV0.Directive;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<WebhookGeneratePremiumCaptionsJobV0.Error>;
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  outputs?: WebhookGeneratePremiumCaptionsJobV0.Outputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: WebhookGeneratePremiumCaptionsJobV0.Resources;
+}
+
+export namespace WebhookGeneratePremiumCaptionsJobV0 {
+  export interface Parameters {
+    /**
+     * The Mux asset ID of the video to caption.
+     */
+    asset_id: string;
+
+    /**
+     * When true, speaker labels are identified and added to each caption cue. Useful
+     * for interviews, podcasts, and multi-speaker content.
+     */
+    include_speakers?: boolean;
+
+    /**
+     * When true, word-level timestamps are exported as a JSON file accessible via
+     * temporary_words_url in the job outputs. The URL expires 7 days after the job
+     * completes. Billed at a higher unit rate.
+     */
+    include_words?: boolean;
+
+    /**
+     * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
+     * biases transcription toward this language — it is not verified against the audio
+     * and does not guarantee the output language. When supplied, language detection is
+     * skipped and the captions are labeled with this code. The language will be
+     * auto-detected when omitted; existing tracks are then checked against
+     * `replace_existing_tracks` after transcription, so a same-language conflict
+     * errors the job at track creation instead of being rejected up front, and a
+     * deleting policy only applies when the detection is confident.
+     */
+    language_code?: string;
+
+    /**
+     * Best-effort list of words or short phrases (proper nouns, product names, jargon)
+     * likely to appear in the audio, used to bias recognition toward correct
+     * spellings. Does not guarantee exact output. Each phrase may contain at most 49
+     * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
+     * \.
+     */
+    phrases?: Array<string>;
+
+    /**
+     * @deprecated Use `replace_existing_tracks` instead.
+     */
+    replace_existing?: boolean;
+
+    /**
+     * What to do when the asset already has a text track in the same language as, or
+     * with the same name as, the new caption track. Defaults to `fail`, which rejects
+     * the request before any work is billed. `replace_all` deletes every such track
+     * first. `replace_generated` deletes only Mux Video auto-generated tracks and
+     * rejects if an uploaded track is in the way. Existing tracks are matched by
+     * language ignoring region subtags, and by name ignoring case, in any status. When
+     * `language_code` is omitted the detected language is used, and tracks are only
+     * deleted when the detection is confident; otherwise the job behaves as `fail`.
+     */
+    replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+    /**
+     * Custom name for the uploaded Mux text track. Defaults to "{Language}
+     * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
+     * unique on an asset.
+     */
+    track_name?: string;
+
+    /**
+     * Whether to upload the generated SRT to the Mux asset as a new text track.
+     * Defaults to true. When false, no track is created and `replace_existing_tracks`
+     * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
+     */
+    upload_to_mux?: boolean;
+  }
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
+  export interface Error {
+    /**
+     * Human-readable public error message.
+     */
+    message: string;
+
+    /**
+     * Stable public error category identifier.
+     */
+    type: string;
+
+    /**
+     * Whether retrying this job may resolve the error.
+     */
+    retryable?: boolean;
+  }
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  export interface Outputs {
+    /**
+     * Resolved language code of the generated captions (may differ from the requested
+     * code when auto-detected).
+     */
+    language_code: string;
+
+    /**
+     * The transcription model's confidence in its automatic language detection, from 0
+     * to 1. Always 1 when language_code was supplied in the request, since detection
+     * is skipped.
+     */
+    auto_language_confidence?: number;
+
+    /**
+     * Language code reported by the transcription model. Only a genuine detection when
+     * language_code was omitted from the request; when a language_code hint was
+     * supplied, detection is skipped and this echoes the requested language.
+     */
+    detected_language?: string;
+
+    /**
+     * @deprecated Use `replaced_tracks` instead.
+     */
+    replaced_track_id?: string;
+
+    /**
+     * Every track deleted before the new track was created. Present when
+     * `replace_existing_tracks` was a deleting policy and at least one track was
+     * removed.
+     */
+    replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+    /**
+     * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
+     * after the job completes.
+     */
+    temporary_srt_url?: string;
+
+    /**
+     * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
+     * include_words is true. Expires 7 days after the job completes. Download and
+     * store this file for long-term access.
+     */
+    temporary_words_url?: string;
+
+    /**
+     * Mux text track ID of the newly uploaded caption track. Omitted when
+     * upload_to_mux is false.
+     */
+    track_id?: string;
+  }
+
+  export namespace Outputs {
+    export interface ReplacedTrack {
+      /**
+       * Mux track ID of the deleted track.
+       */
+      id: string;
+
+      /**
+       * Language code of the deleted track.
+       */
+      language_code?: string;
+
+      /**
+       * Name of the deleted track.
+       */
+      name?: string;
+
+      /**
+       * `passthrough` value the deleted track carried, if any.
+       */
+      passthrough?: string;
+
+      /**
+       * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+       * Absent for audio tracks.
+       */
+      text_source?: string;
+
+      /**
+       * Mux track type of the deleted track.
+       */
+      type?: 'text' | 'audio';
     }
   }
 
@@ -4082,7 +5456,7 @@ export namespace WebhookLiveStreamWarning {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookModerateJob {
+export interface WebhookModerateJobV0 {
   /**
    * Unique job identifier.
    */
@@ -4093,7 +5467,7 @@ export interface WebhookModerateJob {
    */
   created_at: number;
 
-  parameters: WebhookModerateJob.Parameters;
+  parameters: WebhookModerateJobV0.Parameters;
 
   /**
    * Current job status.
@@ -4117,17 +5491,17 @@ export interface WebhookModerateJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookModerateJob.Directive;
+  directive?: WebhookModerateJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookModerateJob.Error>;
+  errors?: Array<WebhookModerateJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookModerateJob.Outputs;
+  outputs?: WebhookModerateJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -4137,10 +5511,10 @@ export interface WebhookModerateJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookModerateJob.Resources;
+  resources?: WebhookModerateJobV0.Resources;
 }
 
-export namespace WebhookModerateJob {
+export namespace WebhookModerateJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video to moderate.
@@ -4507,7 +5881,7 @@ export interface WebhookSimulcastTarget {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookSummarizeJob {
+export interface WebhookSummarizeJobV0 {
   /**
    * Unique job identifier.
    */
@@ -4518,7 +5892,7 @@ export interface WebhookSummarizeJob {
    */
   created_at: number;
 
-  parameters: WebhookSummarizeJob.Parameters;
+  parameters: WebhookSummarizeJobV0.Parameters;
 
   /**
    * Current job status.
@@ -4542,17 +5916,17 @@ export interface WebhookSummarizeJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookSummarizeJob.Directive;
+  directive?: WebhookSummarizeJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookSummarizeJob.Error>;
+  errors?: Array<WebhookSummarizeJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookSummarizeJob.Outputs;
+  outputs?: WebhookSummarizeJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -4562,10 +5936,10 @@ export interface WebhookSummarizeJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookSummarizeJob.Resources;
+  resources?: WebhookSummarizeJobV0.Resources;
 }
 
-export namespace WebhookSummarizeJob {
+export namespace WebhookSummarizeJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video to summarize.
@@ -4913,7 +6287,7 @@ export namespace WebhookSummarizeJob {
  * Job object delivered in the Mux webhook event's data field. The event type
  * identifies the workflow and transition.
  */
-export interface WebhookTranslateCaptionsJob {
+export interface WebhookTranslateAudioJobV0 {
   /**
    * Unique job identifier.
    */
@@ -4924,7 +6298,274 @@ export interface WebhookTranslateCaptionsJob {
    */
   created_at: number;
 
-  parameters: WebhookTranslateCaptionsJob.Parameters;
+  parameters: WebhookTranslateAudioJobV0.Parameters;
+
+  /**
+   * Current job status.
+   */
+  status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'translate-audio';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: WebhookTranslateAudioJobV0.Directive;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<WebhookTranslateAudioJobV0.Error>;
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  outputs?: WebhookTranslateAudioJobV0.Outputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: WebhookTranslateAudioJobV0.Resources;
+}
+
+export namespace WebhookTranslateAudioJobV0 {
+  export interface Parameters {
+    /**
+     * The Mux asset ID of the video to translate.
+     */
+    asset_id: string;
+
+    /**
+     * BCP 47 language code for the target translation language (e.g. "es", "fr",
+     * "ja").
+     */
+    to_language_code: string;
+
+    /**
+     * What to do when the asset already has an audio track in the same language as, or
+     * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
+     * the request before any dubbing is billed. `replace_all` deletes every such track
+     * first. Audio tracks are never auto-generated by Mux Video, so
+     * `replace_generated` behaves as `fail` here. The asset's primary audio track is
+     * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
+     * Existing tracks are matched by language ignoring region subtags, and by name
+     * ignoring case, in any status.
+     */
+    replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
+
+    /**
+     * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
+     * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
+     * asset, and an existing track with this name is handled according to
+     * `replace_existing_tracks`.
+     */
+    track_name?: string;
+
+    /**
+     * Whether to automatically upload the translated audio track to the Mux asset.
+     * Defaults to true. Must be false for audio-only assets; the job returns
+     * downloadable audio instead.
+     */
+    upload_to_mux?: boolean;
+  }
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  export interface Directive {
+    /**
+     * ID of the directive that dispatched this job.
+     */
+    id: string;
+
+    /**
+     * ID of the specific directive run that dispatched this job.
+     */
+    run_id: string;
+  }
+
+  export interface Error {
+    /**
+     * Human-readable public error message.
+     */
+    message: string;
+
+    /**
+     * Stable public error category identifier.
+     */
+    type: string;
+
+    /**
+     * Whether retrying this job may resolve the error.
+     */
+    retryable?: boolean;
+  }
+
+  /**
+   * Workflow results. Present when status is 'completed'.
+   */
+  export interface Outputs {
+    /**
+     * Every track deleted before the new track was created. Present when
+     * `replace_existing_tracks` was a deleting policy and at least one track was
+     * removed.
+     */
+    replaced_tracks?: Array<Outputs.ReplacedTrack>;
+
+    /**
+     * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
+     * the job completes.
+     */
+    temporary_audio_url?: string;
+
+    /**
+     * Mux audio track ID, present when upload_to_mux is true.
+     */
+    uploaded_track_id?: string;
+  }
+
+  export namespace Outputs {
+    export interface ReplacedTrack {
+      /**
+       * Mux track ID of the deleted track.
+       */
+      id: string;
+
+      /**
+       * Language code of the deleted track.
+       */
+      language_code?: string;
+
+      /**
+       * Name of the deleted track.
+       */
+      name?: string;
+
+      /**
+       * `passthrough` value the deleted track carried, if any.
+       */
+      passthrough?: string;
+
+      /**
+       * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
+       * Absent for audio tracks.
+       */
+      text_source?: string;
+
+      /**
+       * Mux track type of the deleted track.
+       */
+      type?: 'text' | 'audio';
+    }
+  }
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  export interface Resources {
+    /**
+     * Mux assets associated with this job.
+     */
+    assets: Array<Resources.Asset>;
+  }
+
+  export namespace Resources {
+    export interface Asset {
+      /**
+       * Mux asset ID.
+       */
+      id: string;
+
+      /**
+       * Hypermedia links for the asset.
+       */
+      _links: Asset._Links;
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      meta?: Asset.Meta;
+
+      /**
+       * Passthrough string from the Mux asset.
+       */
+      passthrough?: string;
+    }
+
+    export namespace Asset {
+      /**
+       * Hypermedia links for the asset.
+       */
+      export interface _Links {
+        self: _Links.Self;
+      }
+
+      export namespace _Links {
+        export interface Self {
+          /**
+           * URL to the Mux asset resource.
+           */
+          href: string;
+        }
+      }
+
+      /**
+       * Mux asset metadata, if available.
+       */
+      export interface Meta {
+        /**
+         * Creator identifier from Mux metadata.
+         */
+        creator_id?: string;
+
+        /**
+         * External identifier from Mux metadata.
+         */
+        external_id?: string;
+
+        /**
+         * Asset title from Mux metadata.
+         */
+        title?: string;
+      }
+    }
+  }
+}
+
+/**
+ * Job object delivered in the Mux webhook event's data field. The event type
+ * identifies the workflow and transition.
+ */
+export interface WebhookTranslateCaptionsJobV0 {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: WebhookTranslateCaptionsJobV0.Parameters;
 
   /**
    * Current job status.
@@ -4948,17 +6589,17 @@ export interface WebhookTranslateCaptionsJob {
    * The directive run that dispatched this job. Absent for jobs created via direct
    * API POST.
    */
-  directive?: WebhookTranslateCaptionsJob.Directive;
+  directive?: WebhookTranslateCaptionsJobV0.Directive;
 
   /**
    * Error details. Present when status is 'errored'.
    */
-  errors?: Array<WebhookTranslateCaptionsJob.Error>;
+  errors?: Array<WebhookTranslateCaptionsJobV0.Error>;
 
   /**
    * Workflow results. Present when status is 'completed'.
    */
-  outputs?: WebhookTranslateCaptionsJob.Outputs;
+  outputs?: WebhookTranslateCaptionsJobV0.Outputs;
 
   /**
    * Arbitrary string supplied at creation, returned as-is.
@@ -4968,10 +6609,10 @@ export interface WebhookTranslateCaptionsJob {
   /**
    * Related Mux resources linked to this job.
    */
-  resources?: WebhookTranslateCaptionsJob.Resources;
+  resources?: WebhookTranslateCaptionsJobV0.Resources;
 }
 
-export namespace WebhookTranslateCaptionsJob {
+export namespace WebhookTranslateCaptionsJobV0 {
   export interface Parameters {
     /**
      * The Mux asset ID of the video whose captions will be translated.
@@ -6535,7 +8176,7 @@ export interface RobotsJobAskQuestionsCancelledWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookAskQuestionsJob;
+  data: WebhookAskQuestionsJobV0;
 
   type: 'robots.job.ask_questions.cancelled';
 }
@@ -6545,7 +8186,7 @@ export interface RobotsJobAskQuestionsCompletedWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookAskQuestionsJob;
+  data: WebhookAskQuestionsJobV0;
 
   type: 'robots.job.ask_questions.completed';
 }
@@ -6555,7 +8196,7 @@ export interface RobotsJobAskQuestionsErroredWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookAskQuestionsJob;
+  data: WebhookAskQuestionsJobV0;
 
   type: 'robots.job.ask_questions.errored';
 }
@@ -6565,7 +8206,7 @@ export interface RobotsJobAskQuestionsPendingWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookAskQuestionsJob;
+  data: WebhookAskQuestionsJobV0;
 
   type: 'robots.job.ask_questions.pending';
 }
@@ -6575,7 +8216,7 @@ export interface RobotsJobAskQuestionsProcessingWebhookEvent extends Omit<BaseWe
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookAskQuestionsJob;
+  data: WebhookAskQuestionsJobV0;
 
   type: 'robots.job.ask_questions.processing';
 }
@@ -6585,7 +8226,7 @@ export interface RobotsJobEditCaptionsCancelledWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookEditCaptionsJob;
+  data: WebhookEditCaptionsJobV0;
 
   type: 'robots.job.edit_captions.cancelled';
 }
@@ -6595,7 +8236,7 @@ export interface RobotsJobEditCaptionsCompletedWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookEditCaptionsJob;
+  data: WebhookEditCaptionsJobV0;
 
   type: 'robots.job.edit_captions.completed';
 }
@@ -6605,7 +8246,7 @@ export interface RobotsJobEditCaptionsErroredWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookEditCaptionsJob;
+  data: WebhookEditCaptionsJobV0;
 
   type: 'robots.job.edit_captions.errored';
 }
@@ -6615,7 +8256,7 @@ export interface RobotsJobEditCaptionsPendingWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookEditCaptionsJob;
+  data: WebhookEditCaptionsJobV0;
 
   type: 'robots.job.edit_captions.pending';
 }
@@ -6625,7 +8266,7 @@ export interface RobotsJobEditCaptionsProcessingWebhookEvent extends Omit<BaseWe
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookEditCaptionsJob;
+  data: WebhookEditCaptionsJobV0;
 
   type: 'robots.job.edit_captions.processing';
 }
@@ -6635,375 +8276,9 @@ export interface RobotsJobFindBestThumbnailsCancelledWebhookEvent extends Omit<B
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindBestThumbnailsCancelledWebhookEvent.Data;
+  data: WebhookFindBestThumbnailsJobV0;
 
   type: 'robots.job.find_best_thumbnails.cancelled';
-}
-
-export namespace RobotsJobFindBestThumbnailsCancelledWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-best-thumbnails';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to find thumbnails for.
-       */
-      asset_id: string;
-
-      /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
-       */
-      max_thumbnails?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      output_steering?: Parameters.OutputSteering;
-
-      /**
-       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
-       * asset's thumbnail_time once the job completes, making that frame the asset's
-       * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
-       */
-      update_asset_thumbnail?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort scoring guidance. Does not change the
-         * output schema.
-         */
-        audience?: string;
-
-        /**
-         * Short description of the campaign/channel thumbnail style to prefer when
-         * supported by the frame.
-         */
-        campaign_style?: string;
-
-        /**
-         * Open-ended description of what the user is explicitly looking for in candidate
-         * thumbnails. Best-effort guidance only.
-         */
-        looking_for?: string;
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Rubric criteria to emphasize in close calls. Best-effort guidance only.
-         */
-        scoring_priorities?: Array<
-          'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'
-        >;
-
-        /**
-         * Best-effort guidance for what kind of thumbnail candidate should score highest.
-         */
-        selection_strategy?:
-          | 'face_or_action'
-          | 'clean_composition'
-          | 'high_contrast'
-          | 'brand_safe'
-          | 'campaign_thumbnail';
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Selected candidate thumbnails from the original asset timeline, ordered best to
-       * worst by overall quality score.
-       */
-      best_thumbnails: Array<Outputs.BestThumbnail>;
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      asset_updates?: Outputs.AssetUpdates;
-    }
-
-    export namespace Outputs {
-      export interface BestThumbnail {
-        /**
-         * AI-generated description of the frame content.
-         */
-        description: string;
-
-        /**
-         * Overall quality score from 0 to 1.
-         */
-        overall: number;
-
-        /**
-         * Per-category quality scores.
-         */
-        subscores: BestThumbnail.Subscores;
-
-        /**
-         * Absolute frame timestamp in whole milliseconds on the original asset timeline.
-         */
-        timestamp_ms: number;
-
-        /**
-         * Suggested alternative text for the candidate thumbnail image, suitable for use
-         * with the thumbnail URL in an accessible UI.
-         */
-        alt_text?: string;
-      }
-
-      export namespace BestThumbnail {
-        /**
-         * Per-category quality scores.
-         */
-        export interface Subscores {
-          /**
-           * Alignment with brand guidelines score (0-1).
-           */
-          brand_fit: number;
-
-          /**
-           * Visual composition and framing quality score (0-1).
-           */
-          composition: number;
-
-          /**
-           * Color contrast and vibrancy score (0-1).
-           */
-          contrast_color: number;
-
-          /**
-           * Presence of faces or dynamic action score (0-1).
-           */
-          face_or_action: number;
-
-          /**
-           * Sharpness and focus quality score (0-1).
-           */
-          focus: number;
-        }
-      }
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      export interface AssetUpdates {
-        thumbnail?: AssetUpdates.Thumbnail;
-      }
-
-      export namespace AssetUpdates {
-        export interface Thumbnail {
-          /**
-           * Outcome of the requested asset thumbnail update.
-           */
-          status: 'updated' | 'failed';
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindBestThumbnailsCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -7011,375 +8286,9 @@ export interface RobotsJobFindBestThumbnailsCompletedWebhookEvent extends Omit<B
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindBestThumbnailsCompletedWebhookEvent.Data;
+  data: WebhookFindBestThumbnailsJobV0;
 
   type: 'robots.job.find_best_thumbnails.completed';
-}
-
-export namespace RobotsJobFindBestThumbnailsCompletedWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-best-thumbnails';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to find thumbnails for.
-       */
-      asset_id: string;
-
-      /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
-       */
-      max_thumbnails?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      output_steering?: Parameters.OutputSteering;
-
-      /**
-       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
-       * asset's thumbnail_time once the job completes, making that frame the asset's
-       * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
-       */
-      update_asset_thumbnail?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort scoring guidance. Does not change the
-         * output schema.
-         */
-        audience?: string;
-
-        /**
-         * Short description of the campaign/channel thumbnail style to prefer when
-         * supported by the frame.
-         */
-        campaign_style?: string;
-
-        /**
-         * Open-ended description of what the user is explicitly looking for in candidate
-         * thumbnails. Best-effort guidance only.
-         */
-        looking_for?: string;
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Rubric criteria to emphasize in close calls. Best-effort guidance only.
-         */
-        scoring_priorities?: Array<
-          'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'
-        >;
-
-        /**
-         * Best-effort guidance for what kind of thumbnail candidate should score highest.
-         */
-        selection_strategy?:
-          | 'face_or_action'
-          | 'clean_composition'
-          | 'high_contrast'
-          | 'brand_safe'
-          | 'campaign_thumbnail';
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Selected candidate thumbnails from the original asset timeline, ordered best to
-       * worst by overall quality score.
-       */
-      best_thumbnails: Array<Outputs.BestThumbnail>;
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      asset_updates?: Outputs.AssetUpdates;
-    }
-
-    export namespace Outputs {
-      export interface BestThumbnail {
-        /**
-         * AI-generated description of the frame content.
-         */
-        description: string;
-
-        /**
-         * Overall quality score from 0 to 1.
-         */
-        overall: number;
-
-        /**
-         * Per-category quality scores.
-         */
-        subscores: BestThumbnail.Subscores;
-
-        /**
-         * Absolute frame timestamp in whole milliseconds on the original asset timeline.
-         */
-        timestamp_ms: number;
-
-        /**
-         * Suggested alternative text for the candidate thumbnail image, suitable for use
-         * with the thumbnail URL in an accessible UI.
-         */
-        alt_text?: string;
-      }
-
-      export namespace BestThumbnail {
-        /**
-         * Per-category quality scores.
-         */
-        export interface Subscores {
-          /**
-           * Alignment with brand guidelines score (0-1).
-           */
-          brand_fit: number;
-
-          /**
-           * Visual composition and framing quality score (0-1).
-           */
-          composition: number;
-
-          /**
-           * Color contrast and vibrancy score (0-1).
-           */
-          contrast_color: number;
-
-          /**
-           * Presence of faces or dynamic action score (0-1).
-           */
-          face_or_action: number;
-
-          /**
-           * Sharpness and focus quality score (0-1).
-           */
-          focus: number;
-        }
-      }
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      export interface AssetUpdates {
-        thumbnail?: AssetUpdates.Thumbnail;
-      }
-
-      export namespace AssetUpdates {
-        export interface Thumbnail {
-          /**
-           * Outcome of the requested asset thumbnail update.
-           */
-          status: 'updated' | 'failed';
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindBestThumbnailsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -7387,375 +8296,9 @@ export interface RobotsJobFindBestThumbnailsErroredWebhookEvent extends Omit<Bas
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindBestThumbnailsErroredWebhookEvent.Data;
+  data: WebhookFindBestThumbnailsJobV0;
 
   type: 'robots.job.find_best_thumbnails.errored';
-}
-
-export namespace RobotsJobFindBestThumbnailsErroredWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-best-thumbnails';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to find thumbnails for.
-       */
-      asset_id: string;
-
-      /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
-       */
-      max_thumbnails?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      output_steering?: Parameters.OutputSteering;
-
-      /**
-       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
-       * asset's thumbnail_time once the job completes, making that frame the asset's
-       * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
-       */
-      update_asset_thumbnail?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort scoring guidance. Does not change the
-         * output schema.
-         */
-        audience?: string;
-
-        /**
-         * Short description of the campaign/channel thumbnail style to prefer when
-         * supported by the frame.
-         */
-        campaign_style?: string;
-
-        /**
-         * Open-ended description of what the user is explicitly looking for in candidate
-         * thumbnails. Best-effort guidance only.
-         */
-        looking_for?: string;
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Rubric criteria to emphasize in close calls. Best-effort guidance only.
-         */
-        scoring_priorities?: Array<
-          'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'
-        >;
-
-        /**
-         * Best-effort guidance for what kind of thumbnail candidate should score highest.
-         */
-        selection_strategy?:
-          | 'face_or_action'
-          | 'clean_composition'
-          | 'high_contrast'
-          | 'brand_safe'
-          | 'campaign_thumbnail';
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Selected candidate thumbnails from the original asset timeline, ordered best to
-       * worst by overall quality score.
-       */
-      best_thumbnails: Array<Outputs.BestThumbnail>;
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      asset_updates?: Outputs.AssetUpdates;
-    }
-
-    export namespace Outputs {
-      export interface BestThumbnail {
-        /**
-         * AI-generated description of the frame content.
-         */
-        description: string;
-
-        /**
-         * Overall quality score from 0 to 1.
-         */
-        overall: number;
-
-        /**
-         * Per-category quality scores.
-         */
-        subscores: BestThumbnail.Subscores;
-
-        /**
-         * Absolute frame timestamp in whole milliseconds on the original asset timeline.
-         */
-        timestamp_ms: number;
-
-        /**
-         * Suggested alternative text for the candidate thumbnail image, suitable for use
-         * with the thumbnail URL in an accessible UI.
-         */
-        alt_text?: string;
-      }
-
-      export namespace BestThumbnail {
-        /**
-         * Per-category quality scores.
-         */
-        export interface Subscores {
-          /**
-           * Alignment with brand guidelines score (0-1).
-           */
-          brand_fit: number;
-
-          /**
-           * Visual composition and framing quality score (0-1).
-           */
-          composition: number;
-
-          /**
-           * Color contrast and vibrancy score (0-1).
-           */
-          contrast_color: number;
-
-          /**
-           * Presence of faces or dynamic action score (0-1).
-           */
-          face_or_action: number;
-
-          /**
-           * Sharpness and focus quality score (0-1).
-           */
-          focus: number;
-        }
-      }
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      export interface AssetUpdates {
-        thumbnail?: AssetUpdates.Thumbnail;
-      }
-
-      export namespace AssetUpdates {
-        export interface Thumbnail {
-          /**
-           * Outcome of the requested asset thumbnail update.
-           */
-          status: 'updated' | 'failed';
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindBestThumbnailsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -7763,375 +8306,9 @@ export interface RobotsJobFindBestThumbnailsPendingWebhookEvent extends Omit<Bas
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindBestThumbnailsPendingWebhookEvent.Data;
+  data: WebhookFindBestThumbnailsJobV0;
 
   type: 'robots.job.find_best_thumbnails.pending';
-}
-
-export namespace RobotsJobFindBestThumbnailsPendingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-best-thumbnails';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to find thumbnails for.
-       */
-      asset_id: string;
-
-      /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
-       */
-      max_thumbnails?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      output_steering?: Parameters.OutputSteering;
-
-      /**
-       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
-       * asset's thumbnail_time once the job completes, making that frame the asset's
-       * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
-       */
-      update_asset_thumbnail?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort scoring guidance. Does not change the
-         * output schema.
-         */
-        audience?: string;
-
-        /**
-         * Short description of the campaign/channel thumbnail style to prefer when
-         * supported by the frame.
-         */
-        campaign_style?: string;
-
-        /**
-         * Open-ended description of what the user is explicitly looking for in candidate
-         * thumbnails. Best-effort guidance only.
-         */
-        looking_for?: string;
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Rubric criteria to emphasize in close calls. Best-effort guidance only.
-         */
-        scoring_priorities?: Array<
-          'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'
-        >;
-
-        /**
-         * Best-effort guidance for what kind of thumbnail candidate should score highest.
-         */
-        selection_strategy?:
-          | 'face_or_action'
-          | 'clean_composition'
-          | 'high_contrast'
-          | 'brand_safe'
-          | 'campaign_thumbnail';
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Selected candidate thumbnails from the original asset timeline, ordered best to
-       * worst by overall quality score.
-       */
-      best_thumbnails: Array<Outputs.BestThumbnail>;
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      asset_updates?: Outputs.AssetUpdates;
-    }
-
-    export namespace Outputs {
-      export interface BestThumbnail {
-        /**
-         * AI-generated description of the frame content.
-         */
-        description: string;
-
-        /**
-         * Overall quality score from 0 to 1.
-         */
-        overall: number;
-
-        /**
-         * Per-category quality scores.
-         */
-        subscores: BestThumbnail.Subscores;
-
-        /**
-         * Absolute frame timestamp in whole milliseconds on the original asset timeline.
-         */
-        timestamp_ms: number;
-
-        /**
-         * Suggested alternative text for the candidate thumbnail image, suitable for use
-         * with the thumbnail URL in an accessible UI.
-         */
-        alt_text?: string;
-      }
-
-      export namespace BestThumbnail {
-        /**
-         * Per-category quality scores.
-         */
-        export interface Subscores {
-          /**
-           * Alignment with brand guidelines score (0-1).
-           */
-          brand_fit: number;
-
-          /**
-           * Visual composition and framing quality score (0-1).
-           */
-          composition: number;
-
-          /**
-           * Color contrast and vibrancy score (0-1).
-           */
-          contrast_color: number;
-
-          /**
-           * Presence of faces or dynamic action score (0-1).
-           */
-          face_or_action: number;
-
-          /**
-           * Sharpness and focus quality score (0-1).
-           */
-          focus: number;
-        }
-      }
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      export interface AssetUpdates {
-        thumbnail?: AssetUpdates.Thumbnail;
-      }
-
-      export namespace AssetUpdates {
-        export interface Thumbnail {
-          /**
-           * Outcome of the requested asset thumbnail update.
-           */
-          status: 'updated' | 'failed';
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindBestThumbnailsProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -8139,375 +8316,9 @@ export interface RobotsJobFindBestThumbnailsProcessingWebhookEvent extends Omit<
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindBestThumbnailsProcessingWebhookEvent.Data;
+  data: WebhookFindBestThumbnailsJobV0;
 
   type: 'robots.job.find_best_thumbnails.processing';
-}
-
-export namespace RobotsJobFindBestThumbnailsProcessingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-best-thumbnails';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to find thumbnails for.
-       */
-      asset_id: string;
-
-      /**
-       * Maximum number of candidate thumbnails to return (1-5). Defaults to 5.
-       */
-      max_thumbnails?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      output_steering?: Parameters.OutputSteering;
-
-      /**
-       * When true, the highest-scoring thumbnail's timestamp is written to the Mux
-       * asset's thumbnail_time once the job completes, making that frame the asset's
-       * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
-       */
-      update_asset_thumbnail?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, thumbnail scoring
-       * strategy, explicit user intent, audience, campaign style, and scoring
-       * priorities. Scope is enforced; other controls guide model behavior but do not
-       * guarantee exact output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort scoring guidance. Does not change the
-         * output schema.
-         */
-        audience?: string;
-
-        /**
-         * Short description of the campaign/channel thumbnail style to prefer when
-         * supported by the frame.
-         */
-        campaign_style?: string;
-
-        /**
-         * Open-ended description of what the user is explicitly looking for in candidate
-         * thumbnails. Best-effort guidance only.
-         */
-        looking_for?: string;
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Rubric criteria to emphasize in close calls. Best-effort guidance only.
-         */
-        scoring_priorities?: Array<
-          'focus' | 'face_or_action' | 'composition' | 'contrast_color' | 'brand_fit'
-        >;
-
-        /**
-         * Best-effort guidance for what kind of thumbnail candidate should score highest.
-         */
-        selection_strategy?:
-          | 'face_or_action'
-          | 'clean_composition'
-          | 'high_contrast'
-          | 'brand_safe'
-          | 'campaign_thumbnail';
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Selected candidate thumbnails from the original asset timeline, ordered best to
-       * worst by overall quality score.
-       */
-      best_thumbnails: Array<Outputs.BestThumbnail>;
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      asset_updates?: Outputs.AssetUpdates;
-    }
-
-    export namespace Outputs {
-      export interface BestThumbnail {
-        /**
-         * AI-generated description of the frame content.
-         */
-        description: string;
-
-        /**
-         * Overall quality score from 0 to 1.
-         */
-        overall: number;
-
-        /**
-         * Per-category quality scores.
-         */
-        subscores: BestThumbnail.Subscores;
-
-        /**
-         * Absolute frame timestamp in whole milliseconds on the original asset timeline.
-         */
-        timestamp_ms: number;
-
-        /**
-         * Suggested alternative text for the candidate thumbnail image, suitable for use
-         * with the thumbnail URL in an accessible UI.
-         */
-        alt_text?: string;
-      }
-
-      export namespace BestThumbnail {
-        /**
-         * Per-category quality scores.
-         */
-        export interface Subscores {
-          /**
-           * Alignment with brand guidelines score (0-1).
-           */
-          brand_fit: number;
-
-          /**
-           * Visual composition and framing quality score (0-1).
-           */
-          composition: number;
-
-          /**
-           * Color contrast and vibrancy score (0-1).
-           */
-          contrast_color: number;
-
-          /**
-           * Presence of faces or dynamic action score (0-1).
-           */
-          face_or_action: number;
-
-          /**
-           * Sharpness and focus quality score (0-1).
-           */
-          focus: number;
-        }
-      }
-
-      /**
-       * Recorded asset thumbnail update outcome. Omitted when no outcome was recorded,
-       * including historical jobs.
-       */
-      export interface AssetUpdates {
-        thumbnail?: AssetUpdates.Thumbnail;
-      }
-
-      export namespace AssetUpdates {
-        export interface Thumbnail {
-          /**
-           * Outcome of the requested asset thumbnail update.
-           */
-          status: 'updated' | 'failed';
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindKeyMomentsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -8515,7 +8326,7 @@ export interface RobotsJobFindKeyMomentsCancelledWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookFindKeyMomentsJob;
+  data: WebhookFindKeyMomentsJobV0;
 
   type: 'robots.job.find_key_moments.cancelled';
 }
@@ -8525,7 +8336,7 @@ export interface RobotsJobFindKeyMomentsCompletedWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookFindKeyMomentsJob;
+  data: WebhookFindKeyMomentsJobV0;
 
   type: 'robots.job.find_key_moments.completed';
 }
@@ -8535,7 +8346,7 @@ export interface RobotsJobFindKeyMomentsErroredWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookFindKeyMomentsJob;
+  data: WebhookFindKeyMomentsJobV0;
 
   type: 'robots.job.find_key_moments.errored';
 }
@@ -8545,7 +8356,7 @@ export interface RobotsJobFindKeyMomentsPendingWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookFindKeyMomentsJob;
+  data: WebhookFindKeyMomentsJobV0;
 
   type: 'robots.job.find_key_moments.pending';
 }
@@ -8555,7 +8366,7 @@ export interface RobotsJobFindKeyMomentsProcessingWebhookEvent extends Omit<Base
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookFindKeyMomentsJob;
+  data: WebhookFindKeyMomentsJobV0;
 
   type: 'robots.job.find_key_moments.processing';
 }
@@ -8565,461 +8376,9 @@ export interface RobotsJobFindScenesCancelledWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindScenesCancelledWebhookEvent.Data;
+  data: WebhookFindScenesJobV0;
 
   type: 'robots.job.find_scenes.cancelled';
-}
-
-export namespace RobotsJobFindScenesCancelledWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-scenes';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
-       * are not supported.
-       */
-      asset_id: string;
-
-      /**
-       * Preferred transcript language code to analyze when a matching transcript track
-       * is available. Defaults to the first ready transcript track on the asset.
-       */
-      language_code?: string;
-
-      /**
-       * Preferred minimum scene duration in milliseconds for scaffolded transcript
-       * chunking. Defaults to 15000.
-       */
-      min_scene_duration_ms?: number;
-
-      /**
-       * Optional lower-bound hint for scene segmentation. When provided, the model
-       * should avoid collapsing clearly distinct beats below this count when the content
-       * supports more granular scene boundaries.
-       */
-      min_scenes?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      output_steering?: Parameters.OutputSteering;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort model guidance. Does not change the output
-         * schema.
-         */
-        audience?: string;
-
-        /**
-         * Preferred brand or domain terms to use when supported by the source content.
-         */
-        brand_terms?: Array<string>;
-
-        /**
-         * Best-effort guidance for how much detail scene narratives should include.
-         */
-        narration_detail?: 'concise' | 'balanced' | 'detailed';
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
-         */
-        segmentation_strategy?:
-          | 'editorial_beats'
-          | 'topic_changes'
-          | 'visual_transitions'
-          | 'action_progression'
-          | 'instructional_steps';
-
-        /**
-         * Best-effort title style guidance for generated scene titles.
-         */
-        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        topic_taxonomy?: OutputSteering.TopicTaxonomy;
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        export interface TopicTaxonomy {
-          /**
-           * When false, the model should prefer values from the taxonomy. When true,
-           * non-taxonomy values may be used when no taxonomy value applies.
-           */
-          allow_other: boolean;
-
-          /**
-           * Controlled vocabulary values used as best-effort model guidance.
-           */
-          values: Array<TopicTaxonomy.Value>;
-
-          /**
-           * Optional customer-facing name for the taxonomy.
-           */
-          name?: string;
-        }
-
-        export namespace TopicTaxonomy {
-          export interface Value {
-            /**
-             * Canonical taxonomy value to prefer when supported by the source content.
-             */
-            label: string;
-
-            /**
-             * Accepted alternate names that should normalize to the canonical label.
-             */
-            aliases?: Array<string>;
-
-            /**
-             * Short explanation of when this value applies.
-             */
-            description?: string;
-          }
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Ordered scene segments extracted from the original asset timeline using shot
-       * boundaries plus any available transcript context.
-       */
-      scenes: Array<Outputs.Scene>;
-    }
-
-    export namespace Outputs {
-      export interface Scene {
-        /**
-         * Transcript cues that overlap the scene. Can be empty when no usable transcript
-         * is available.
-         */
-        cues: Array<Scene.Cue>;
-
-        /**
-         * Scene end time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * How many timed shot or beat entries make up the scene. When shots is present,
-         * this equals shots.length.
-         */
-        shot_count: number;
-
-        /**
-         * Scene start time in milliseconds.
-         */
-        start_ms: number;
-
-        /**
-         * Short human-readable title for the scene.
-         */
-        title: string;
-
-        /**
-         * One-sentence summary of what is being said during the scene. Present only when
-         * transcript cues are available.
-         */
-        audible_narrative?: string;
-
-        /**
-         * Combined audible and visual narrative for the scene when both signals are
-         * meaningfully available. Omit when no transcript-backed audible signal exists.
-         */
-        blended_narrative?: string;
-
-        /**
-         * Multi-word descriptive phrases capturing key audible concepts in the scene.
-         * Present only when transcript cues are available.
-         */
-        notable_audible_concepts?: Array<string>;
-
-        /**
-         * Scored visual concepts extracted from sampled scene frames. Present for video
-         * assets when visual enrichment succeeds.
-         */
-        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
-
-        /**
-         * Optional ordered shot or beat breakdown within the scene, including timings and
-         * short visual descriptions.
-         */
-        shots?: Array<Scene.Shot>;
-
-        /**
-         * One-sentence summary of what is visually happening during the scene. Present for
-         * video assets when visual enrichment succeeds.
-         */
-        visual_narrative?: string;
-      }
-
-      export namespace Scene {
-        export interface Cue {
-          /**
-           * Cue end time in milliseconds.
-           */
-          end_ms: number;
-
-          /**
-           * Cue start time in milliseconds.
-           */
-          start_ms: number;
-
-          /**
-           * Transcript text for this cue.
-           */
-          text: string;
-        }
-
-        export interface NotableVisualConcept {
-          /**
-           * Multi-word visual concept (2-5 words).
-           */
-          concept: string;
-
-          /**
-           * Brief explanation of why the concept is visually important for the scene.
-           */
-          rationale: string;
-
-          /**
-           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
-           * within the scene.
-           */
-          score: number;
-        }
-
-        export interface Shot {
-          /**
-           * Shot or beat end time in milliseconds within the scene.
-           */
-          end_ms: number;
-
-          /**
-           * Shot or beat start time in milliseconds within the scene.
-           */
-          start_ms: number;
-
-          /**
-           * Short visual description of what happens during this shot or beat.
-           */
-          visual_description: string;
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindScenesCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -9027,461 +8386,9 @@ export interface RobotsJobFindScenesCompletedWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindScenesCompletedWebhookEvent.Data;
+  data: WebhookFindScenesJobV0;
 
   type: 'robots.job.find_scenes.completed';
-}
-
-export namespace RobotsJobFindScenesCompletedWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-scenes';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
-       * are not supported.
-       */
-      asset_id: string;
-
-      /**
-       * Preferred transcript language code to analyze when a matching transcript track
-       * is available. Defaults to the first ready transcript track on the asset.
-       */
-      language_code?: string;
-
-      /**
-       * Preferred minimum scene duration in milliseconds for scaffolded transcript
-       * chunking. Defaults to 15000.
-       */
-      min_scene_duration_ms?: number;
-
-      /**
-       * Optional lower-bound hint for scene segmentation. When provided, the model
-       * should avoid collapsing clearly distinct beats below this count when the content
-       * supports more granular scene boundaries.
-       */
-      min_scenes?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      output_steering?: Parameters.OutputSteering;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort model guidance. Does not change the output
-         * schema.
-         */
-        audience?: string;
-
-        /**
-         * Preferred brand or domain terms to use when supported by the source content.
-         */
-        brand_terms?: Array<string>;
-
-        /**
-         * Best-effort guidance for how much detail scene narratives should include.
-         */
-        narration_detail?: 'concise' | 'balanced' | 'detailed';
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
-         */
-        segmentation_strategy?:
-          | 'editorial_beats'
-          | 'topic_changes'
-          | 'visual_transitions'
-          | 'action_progression'
-          | 'instructional_steps';
-
-        /**
-         * Best-effort title style guidance for generated scene titles.
-         */
-        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        topic_taxonomy?: OutputSteering.TopicTaxonomy;
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        export interface TopicTaxonomy {
-          /**
-           * When false, the model should prefer values from the taxonomy. When true,
-           * non-taxonomy values may be used when no taxonomy value applies.
-           */
-          allow_other: boolean;
-
-          /**
-           * Controlled vocabulary values used as best-effort model guidance.
-           */
-          values: Array<TopicTaxonomy.Value>;
-
-          /**
-           * Optional customer-facing name for the taxonomy.
-           */
-          name?: string;
-        }
-
-        export namespace TopicTaxonomy {
-          export interface Value {
-            /**
-             * Canonical taxonomy value to prefer when supported by the source content.
-             */
-            label: string;
-
-            /**
-             * Accepted alternate names that should normalize to the canonical label.
-             */
-            aliases?: Array<string>;
-
-            /**
-             * Short explanation of when this value applies.
-             */
-            description?: string;
-          }
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Ordered scene segments extracted from the original asset timeline using shot
-       * boundaries plus any available transcript context.
-       */
-      scenes: Array<Outputs.Scene>;
-    }
-
-    export namespace Outputs {
-      export interface Scene {
-        /**
-         * Transcript cues that overlap the scene. Can be empty when no usable transcript
-         * is available.
-         */
-        cues: Array<Scene.Cue>;
-
-        /**
-         * Scene end time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * How many timed shot or beat entries make up the scene. When shots is present,
-         * this equals shots.length.
-         */
-        shot_count: number;
-
-        /**
-         * Scene start time in milliseconds.
-         */
-        start_ms: number;
-
-        /**
-         * Short human-readable title for the scene.
-         */
-        title: string;
-
-        /**
-         * One-sentence summary of what is being said during the scene. Present only when
-         * transcript cues are available.
-         */
-        audible_narrative?: string;
-
-        /**
-         * Combined audible and visual narrative for the scene when both signals are
-         * meaningfully available. Omit when no transcript-backed audible signal exists.
-         */
-        blended_narrative?: string;
-
-        /**
-         * Multi-word descriptive phrases capturing key audible concepts in the scene.
-         * Present only when transcript cues are available.
-         */
-        notable_audible_concepts?: Array<string>;
-
-        /**
-         * Scored visual concepts extracted from sampled scene frames. Present for video
-         * assets when visual enrichment succeeds.
-         */
-        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
-
-        /**
-         * Optional ordered shot or beat breakdown within the scene, including timings and
-         * short visual descriptions.
-         */
-        shots?: Array<Scene.Shot>;
-
-        /**
-         * One-sentence summary of what is visually happening during the scene. Present for
-         * video assets when visual enrichment succeeds.
-         */
-        visual_narrative?: string;
-      }
-
-      export namespace Scene {
-        export interface Cue {
-          /**
-           * Cue end time in milliseconds.
-           */
-          end_ms: number;
-
-          /**
-           * Cue start time in milliseconds.
-           */
-          start_ms: number;
-
-          /**
-           * Transcript text for this cue.
-           */
-          text: string;
-        }
-
-        export interface NotableVisualConcept {
-          /**
-           * Multi-word visual concept (2-5 words).
-           */
-          concept: string;
-
-          /**
-           * Brief explanation of why the concept is visually important for the scene.
-           */
-          rationale: string;
-
-          /**
-           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
-           * within the scene.
-           */
-          score: number;
-        }
-
-        export interface Shot {
-          /**
-           * Shot or beat end time in milliseconds within the scene.
-           */
-          end_ms: number;
-
-          /**
-           * Shot or beat start time in milliseconds within the scene.
-           */
-          start_ms: number;
-
-          /**
-           * Short visual description of what happens during this shot or beat.
-           */
-          visual_description: string;
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindScenesErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -9489,461 +8396,9 @@ export interface RobotsJobFindScenesErroredWebhookEvent extends Omit<BaseWebhook
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindScenesErroredWebhookEvent.Data;
+  data: WebhookFindScenesJobV0;
 
   type: 'robots.job.find_scenes.errored';
-}
-
-export namespace RobotsJobFindScenesErroredWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-scenes';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
-       * are not supported.
-       */
-      asset_id: string;
-
-      /**
-       * Preferred transcript language code to analyze when a matching transcript track
-       * is available. Defaults to the first ready transcript track on the asset.
-       */
-      language_code?: string;
-
-      /**
-       * Preferred minimum scene duration in milliseconds for scaffolded transcript
-       * chunking. Defaults to 15000.
-       */
-      min_scene_duration_ms?: number;
-
-      /**
-       * Optional lower-bound hint for scene segmentation. When provided, the model
-       * should avoid collapsing clearly distinct beats below this count when the content
-       * supports more granular scene boundaries.
-       */
-      min_scenes?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      output_steering?: Parameters.OutputSteering;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort model guidance. Does not change the output
-         * schema.
-         */
-        audience?: string;
-
-        /**
-         * Preferred brand or domain terms to use when supported by the source content.
-         */
-        brand_terms?: Array<string>;
-
-        /**
-         * Best-effort guidance for how much detail scene narratives should include.
-         */
-        narration_detail?: 'concise' | 'balanced' | 'detailed';
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
-         */
-        segmentation_strategy?:
-          | 'editorial_beats'
-          | 'topic_changes'
-          | 'visual_transitions'
-          | 'action_progression'
-          | 'instructional_steps';
-
-        /**
-         * Best-effort title style guidance for generated scene titles.
-         */
-        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        topic_taxonomy?: OutputSteering.TopicTaxonomy;
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        export interface TopicTaxonomy {
-          /**
-           * When false, the model should prefer values from the taxonomy. When true,
-           * non-taxonomy values may be used when no taxonomy value applies.
-           */
-          allow_other: boolean;
-
-          /**
-           * Controlled vocabulary values used as best-effort model guidance.
-           */
-          values: Array<TopicTaxonomy.Value>;
-
-          /**
-           * Optional customer-facing name for the taxonomy.
-           */
-          name?: string;
-        }
-
-        export namespace TopicTaxonomy {
-          export interface Value {
-            /**
-             * Canonical taxonomy value to prefer when supported by the source content.
-             */
-            label: string;
-
-            /**
-             * Accepted alternate names that should normalize to the canonical label.
-             */
-            aliases?: Array<string>;
-
-            /**
-             * Short explanation of when this value applies.
-             */
-            description?: string;
-          }
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Ordered scene segments extracted from the original asset timeline using shot
-       * boundaries plus any available transcript context.
-       */
-      scenes: Array<Outputs.Scene>;
-    }
-
-    export namespace Outputs {
-      export interface Scene {
-        /**
-         * Transcript cues that overlap the scene. Can be empty when no usable transcript
-         * is available.
-         */
-        cues: Array<Scene.Cue>;
-
-        /**
-         * Scene end time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * How many timed shot or beat entries make up the scene. When shots is present,
-         * this equals shots.length.
-         */
-        shot_count: number;
-
-        /**
-         * Scene start time in milliseconds.
-         */
-        start_ms: number;
-
-        /**
-         * Short human-readable title for the scene.
-         */
-        title: string;
-
-        /**
-         * One-sentence summary of what is being said during the scene. Present only when
-         * transcript cues are available.
-         */
-        audible_narrative?: string;
-
-        /**
-         * Combined audible and visual narrative for the scene when both signals are
-         * meaningfully available. Omit when no transcript-backed audible signal exists.
-         */
-        blended_narrative?: string;
-
-        /**
-         * Multi-word descriptive phrases capturing key audible concepts in the scene.
-         * Present only when transcript cues are available.
-         */
-        notable_audible_concepts?: Array<string>;
-
-        /**
-         * Scored visual concepts extracted from sampled scene frames. Present for video
-         * assets when visual enrichment succeeds.
-         */
-        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
-
-        /**
-         * Optional ordered shot or beat breakdown within the scene, including timings and
-         * short visual descriptions.
-         */
-        shots?: Array<Scene.Shot>;
-
-        /**
-         * One-sentence summary of what is visually happening during the scene. Present for
-         * video assets when visual enrichment succeeds.
-         */
-        visual_narrative?: string;
-      }
-
-      export namespace Scene {
-        export interface Cue {
-          /**
-           * Cue end time in milliseconds.
-           */
-          end_ms: number;
-
-          /**
-           * Cue start time in milliseconds.
-           */
-          start_ms: number;
-
-          /**
-           * Transcript text for this cue.
-           */
-          text: string;
-        }
-
-        export interface NotableVisualConcept {
-          /**
-           * Multi-word visual concept (2-5 words).
-           */
-          concept: string;
-
-          /**
-           * Brief explanation of why the concept is visually important for the scene.
-           */
-          rationale: string;
-
-          /**
-           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
-           * within the scene.
-           */
-          score: number;
-        }
-
-        export interface Shot {
-          /**
-           * Shot or beat end time in milliseconds within the scene.
-           */
-          end_ms: number;
-
-          /**
-           * Shot or beat start time in milliseconds within the scene.
-           */
-          start_ms: number;
-
-          /**
-           * Short visual description of what happens during this shot or beat.
-           */
-          visual_description: string;
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindScenesPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -9951,461 +8406,9 @@ export interface RobotsJobFindScenesPendingWebhookEvent extends Omit<BaseWebhook
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindScenesPendingWebhookEvent.Data;
+  data: WebhookFindScenesJobV0;
 
   type: 'robots.job.find_scenes.pending';
-}
-
-export namespace RobotsJobFindScenesPendingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-scenes';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
-       * are not supported.
-       */
-      asset_id: string;
-
-      /**
-       * Preferred transcript language code to analyze when a matching transcript track
-       * is available. Defaults to the first ready transcript track on the asset.
-       */
-      language_code?: string;
-
-      /**
-       * Preferred minimum scene duration in milliseconds for scaffolded transcript
-       * chunking. Defaults to 15000.
-       */
-      min_scene_duration_ms?: number;
-
-      /**
-       * Optional lower-bound hint for scene segmentation. When provided, the model
-       * should avoid collapsing clearly distinct beats below this count when the content
-       * supports more granular scene boundaries.
-       */
-      min_scenes?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      output_steering?: Parameters.OutputSteering;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort model guidance. Does not change the output
-         * schema.
-         */
-        audience?: string;
-
-        /**
-         * Preferred brand or domain terms to use when supported by the source content.
-         */
-        brand_terms?: Array<string>;
-
-        /**
-         * Best-effort guidance for how much detail scene narratives should include.
-         */
-        narration_detail?: 'concise' | 'balanced' | 'detailed';
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
-         */
-        segmentation_strategy?:
-          | 'editorial_beats'
-          | 'topic_changes'
-          | 'visual_transitions'
-          | 'action_progression'
-          | 'instructional_steps';
-
-        /**
-         * Best-effort title style guidance for generated scene titles.
-         */
-        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        topic_taxonomy?: OutputSteering.TopicTaxonomy;
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        export interface TopicTaxonomy {
-          /**
-           * When false, the model should prefer values from the taxonomy. When true,
-           * non-taxonomy values may be used when no taxonomy value applies.
-           */
-          allow_other: boolean;
-
-          /**
-           * Controlled vocabulary values used as best-effort model guidance.
-           */
-          values: Array<TopicTaxonomy.Value>;
-
-          /**
-           * Optional customer-facing name for the taxonomy.
-           */
-          name?: string;
-        }
-
-        export namespace TopicTaxonomy {
-          export interface Value {
-            /**
-             * Canonical taxonomy value to prefer when supported by the source content.
-             */
-            label: string;
-
-            /**
-             * Accepted alternate names that should normalize to the canonical label.
-             */
-            aliases?: Array<string>;
-
-            /**
-             * Short explanation of when this value applies.
-             */
-            description?: string;
-          }
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Ordered scene segments extracted from the original asset timeline using shot
-       * boundaries plus any available transcript context.
-       */
-      scenes: Array<Outputs.Scene>;
-    }
-
-    export namespace Outputs {
-      export interface Scene {
-        /**
-         * Transcript cues that overlap the scene. Can be empty when no usable transcript
-         * is available.
-         */
-        cues: Array<Scene.Cue>;
-
-        /**
-         * Scene end time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * How many timed shot or beat entries make up the scene. When shots is present,
-         * this equals shots.length.
-         */
-        shot_count: number;
-
-        /**
-         * Scene start time in milliseconds.
-         */
-        start_ms: number;
-
-        /**
-         * Short human-readable title for the scene.
-         */
-        title: string;
-
-        /**
-         * One-sentence summary of what is being said during the scene. Present only when
-         * transcript cues are available.
-         */
-        audible_narrative?: string;
-
-        /**
-         * Combined audible and visual narrative for the scene when both signals are
-         * meaningfully available. Omit when no transcript-backed audible signal exists.
-         */
-        blended_narrative?: string;
-
-        /**
-         * Multi-word descriptive phrases capturing key audible concepts in the scene.
-         * Present only when transcript cues are available.
-         */
-        notable_audible_concepts?: Array<string>;
-
-        /**
-         * Scored visual concepts extracted from sampled scene frames. Present for video
-         * assets when visual enrichment succeeds.
-         */
-        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
-
-        /**
-         * Optional ordered shot or beat breakdown within the scene, including timings and
-         * short visual descriptions.
-         */
-        shots?: Array<Scene.Shot>;
-
-        /**
-         * One-sentence summary of what is visually happening during the scene. Present for
-         * video assets when visual enrichment succeeds.
-         */
-        visual_narrative?: string;
-      }
-
-      export namespace Scene {
-        export interface Cue {
-          /**
-           * Cue end time in milliseconds.
-           */
-          end_ms: number;
-
-          /**
-           * Cue start time in milliseconds.
-           */
-          start_ms: number;
-
-          /**
-           * Transcript text for this cue.
-           */
-          text: string;
-        }
-
-        export interface NotableVisualConcept {
-          /**
-           * Multi-word visual concept (2-5 words).
-           */
-          concept: string;
-
-          /**
-           * Brief explanation of why the concept is visually important for the scene.
-           */
-          rationale: string;
-
-          /**
-           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
-           * within the scene.
-           */
-          score: number;
-        }
-
-        export interface Shot {
-          /**
-           * Shot or beat end time in milliseconds within the scene.
-           */
-          end_ms: number;
-
-          /**
-           * Shot or beat start time in milliseconds within the scene.
-           */
-          start_ms: number;
-
-          /**
-           * Short visual description of what happens during this shot or beat.
-           */
-          visual_description: string;
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobFindScenesProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -10413,461 +8416,9 @@ export interface RobotsJobFindScenesProcessingWebhookEvent extends Omit<BaseWebh
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobFindScenesProcessingWebhookEvent.Data;
+  data: WebhookFindScenesJobV0;
 
   type: 'robots.job.find_scenes.processing';
-}
-
-export namespace RobotsJobFindScenesProcessingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'find-scenes';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video asset to segment into scenes. Audio-only assets
-       * are not supported.
-       */
-      asset_id: string;
-
-      /**
-       * Preferred transcript language code to analyze when a matching transcript track
-       * is available. Defaults to the first ready transcript track on the asset.
-       */
-      language_code?: string;
-
-      /**
-       * Preferred minimum scene duration in milliseconds for scaffolded transcript
-       * chunking. Defaults to 15000.
-       */
-      min_scene_duration_ms?: number;
-
-      /**
-       * Optional lower-bound hint for scene segmentation. When provided, the model
-       * should avoid collapsing clearly distinct beats below this count when the content
-       * supports more granular scene boundaries.
-       */
-      min_scenes?: number;
-
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      output_steering?: Parameters.OutputSteering;
-    }
-
-    export namespace Parameters {
-      /**
-       * Curated output_steering controls for execution scope, segmentation strategy,
-       * title style, narration detail, audience, brand terms, and topic taxonomy. Scope
-       * is enforced; other controls guide model behavior but do not guarantee exact
-       * output.
-       */
-      export interface OutputSteering {
-        /**
-         * Intended audience used as best-effort model guidance. Does not change the output
-         * schema.
-         */
-        audience?: string;
-
-        /**
-         * Preferred brand or domain terms to use when supported by the source content.
-         */
-        brand_terms?: Array<string>;
-
-        /**
-         * Best-effort guidance for how much detail scene narratives should include.
-         */
-        narration_detail?: 'concise' | 'balanced' | 'detailed';
-
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        scope?: OutputSteering.Scope;
-
-        /**
-         * Best-effort guidance for the kinds of boundaries the scene finder should prefer.
-         */
-        segmentation_strategy?:
-          | 'editorial_beats'
-          | 'topic_changes'
-          | 'visual_transitions'
-          | 'action_progression'
-          | 'instructional_steps';
-
-        /**
-         * Best-effort title style guidance for generated scene titles.
-         */
-        title_style?: 'descriptive' | 'editorial' | 'search_optimized' | 'accessibility';
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        topic_taxonomy?: OutputSteering.TopicTaxonomy;
-      }
-
-      export namespace OutputSteering {
-        /**
-         * Optional media execution window. Results remain timestamped against the original
-         * media timeline.
-         */
-        export interface Scope {
-          /**
-           * End of the execution window in seconds from the beginning of the media. When
-           * omitted, the window extends to the end.
-           */
-          end_time?: number;
-
-          /**
-           * Start of the execution window in seconds from the beginning of the media. When
-           * omitted, the window starts at the beginning.
-           */
-          start_time?: number;
-        }
-
-        /**
-         * Controlled vocabulary used as best-effort guidance for generated labels and
-         * concepts.
-         */
-        export interface TopicTaxonomy {
-          /**
-           * When false, the model should prefer values from the taxonomy. When true,
-           * non-taxonomy values may be used when no taxonomy value applies.
-           */
-          allow_other: boolean;
-
-          /**
-           * Controlled vocabulary values used as best-effort model guidance.
-           */
-          values: Array<TopicTaxonomy.Value>;
-
-          /**
-           * Optional customer-facing name for the taxonomy.
-           */
-          name?: string;
-        }
-
-        export namespace TopicTaxonomy {
-          export interface Value {
-            /**
-             * Canonical taxonomy value to prefer when supported by the source content.
-             */
-            label: string;
-
-            /**
-             * Accepted alternate names that should normalize to the canonical label.
-             */
-            aliases?: Array<string>;
-
-            /**
-             * Short explanation of when this value applies.
-             */
-            description?: string;
-          }
-        }
-      }
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Ordered scene segments extracted from the original asset timeline using shot
-       * boundaries plus any available transcript context.
-       */
-      scenes: Array<Outputs.Scene>;
-    }
-
-    export namespace Outputs {
-      export interface Scene {
-        /**
-         * Transcript cues that overlap the scene. Can be empty when no usable transcript
-         * is available.
-         */
-        cues: Array<Scene.Cue>;
-
-        /**
-         * Scene end time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * How many timed shot or beat entries make up the scene. When shots is present,
-         * this equals shots.length.
-         */
-        shot_count: number;
-
-        /**
-         * Scene start time in milliseconds.
-         */
-        start_ms: number;
-
-        /**
-         * Short human-readable title for the scene.
-         */
-        title: string;
-
-        /**
-         * One-sentence summary of what is being said during the scene. Present only when
-         * transcript cues are available.
-         */
-        audible_narrative?: string;
-
-        /**
-         * Combined audible and visual narrative for the scene when both signals are
-         * meaningfully available. Omit when no transcript-backed audible signal exists.
-         */
-        blended_narrative?: string;
-
-        /**
-         * Multi-word descriptive phrases capturing key audible concepts in the scene.
-         * Present only when transcript cues are available.
-         */
-        notable_audible_concepts?: Array<string>;
-
-        /**
-         * Scored visual concepts extracted from sampled scene frames. Present for video
-         * assets when visual enrichment succeeds.
-         */
-        notable_visual_concepts?: Array<Scene.NotableVisualConcept>;
-
-        /**
-         * Optional ordered shot or beat breakdown within the scene, including timings and
-         * short visual descriptions.
-         */
-        shots?: Array<Scene.Shot>;
-
-        /**
-         * One-sentence summary of what is visually happening during the scene. Present for
-         * video assets when visual enrichment succeeds.
-         */
-        visual_narrative?: string;
-      }
-
-      export namespace Scene {
-        export interface Cue {
-          /**
-           * Cue end time in milliseconds.
-           */
-          end_ms: number;
-
-          /**
-           * Cue start time in milliseconds.
-           */
-          start_ms: number;
-
-          /**
-           * Transcript text for this cue.
-           */
-          text: string;
-        }
-
-        export interface NotableVisualConcept {
-          /**
-           * Multi-word visual concept (2-5 words).
-           */
-          concept: string;
-
-          /**
-           * Brief explanation of why the concept is visually important for the scene.
-           */
-          rationale: string;
-
-          /**
-           * Salience score from 0.0 to 1.0 measuring how visually important the concept is
-           * within the scene.
-           */
-          score: number;
-        }
-
-        export interface Shot {
-          /**
-           * Shot or beat end time in milliseconds within the scene.
-           */
-          end_ms: number;
-
-          /**
-           * Shot or beat start time in milliseconds within the scene.
-           */
-          start_ms: number;
-
-          /**
-           * Short visual description of what happens during this shot or beat.
-           */
-          visual_description: string;
-        }
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGenerateChaptersCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -10875,7 +8426,7 @@ export interface RobotsJobGenerateChaptersCancelledWebhookEvent extends Omit<Bas
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookGenerateChaptersJob;
+  data: WebhookGenerateChaptersJobV0;
 
   type: 'robots.job.generate_chapters.cancelled';
 }
@@ -10885,7 +8436,7 @@ export interface RobotsJobGenerateChaptersCompletedWebhookEvent extends Omit<Bas
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookGenerateChaptersJob;
+  data: WebhookGenerateChaptersJobV0;
 
   type: 'robots.job.generate_chapters.completed';
 }
@@ -10895,7 +8446,7 @@ export interface RobotsJobGenerateChaptersErroredWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookGenerateChaptersJob;
+  data: WebhookGenerateChaptersJobV0;
 
   type: 'robots.job.generate_chapters.errored';
 }
@@ -10905,7 +8456,7 @@ export interface RobotsJobGenerateChaptersPendingWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookGenerateChaptersJob;
+  data: WebhookGenerateChaptersJobV0;
 
   type: 'robots.job.generate_chapters.pending';
 }
@@ -10915,7 +8466,7 @@ export interface RobotsJobGenerateChaptersProcessingWebhookEvent extends Omit<Ba
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookGenerateChaptersJob;
+  data: WebhookGenerateChaptersJobV0;
 
   type: 'robots.job.generate_chapters.processing';
 }
@@ -10926,241 +8477,9 @@ export interface RobotsJobGenerateEngagementInsightsCancelledWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGenerateEngagementInsightsCancelledWebhookEvent.Data;
+  data: WebhookGenerateEngagementInsightsJobV0;
 
   type: 'robots.job.generate_engagement_insights.cancelled';
-}
-
-export namespace RobotsJobGenerateEngagementInsightsCancelledWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-engagement-insights';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to analyze engagement for.
-       */
-      asset_id: string;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Per-moment engagement insights for identified hotspots.
-       */
-      moment_insights: Array<Outputs.MomentInsight>;
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      overall_insight: Outputs.OverallInsight;
-    }
-
-    export namespace Outputs {
-      export interface MomentInsight {
-        /**
-         * End time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * Normalized engagement score (0-1).
-         */
-        engagement_score: number;
-
-        /**
-         * Primary insight explaining the engagement pattern.
-         */
-        insight: string;
-
-        /**
-         * Start time in milliseconds.
-         */
-        start_ms: number;
-      }
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      export interface OverallInsight {
-        /**
-         * Summary of overall engagement patterns.
-         */
-        summary: string;
-
-        /**
-         * Key trends identified across the video.
-         */
-        trends: Array<string>;
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGenerateEngagementInsightsCompletedWebhookEvent
@@ -11169,241 +8488,9 @@ export interface RobotsJobGenerateEngagementInsightsCompletedWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGenerateEngagementInsightsCompletedWebhookEvent.Data;
+  data: WebhookGenerateEngagementInsightsJobV0;
 
   type: 'robots.job.generate_engagement_insights.completed';
-}
-
-export namespace RobotsJobGenerateEngagementInsightsCompletedWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-engagement-insights';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to analyze engagement for.
-       */
-      asset_id: string;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Per-moment engagement insights for identified hotspots.
-       */
-      moment_insights: Array<Outputs.MomentInsight>;
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      overall_insight: Outputs.OverallInsight;
-    }
-
-    export namespace Outputs {
-      export interface MomentInsight {
-        /**
-         * End time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * Normalized engagement score (0-1).
-         */
-        engagement_score: number;
-
-        /**
-         * Primary insight explaining the engagement pattern.
-         */
-        insight: string;
-
-        /**
-         * Start time in milliseconds.
-         */
-        start_ms: number;
-      }
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      export interface OverallInsight {
-        /**
-         * Summary of overall engagement patterns.
-         */
-        summary: string;
-
-        /**
-         * Key trends identified across the video.
-         */
-        trends: Array<string>;
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGenerateEngagementInsightsErroredWebhookEvent
@@ -11412,241 +8499,9 @@ export interface RobotsJobGenerateEngagementInsightsErroredWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGenerateEngagementInsightsErroredWebhookEvent.Data;
+  data: WebhookGenerateEngagementInsightsJobV0;
 
   type: 'robots.job.generate_engagement_insights.errored';
-}
-
-export namespace RobotsJobGenerateEngagementInsightsErroredWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-engagement-insights';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to analyze engagement for.
-       */
-      asset_id: string;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Per-moment engagement insights for identified hotspots.
-       */
-      moment_insights: Array<Outputs.MomentInsight>;
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      overall_insight: Outputs.OverallInsight;
-    }
-
-    export namespace Outputs {
-      export interface MomentInsight {
-        /**
-         * End time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * Normalized engagement score (0-1).
-         */
-        engagement_score: number;
-
-        /**
-         * Primary insight explaining the engagement pattern.
-         */
-        insight: string;
-
-        /**
-         * Start time in milliseconds.
-         */
-        start_ms: number;
-      }
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      export interface OverallInsight {
-        /**
-         * Summary of overall engagement patterns.
-         */
-        summary: string;
-
-        /**
-         * Key trends identified across the video.
-         */
-        trends: Array<string>;
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGenerateEngagementInsightsPendingWebhookEvent
@@ -11655,241 +8510,9 @@ export interface RobotsJobGenerateEngagementInsightsPendingWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGenerateEngagementInsightsPendingWebhookEvent.Data;
+  data: WebhookGenerateEngagementInsightsJobV0;
 
   type: 'robots.job.generate_engagement_insights.pending';
-}
-
-export namespace RobotsJobGenerateEngagementInsightsPendingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-engagement-insights';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to analyze engagement for.
-       */
-      asset_id: string;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Per-moment engagement insights for identified hotspots.
-       */
-      moment_insights: Array<Outputs.MomentInsight>;
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      overall_insight: Outputs.OverallInsight;
-    }
-
-    export namespace Outputs {
-      export interface MomentInsight {
-        /**
-         * End time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * Normalized engagement score (0-1).
-         */
-        engagement_score: number;
-
-        /**
-         * Primary insight explaining the engagement pattern.
-         */
-        insight: string;
-
-        /**
-         * Start time in milliseconds.
-         */
-        start_ms: number;
-      }
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      export interface OverallInsight {
-        /**
-         * Summary of overall engagement patterns.
-         */
-        summary: string;
-
-        /**
-         * Key trends identified across the video.
-         */
-        trends: Array<string>;
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGenerateEngagementInsightsProcessingWebhookEvent
@@ -11898,241 +8521,9 @@ export interface RobotsJobGenerateEngagementInsightsProcessingWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGenerateEngagementInsightsProcessingWebhookEvent.Data;
+  data: WebhookGenerateEngagementInsightsJobV0;
 
   type: 'robots.job.generate_engagement_insights.processing';
-}
-
-export namespace RobotsJobGenerateEngagementInsightsProcessingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-engagement-insights';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to analyze engagement for.
-       */
-      asset_id: string;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Per-moment engagement insights for identified hotspots.
-       */
-      moment_insights: Array<Outputs.MomentInsight>;
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      overall_insight: Outputs.OverallInsight;
-    }
-
-    export namespace Outputs {
-      export interface MomentInsight {
-        /**
-         * End time in milliseconds.
-         */
-        end_ms: number;
-
-        /**
-         * Normalized engagement score (0-1).
-         */
-        engagement_score: number;
-
-        /**
-         * Primary insight explaining the engagement pattern.
-         */
-        insight: string;
-
-        /**
-         * Start time in milliseconds.
-         */
-        start_ms: number;
-      }
-
-      /**
-       * Overall engagement analysis across the video.
-       */
-      export interface OverallInsight {
-        /**
-         * Summary of overall engagement patterns.
-         */
-        summary: string;
-
-        /**
-         * Key trends identified across the video.
-         */
-        trends: Array<string>;
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent
@@ -12141,343 +8532,9 @@ export interface RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent.Data;
+  data: WebhookGeneratePremiumCaptionsJobV0;
 
   type: 'robots.job.generate_premium_captions.cancelled';
-}
-
-export namespace RobotsJobGeneratePremiumCaptionsCancelledWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-premium-captions';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to caption.
-       */
-      asset_id: string;
-
-      /**
-       * When true, speaker labels are identified and added to each caption cue. Useful
-       * for interviews, podcasts, and multi-speaker content.
-       */
-      include_speakers?: boolean;
-
-      /**
-       * When true, word-level timestamps are exported as a JSON file accessible via
-       * temporary_words_url in the job outputs. The URL expires 7 days after the job
-       * completes. Billed at a higher unit rate.
-       */
-      include_words?: boolean;
-
-      /**
-       * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
-       * biases transcription toward this language — it is not verified against the audio
-       * and does not guarantee the output language. When supplied, language detection is
-       * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted; existing tracks are then checked against
-       * `replace_existing_tracks` after transcription, so a same-language conflict
-       * errors the job at track creation instead of being rejected up front, and a
-       * deleting policy only applies when the detection is confident.
-       */
-      language_code?: string;
-
-      /**
-       * Best-effort list of words or short phrases (proper nouns, product names, jargon)
-       * likely to appear in the audio, used to bias recognition toward correct
-       * spellings. Does not guarantee exact output. Each phrase may contain at most 49
-       * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
-       * \.
-       */
-      phrases?: Array<string>;
-
-      /**
-       * @deprecated Use `replace_existing_tracks` instead.
-       */
-      replace_existing?: boolean;
-
-      /**
-       * What to do when the asset already has a text track in the same language as, or
-       * with the same name as, the new caption track. Defaults to `fail`, which rejects
-       * the request before any work is billed. `replace_all` deletes every such track
-       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
-       * rejects if an uploaded track is in the way. Existing tracks are matched by
-       * language ignoring region subtags, and by name ignoring case, in any status. When
-       * `language_code` is omitted the detected language is used, and tracks are only
-       * deleted when the detection is confident; otherwise the job behaves as `fail`.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
-       * unique on an asset.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to upload the generated SRT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing_tracks`
-       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Resolved language code of the generated captions (may differ from the requested
-       * code when auto-detected).
-       */
-      language_code: string;
-
-      /**
-       * The transcription model's confidence in its automatic language detection, from 0
-       * to 1. Always 1 when language_code was supplied in the request, since detection
-       * is skipped.
-       */
-      auto_language_confidence?: number;
-
-      /**
-       * Language code reported by the transcription model. Only a genuine detection when
-       * language_code was omitted from the request; when a language_code hint was
-       * supplied, detection is skipped and this echoes the requested language.
-       */
-      detected_language?: string;
-
-      /**
-       * @deprecated Use `replaced_tracks` instead.
-       */
-      replaced_track_id?: string;
-
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
-       * after the job completes.
-       */
-      temporary_srt_url?: string;
-
-      /**
-       * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
-       * include_words is true. Expires 7 days after the job completes. Download and
-       * store this file for long-term access.
-       */
-      temporary_words_url?: string;
-
-      /**
-       * Mux text track ID of the newly uploaded caption track. Omitted when
-       * upload_to_mux is false.
-       */
-      track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent
@@ -12486,343 +8543,9 @@ export interface RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent.Data;
+  data: WebhookGeneratePremiumCaptionsJobV0;
 
   type: 'robots.job.generate_premium_captions.completed';
-}
-
-export namespace RobotsJobGeneratePremiumCaptionsCompletedWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-premium-captions';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to caption.
-       */
-      asset_id: string;
-
-      /**
-       * When true, speaker labels are identified and added to each caption cue. Useful
-       * for interviews, podcasts, and multi-speaker content.
-       */
-      include_speakers?: boolean;
-
-      /**
-       * When true, word-level timestamps are exported as a JSON file accessible via
-       * temporary_words_url in the job outputs. The URL expires 7 days after the job
-       * completes. Billed at a higher unit rate.
-       */
-      include_words?: boolean;
-
-      /**
-       * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
-       * biases transcription toward this language — it is not verified against the audio
-       * and does not guarantee the output language. When supplied, language detection is
-       * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted; existing tracks are then checked against
-       * `replace_existing_tracks` after transcription, so a same-language conflict
-       * errors the job at track creation instead of being rejected up front, and a
-       * deleting policy only applies when the detection is confident.
-       */
-      language_code?: string;
-
-      /**
-       * Best-effort list of words or short phrases (proper nouns, product names, jargon)
-       * likely to appear in the audio, used to bias recognition toward correct
-       * spellings. Does not guarantee exact output. Each phrase may contain at most 49
-       * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
-       * \.
-       */
-      phrases?: Array<string>;
-
-      /**
-       * @deprecated Use `replace_existing_tracks` instead.
-       */
-      replace_existing?: boolean;
-
-      /**
-       * What to do when the asset already has a text track in the same language as, or
-       * with the same name as, the new caption track. Defaults to `fail`, which rejects
-       * the request before any work is billed. `replace_all` deletes every such track
-       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
-       * rejects if an uploaded track is in the way. Existing tracks are matched by
-       * language ignoring region subtags, and by name ignoring case, in any status. When
-       * `language_code` is omitted the detected language is used, and tracks are only
-       * deleted when the detection is confident; otherwise the job behaves as `fail`.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
-       * unique on an asset.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to upload the generated SRT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing_tracks`
-       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Resolved language code of the generated captions (may differ from the requested
-       * code when auto-detected).
-       */
-      language_code: string;
-
-      /**
-       * The transcription model's confidence in its automatic language detection, from 0
-       * to 1. Always 1 when language_code was supplied in the request, since detection
-       * is skipped.
-       */
-      auto_language_confidence?: number;
-
-      /**
-       * Language code reported by the transcription model. Only a genuine detection when
-       * language_code was omitted from the request; when a language_code hint was
-       * supplied, detection is skipped and this echoes the requested language.
-       */
-      detected_language?: string;
-
-      /**
-       * @deprecated Use `replaced_tracks` instead.
-       */
-      replaced_track_id?: string;
-
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
-       * after the job completes.
-       */
-      temporary_srt_url?: string;
-
-      /**
-       * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
-       * include_words is true. Expires 7 days after the job completes. Download and
-       * store this file for long-term access.
-       */
-      temporary_words_url?: string;
-
-      /**
-       * Mux text track ID of the newly uploaded caption track. Omitted when
-       * upload_to_mux is false.
-       */
-      track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGeneratePremiumCaptionsErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -12830,343 +8553,9 @@ export interface RobotsJobGeneratePremiumCaptionsErroredWebhookEvent extends Omi
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGeneratePremiumCaptionsErroredWebhookEvent.Data;
+  data: WebhookGeneratePremiumCaptionsJobV0;
 
   type: 'robots.job.generate_premium_captions.errored';
-}
-
-export namespace RobotsJobGeneratePremiumCaptionsErroredWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-premium-captions';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to caption.
-       */
-      asset_id: string;
-
-      /**
-       * When true, speaker labels are identified and added to each caption cue. Useful
-       * for interviews, podcasts, and multi-speaker content.
-       */
-      include_speakers?: boolean;
-
-      /**
-       * When true, word-level timestamps are exported as a JSON file accessible via
-       * temporary_words_url in the job outputs. The URL expires 7 days after the job
-       * completes. Billed at a higher unit rate.
-       */
-      include_words?: boolean;
-
-      /**
-       * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
-       * biases transcription toward this language — it is not verified against the audio
-       * and does not guarantee the output language. When supplied, language detection is
-       * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted; existing tracks are then checked against
-       * `replace_existing_tracks` after transcription, so a same-language conflict
-       * errors the job at track creation instead of being rejected up front, and a
-       * deleting policy only applies when the detection is confident.
-       */
-      language_code?: string;
-
-      /**
-       * Best-effort list of words or short phrases (proper nouns, product names, jargon)
-       * likely to appear in the audio, used to bias recognition toward correct
-       * spellings. Does not guarantee exact output. Each phrase may contain at most 49
-       * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
-       * \.
-       */
-      phrases?: Array<string>;
-
-      /**
-       * @deprecated Use `replace_existing_tracks` instead.
-       */
-      replace_existing?: boolean;
-
-      /**
-       * What to do when the asset already has a text track in the same language as, or
-       * with the same name as, the new caption track. Defaults to `fail`, which rejects
-       * the request before any work is billed. `replace_all` deletes every such track
-       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
-       * rejects if an uploaded track is in the way. Existing tracks are matched by
-       * language ignoring region subtags, and by name ignoring case, in any status. When
-       * `language_code` is omitted the detected language is used, and tracks are only
-       * deleted when the detection is confident; otherwise the job behaves as `fail`.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
-       * unique on an asset.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to upload the generated SRT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing_tracks`
-       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Resolved language code of the generated captions (may differ from the requested
-       * code when auto-detected).
-       */
-      language_code: string;
-
-      /**
-       * The transcription model's confidence in its automatic language detection, from 0
-       * to 1. Always 1 when language_code was supplied in the request, since detection
-       * is skipped.
-       */
-      auto_language_confidence?: number;
-
-      /**
-       * Language code reported by the transcription model. Only a genuine detection when
-       * language_code was omitted from the request; when a language_code hint was
-       * supplied, detection is skipped and this echoes the requested language.
-       */
-      detected_language?: string;
-
-      /**
-       * @deprecated Use `replaced_tracks` instead.
-       */
-      replaced_track_id?: string;
-
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
-       * after the job completes.
-       */
-      temporary_srt_url?: string;
-
-      /**
-       * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
-       * include_words is true. Expires 7 days after the job completes. Download and
-       * store this file for long-term access.
-       */
-      temporary_words_url?: string;
-
-      /**
-       * Mux text track ID of the newly uploaded caption track. Omitted when
-       * upload_to_mux is false.
-       */
-      track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGeneratePremiumCaptionsPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -13174,343 +8563,9 @@ export interface RobotsJobGeneratePremiumCaptionsPendingWebhookEvent extends Omi
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGeneratePremiumCaptionsPendingWebhookEvent.Data;
+  data: WebhookGeneratePremiumCaptionsJobV0;
 
   type: 'robots.job.generate_premium_captions.pending';
-}
-
-export namespace RobotsJobGeneratePremiumCaptionsPendingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-premium-captions';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to caption.
-       */
-      asset_id: string;
-
-      /**
-       * When true, speaker labels are identified and added to each caption cue. Useful
-       * for interviews, podcasts, and multi-speaker content.
-       */
-      include_speakers?: boolean;
-
-      /**
-       * When true, word-level timestamps are exported as a JSON file accessible via
-       * temporary_words_url in the job outputs. The URL expires 7 days after the job
-       * completes. Billed at a higher unit rate.
-       */
-      include_words?: boolean;
-
-      /**
-       * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
-       * biases transcription toward this language — it is not verified against the audio
-       * and does not guarantee the output language. When supplied, language detection is
-       * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted; existing tracks are then checked against
-       * `replace_existing_tracks` after transcription, so a same-language conflict
-       * errors the job at track creation instead of being rejected up front, and a
-       * deleting policy only applies when the detection is confident.
-       */
-      language_code?: string;
-
-      /**
-       * Best-effort list of words or short phrases (proper nouns, product names, jargon)
-       * likely to appear in the audio, used to bias recognition toward correct
-       * spellings. Does not guarantee exact output. Each phrase may contain at most 49
-       * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
-       * \.
-       */
-      phrases?: Array<string>;
-
-      /**
-       * @deprecated Use `replace_existing_tracks` instead.
-       */
-      replace_existing?: boolean;
-
-      /**
-       * What to do when the asset already has a text track in the same language as, or
-       * with the same name as, the new caption track. Defaults to `fail`, which rejects
-       * the request before any work is billed. `replace_all` deletes every such track
-       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
-       * rejects if an uploaded track is in the way. Existing tracks are matched by
-       * language ignoring region subtags, and by name ignoring case, in any status. When
-       * `language_code` is omitted the detected language is used, and tracks are only
-       * deleted when the detection is confident; otherwise the job behaves as `fail`.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
-       * unique on an asset.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to upload the generated SRT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing_tracks`
-       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Resolved language code of the generated captions (may differ from the requested
-       * code when auto-detected).
-       */
-      language_code: string;
-
-      /**
-       * The transcription model's confidence in its automatic language detection, from 0
-       * to 1. Always 1 when language_code was supplied in the request, since detection
-       * is skipped.
-       */
-      auto_language_confidence?: number;
-
-      /**
-       * Language code reported by the transcription model. Only a genuine detection when
-       * language_code was omitted from the request; when a language_code hint was
-       * supplied, detection is skipped and this echoes the requested language.
-       */
-      detected_language?: string;
-
-      /**
-       * @deprecated Use `replaced_tracks` instead.
-       */
-      replaced_track_id?: string;
-
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
-       * after the job completes.
-       */
-      temporary_srt_url?: string;
-
-      /**
-       * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
-       * include_words is true. Expires 7 days after the job completes. Download and
-       * store this file for long-term access.
-       */
-      temporary_words_url?: string;
-
-      /**
-       * Mux text track ID of the newly uploaded caption track. Omitted when
-       * upload_to_mux is false.
-       */
-      track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent
@@ -13519,343 +8574,9 @@ export interface RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent.Data;
+  data: WebhookGeneratePremiumCaptionsJobV0;
 
   type: 'robots.job.generate_premium_captions.processing';
-}
-
-export namespace RobotsJobGeneratePremiumCaptionsProcessingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'generate-premium-captions';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to caption.
-       */
-      asset_id: string;
-
-      /**
-       * When true, speaker labels are identified and added to each caption cue. Useful
-       * for interviews, podcasts, and multi-speaker content.
-       */
-      include_speakers?: boolean;
-
-      /**
-       * When true, word-level timestamps are exported as a JSON file accessible via
-       * temporary_words_url in the job outputs. The URL expires 7 days after the job
-       * completes. Billed at a higher unit rate.
-       */
-      include_words?: boolean;
-
-      /**
-       * BCP 47 language code of the audio (e.g. "en", "es"). A best-effort hint that
-       * biases transcription toward this language — it is not verified against the audio
-       * and does not guarantee the output language. When supplied, language detection is
-       * skipped and the captions are labeled with this code. The language will be
-       * auto-detected when omitted; existing tracks are then checked against
-       * `replace_existing_tracks` after transcription, so a same-language conflict
-       * errors the job at track creation instead of being rejected up front, and a
-       * deleting policy only applies when the detection is confident.
-       */
-      language_code?: string;
-
-      /**
-       * Best-effort list of words or short phrases (proper nouns, product names, jargon)
-       * likely to appear in the audio, used to bias recognition toward correct
-       * spellings. Does not guarantee exact output. Each phrase may contain at most 49
-       * characters and 5 words, and must not contain the characters <, >, {, }, [, ], or
-       * \.
-       */
-      phrases?: Array<string>;
-
-      /**
-       * @deprecated Use `replace_existing_tracks` instead.
-       */
-      replace_existing?: boolean;
-
-      /**
-       * What to do when the asset already has a text track in the same language as, or
-       * with the same name as, the new caption track. Defaults to `fail`, which rejects
-       * the request before any work is billed. `replace_all` deletes every such track
-       * first. `replace_generated` deletes only Mux Video auto-generated tracks and
-       * rejects if an uploaded track is in the way. Existing tracks are matched by
-       * language ignoring region subtags, and by name ignoring case, in any status. When
-       * `language_code` is omitted the detected language is used, and tracks are only
-       * deleted when the detection is confident; otherwise the job behaves as `fail`.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Custom name for the uploaded Mux text track. Defaults to "{Language}
-       * (Generated)", e.g. "English (Generated)". Mux requires text track names to be
-       * unique on an asset.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to upload the generated SRT to the Mux asset as a new text track.
-       * Defaults to true. When false, no track is created and `replace_existing_tracks`
-       * must be `fail`; the generated SRT remains available via `temporary_srt_url`.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Resolved language code of the generated captions (may differ from the requested
-       * code when auto-detected).
-       */
-      language_code: string;
-
-      /**
-       * The transcription model's confidence in its automatic language detection, from 0
-       * to 1. Always 1 when language_code was supplied in the request, since detection
-       * is skipped.
-       */
-      auto_language_confidence?: number;
-
-      /**
-       * Language code reported by the transcription model. Only a genuine detection when
-       * language_code was omitted from the request; when a language_code hint was
-       * supplied, detection is skipped and this echoes the requested language.
-       */
-      detected_language?: string;
-
-      /**
-       * @deprecated Use `replaced_tracks` instead.
-       */
-      replaced_track_id?: string;
-
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the generated SRT file. Expires 7 days
-       * after the job completes.
-       */
-      temporary_srt_url?: string;
-
-      /**
-       * Temporary pre-signed URL to download the word-level timestamp JSON. Present when
-       * include_words is true. Expires 7 days after the job completes. Download and
-       * store this file for long-term access.
-       */
-      temporary_words_url?: string;
-
-      /**
-       * Mux text track ID of the newly uploaded caption track. Omitted when
-       * upload_to_mux is false.
-       */
-      track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobModerateCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -13863,7 +8584,7 @@ export interface RobotsJobModerateCancelledWebhookEvent extends Omit<BaseWebhook
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookModerateJob;
+  data: WebhookModerateJobV0;
 
   type: 'robots.job.moderate.cancelled';
 }
@@ -13873,7 +8594,7 @@ export interface RobotsJobModerateCompletedWebhookEvent extends Omit<BaseWebhook
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookModerateJob;
+  data: WebhookModerateJobV0;
 
   type: 'robots.job.moderate.completed';
 }
@@ -13883,7 +8604,7 @@ export interface RobotsJobModerateErroredWebhookEvent extends Omit<BaseWebhookEv
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookModerateJob;
+  data: WebhookModerateJobV0;
 
   type: 'robots.job.moderate.errored';
 }
@@ -13893,7 +8614,7 @@ export interface RobotsJobModeratePendingWebhookEvent extends Omit<BaseWebhookEv
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookModerateJob;
+  data: WebhookModerateJobV0;
 
   type: 'robots.job.moderate.pending';
 }
@@ -13903,7 +8624,7 @@ export interface RobotsJobModerateProcessingWebhookEvent extends Omit<BaseWebhoo
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookModerateJob;
+  data: WebhookModerateJobV0;
 
   type: 'robots.job.moderate.processing';
 }
@@ -13913,7 +8634,7 @@ export interface RobotsJobSummarizeCancelledWebhookEvent extends Omit<BaseWebhoo
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookSummarizeJob;
+  data: WebhookSummarizeJobV0;
 
   type: 'robots.job.summarize.cancelled';
 }
@@ -13923,7 +8644,7 @@ export interface RobotsJobSummarizeCompletedWebhookEvent extends Omit<BaseWebhoo
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookSummarizeJob;
+  data: WebhookSummarizeJobV0;
 
   type: 'robots.job.summarize.completed';
 }
@@ -13933,7 +8654,7 @@ export interface RobotsJobSummarizeErroredWebhookEvent extends Omit<BaseWebhookE
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookSummarizeJob;
+  data: WebhookSummarizeJobV0;
 
   type: 'robots.job.summarize.errored';
 }
@@ -13943,7 +8664,7 @@ export interface RobotsJobSummarizePendingWebhookEvent extends Omit<BaseWebhookE
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookSummarizeJob;
+  data: WebhookSummarizeJobV0;
 
   type: 'robots.job.summarize.pending';
 }
@@ -13953,7 +8674,7 @@ export interface RobotsJobSummarizeProcessingWebhookEvent extends Omit<BaseWebho
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookSummarizeJob;
+  data: WebhookSummarizeJobV0;
 
   type: 'robots.job.summarize.processing';
 }
@@ -13963,278 +8684,9 @@ export interface RobotsJobTranslateAudioCancelledWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobTranslateAudioCancelledWebhookEvent.Data;
+  data: WebhookTranslateAudioJobV0;
 
   type: 'robots.job.translate_audio.cancelled';
-}
-
-export namespace RobotsJobTranslateAudioCancelledWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'translate-audio';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to translate.
-       */
-      asset_id: string;
-
-      /**
-       * BCP 47 language code for the target translation language (e.g. "es", "fr",
-       * "ja").
-       */
-      to_language_code: string;
-
-      /**
-       * What to do when the asset already has an audio track in the same language as, or
-       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
-       * the request before any dubbing is billed. `replace_all` deletes every such track
-       * first. Audio tracks are never auto-generated by Mux Video, so
-       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
-       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
-       * Existing tracks are matched by language ignoring region subtags, and by name
-       * ignoring case, in any status.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
-       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
-       * asset, and an existing track with this name is handled according to
-       * `replace_existing_tracks`.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-       * the job completes.
-       */
-      temporary_audio_url?: string;
-
-      /**
-       * Mux audio track ID, present when upload_to_mux is true.
-       */
-      uploaded_track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobTranslateAudioCompletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -14242,278 +8694,9 @@ export interface RobotsJobTranslateAudioCompletedWebhookEvent extends Omit<BaseW
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobTranslateAudioCompletedWebhookEvent.Data;
+  data: WebhookTranslateAudioJobV0;
 
   type: 'robots.job.translate_audio.completed';
-}
-
-export namespace RobotsJobTranslateAudioCompletedWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'translate-audio';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to translate.
-       */
-      asset_id: string;
-
-      /**
-       * BCP 47 language code for the target translation language (e.g. "es", "fr",
-       * "ja").
-       */
-      to_language_code: string;
-
-      /**
-       * What to do when the asset already has an audio track in the same language as, or
-       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
-       * the request before any dubbing is billed. `replace_all` deletes every such track
-       * first. Audio tracks are never auto-generated by Mux Video, so
-       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
-       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
-       * Existing tracks are matched by language ignoring region subtags, and by name
-       * ignoring case, in any status.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
-       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
-       * asset, and an existing track with this name is handled according to
-       * `replace_existing_tracks`.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-       * the job completes.
-       */
-      temporary_audio_url?: string;
-
-      /**
-       * Mux audio track ID, present when upload_to_mux is true.
-       */
-      uploaded_track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobTranslateAudioErroredWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -14521,278 +8704,9 @@ export interface RobotsJobTranslateAudioErroredWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobTranslateAudioErroredWebhookEvent.Data;
+  data: WebhookTranslateAudioJobV0;
 
   type: 'robots.job.translate_audio.errored';
-}
-
-export namespace RobotsJobTranslateAudioErroredWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'translate-audio';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to translate.
-       */
-      asset_id: string;
-
-      /**
-       * BCP 47 language code for the target translation language (e.g. "es", "fr",
-       * "ja").
-       */
-      to_language_code: string;
-
-      /**
-       * What to do when the asset already has an audio track in the same language as, or
-       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
-       * the request before any dubbing is billed. `replace_all` deletes every such track
-       * first. Audio tracks are never auto-generated by Mux Video, so
-       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
-       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
-       * Existing tracks are matched by language ignoring region subtags, and by name
-       * ignoring case, in any status.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
-       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
-       * asset, and an existing track with this name is handled according to
-       * `replace_existing_tracks`.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-       * the job completes.
-       */
-      temporary_audio_url?: string;
-
-      /**
-       * Mux audio track ID, present when upload_to_mux is true.
-       */
-      uploaded_track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobTranslateAudioPendingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -14800,278 +8714,9 @@ export interface RobotsJobTranslateAudioPendingWebhookEvent extends Omit<BaseWeb
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobTranslateAudioPendingWebhookEvent.Data;
+  data: WebhookTranslateAudioJobV0;
 
   type: 'robots.job.translate_audio.pending';
-}
-
-export namespace RobotsJobTranslateAudioPendingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'translate-audio';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to translate.
-       */
-      asset_id: string;
-
-      /**
-       * BCP 47 language code for the target translation language (e.g. "es", "fr",
-       * "ja").
-       */
-      to_language_code: string;
-
-      /**
-       * What to do when the asset already has an audio track in the same language as, or
-       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
-       * the request before any dubbing is billed. `replace_all` deletes every such track
-       * first. Audio tracks are never auto-generated by Mux Video, so
-       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
-       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
-       * Existing tracks are matched by language ignoring region subtags, and by name
-       * ignoring case, in any status.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
-       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
-       * asset, and an existing track with this name is handled according to
-       * `replace_existing_tracks`.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-       * the job completes.
-       */
-      temporary_audio_url?: string;
-
-      /**
-       * Mux audio track ID, present when upload_to_mux is true.
-       */
-      uploaded_track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobTranslateAudioProcessingWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -15079,278 +8724,9 @@ export interface RobotsJobTranslateAudioProcessingWebhookEvent extends Omit<Base
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: RobotsJobTranslateAudioProcessingWebhookEvent.Data;
+  data: WebhookTranslateAudioJobV0;
 
   type: 'robots.job.translate_audio.processing';
-}
-
-export namespace RobotsJobTranslateAudioProcessingWebhookEvent {
-  /**
-   * Job object delivered in the Mux webhook event's data field. The event type
-   * identifies the workflow and transition.
-   */
-  export interface Data {
-    /**
-     * Unique job identifier.
-     */
-    id: string;
-
-    /**
-     * Unix timestamp (seconds) when the job was created.
-     */
-    created_at: number;
-
-    parameters: Data.Parameters;
-
-    /**
-     * Current job status.
-     */
-    status: 'pending' | 'processing' | 'completed' | 'errored' | 'cancelled';
-
-    /**
-     * Number of Mux AI units consumed by this job.
-     */
-    units_consumed: number;
-
-    /**
-     * Unix timestamp (seconds) of the job's last state transition (e.g. when it
-     * started processing or reached a terminal state).
-     */
-    updated_at: number;
-
-    workflow: 'translate-audio';
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    directive?: Data.Directive;
-
-    /**
-     * Error details. Present when status is 'errored'.
-     */
-    errors?: Array<Data.Error>;
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    outputs?: Data.Outputs;
-
-    /**
-     * Arbitrary string supplied at creation, returned as-is.
-     */
-    passthrough?: string;
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    resources?: Data.Resources;
-  }
-
-  export namespace Data {
-    export interface Parameters {
-      /**
-       * The Mux asset ID of the video to translate.
-       */
-      asset_id: string;
-
-      /**
-       * BCP 47 language code for the target translation language (e.g. "es", "fr",
-       * "ja").
-       */
-      to_language_code: string;
-
-      /**
-       * What to do when the asset already has an audio track in the same language as, or
-       * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
-       * the request before any dubbing is billed. `replace_all` deletes every such track
-       * first. Audio tracks are never auto-generated by Mux Video, so
-       * `replace_generated` behaves as `fail` here. The asset's primary audio track is
-       * never deleted. Any value other than `fail` requires `upload_to_mux` to be true.
-       * Existing tracks are matched by language ignoring region subtags, and by name
-       * ignoring case, in any status.
-       */
-      replace_existing_tracks?: 'fail' | 'replace_all' | 'replace_generated';
-
-      /**
-       * Name for the dubbed Mux audio track. Defaults to "{Language} (Auto-dubbed)",
-       * e.g. "Spanish (Auto-dubbed)". Mux requires audio track names to be unique on an
-       * asset, and an existing track with this name is handled according to
-       * `replace_existing_tracks`.
-       */
-      track_name?: string;
-
-      /**
-       * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
-       */
-      upload_to_mux?: boolean;
-    }
-
-    /**
-     * The directive run that dispatched this job. Absent for jobs created via direct
-     * API POST.
-     */
-    export interface Directive {
-      /**
-       * ID of the directive that dispatched this job.
-       */
-      id: string;
-
-      /**
-       * ID of the specific directive run that dispatched this job.
-       */
-      run_id: string;
-    }
-
-    export interface Error {
-      /**
-       * Human-readable public error message.
-       */
-      message: string;
-
-      /**
-       * Stable public error category identifier.
-       */
-      type: string;
-
-      /**
-       * Whether retrying this job may resolve the error.
-       */
-      retryable?: boolean;
-    }
-
-    /**
-     * Workflow results. Present when status is 'completed'.
-     */
-    export interface Outputs {
-      /**
-       * Every track deleted before the new track was created. Present when
-       * `replace_existing_tracks` was a deleting policy and at least one track was
-       * removed.
-       */
-      replaced_tracks?: Array<Outputs.ReplacedTrack>;
-
-      /**
-       * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-       * the job completes.
-       */
-      temporary_audio_url?: string;
-
-      /**
-       * Mux audio track ID, present when upload_to_mux is true.
-       */
-      uploaded_track_id?: string;
-    }
-
-    export namespace Outputs {
-      export interface ReplacedTrack {
-        /**
-         * Mux track ID of the deleted track.
-         */
-        id: string;
-
-        /**
-         * Language code of the deleted track.
-         */
-        language_code?: string;
-
-        /**
-         * Name of the deleted track.
-         */
-        name?: string;
-
-        /**
-         * `passthrough` value the deleted track carried, if any.
-         */
-        passthrough?: string;
-
-        /**
-         * Mux `text_source` of the deleted track, e.g. `uploaded` or `generated_vod`.
-         * Absent for audio tracks.
-         */
-        text_source?: string;
-
-        /**
-         * Mux track type of the deleted track.
-         */
-        type?: 'text' | 'audio';
-      }
-    }
-
-    /**
-     * Related Mux resources linked to this job.
-     */
-    export interface Resources {
-      /**
-       * Mux assets associated with this job.
-       */
-      assets: Array<Resources.Asset>;
-    }
-
-    export namespace Resources {
-      export interface Asset {
-        /**
-         * Mux asset ID.
-         */
-        id: string;
-
-        /**
-         * Hypermedia links for the asset.
-         */
-        _links: Asset._Links;
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        meta?: Asset.Meta;
-
-        /**
-         * Passthrough string from the Mux asset.
-         */
-        passthrough?: string;
-      }
-
-      export namespace Asset {
-        /**
-         * Hypermedia links for the asset.
-         */
-        export interface _Links {
-          self: _Links.Self;
-        }
-
-        export namespace _Links {
-          export interface Self {
-            /**
-             * URL to the Mux asset resource.
-             */
-            href: string;
-          }
-        }
-
-        /**
-         * Mux asset metadata, if available.
-         */
-        export interface Meta {
-          /**
-           * Creator identifier from Mux metadata.
-           */
-          creator_id?: string;
-
-          /**
-           * External identifier from Mux metadata.
-           */
-          external_id?: string;
-
-          /**
-           * Asset title from Mux metadata.
-           */
-          title?: string;
-        }
-      }
-    }
-  }
 }
 
 export interface RobotsJobTranslateCaptionsCancelledWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
@@ -15358,7 +8734,7 @@ export interface RobotsJobTranslateCaptionsCancelledWebhookEvent extends Omit<Ba
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookTranslateCaptionsJob;
+  data: WebhookTranslateCaptionsJobV0;
 
   type: 'robots.job.translate_captions.cancelled';
 }
@@ -15368,7 +8744,7 @@ export interface RobotsJobTranslateCaptionsCompletedWebhookEvent extends Omit<Ba
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookTranslateCaptionsJob;
+  data: WebhookTranslateCaptionsJobV0;
 
   type: 'robots.job.translate_captions.completed';
 }
@@ -15378,7 +8754,7 @@ export interface RobotsJobTranslateCaptionsErroredWebhookEvent extends Omit<Base
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookTranslateCaptionsJob;
+  data: WebhookTranslateCaptionsJobV0;
 
   type: 'robots.job.translate_captions.errored';
 }
@@ -15388,7 +8764,7 @@ export interface RobotsJobTranslateCaptionsPendingWebhookEvent extends Omit<Base
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookTranslateCaptionsJob;
+  data: WebhookTranslateCaptionsJobV0;
 
   type: 'robots.job.translate_captions.pending';
 }
@@ -15398,7 +8774,7 @@ export interface RobotsJobTranslateCaptionsProcessingWebhookEvent extends Omit<B
    * Job object delivered in the Mux webhook event's data field. The event type
    * identifies the workflow and transition.
    */
-  data: WebhookTranslateCaptionsJob;
+  data: WebhookTranslateCaptionsJobV0;
 
   type: 'robots.job.translate_captions.processing';
 }
@@ -15525,22 +8901,27 @@ export type UnwrapWebhookEvent =
 export declare namespace Webhooks {
   export {
     type BaseWebhookEvent as BaseWebhookEvent,
-    type WebhookAskQuestionsJob as WebhookAskQuestionsJob,
+    type WebhookAskQuestionsJobV0 as WebhookAskQuestionsJobV0,
     type WebhookAsset as WebhookAsset,
     type WebhookAssetEmbeddedTrack as WebhookAssetEmbeddedTrack,
     type WebhookAssetStaticRendition as WebhookAssetStaticRendition,
     type WebhookAssetTrack as WebhookAssetTrack,
     type WebhookAssetWarning as WebhookAssetWarning,
     type WebhookDirectUpload as WebhookDirectUpload,
-    type WebhookEditCaptionsJob as WebhookEditCaptionsJob,
-    type WebhookFindKeyMomentsJob as WebhookFindKeyMomentsJob,
-    type WebhookGenerateChaptersJob as WebhookGenerateChaptersJob,
+    type WebhookEditCaptionsJobV0 as WebhookEditCaptionsJobV0,
+    type WebhookFindBestThumbnailsJobV0 as WebhookFindBestThumbnailsJobV0,
+    type WebhookFindKeyMomentsJobV0 as WebhookFindKeyMomentsJobV0,
+    type WebhookFindScenesJobV0 as WebhookFindScenesJobV0,
+    type WebhookGenerateChaptersJobV0 as WebhookGenerateChaptersJobV0,
+    type WebhookGenerateEngagementInsightsJobV0 as WebhookGenerateEngagementInsightsJobV0,
+    type WebhookGeneratePremiumCaptionsJobV0 as WebhookGeneratePremiumCaptionsJobV0,
     type WebhookLiveStream as WebhookLiveStream,
     type WebhookLiveStreamWarning as WebhookLiveStreamWarning,
-    type WebhookModerateJob as WebhookModerateJob,
+    type WebhookModerateJobV0 as WebhookModerateJobV0,
     type WebhookSimulcastTarget as WebhookSimulcastTarget,
-    type WebhookSummarizeJob as WebhookSummarizeJob,
-    type WebhookTranslateCaptionsJob as WebhookTranslateCaptionsJob,
+    type WebhookSummarizeJobV0 as WebhookSummarizeJobV0,
+    type WebhookTranslateAudioJobV0 as WebhookTranslateAudioJobV0,
+    type WebhookTranslateCaptionsJobV0 as WebhookTranslateCaptionsJobV0,
     type WebhookVideoDeliveryHighTraffic as WebhookVideoDeliveryHighTraffic,
     type VideoAssetCreatedWebhookEvent as VideoAssetCreatedWebhookEvent,
     type VideoAssetReadyWebhookEvent as VideoAssetReadyWebhookEvent,
