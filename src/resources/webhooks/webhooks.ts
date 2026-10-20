@@ -1361,7 +1361,7 @@ export interface WebhookAssetStaticRendition {
   /**
    * The file size in bytes
    */
-  filesize?: string;
+  filesize?: number;
 
   /**
    * The height of the static rendition's file in pixels
@@ -1433,7 +1433,7 @@ export interface WebhookAssetStaticRendition {
    * - `errored` indicates the static rendition cannot be generated. For example, an
    *   asset could not be ingested
    */
-  status?: 'ready' | 'preparing' | 'skipped' | 'errored';
+  status?: 'ready' | 'preparing' | 'skipped' | 'errored' | 'deleted';
 
   /**
    * Indicates the static rendition type of this specific MP4 version of this asset.
@@ -1654,8 +1654,16 @@ export interface WebhookAssetWarning {
 
 export namespace WebhookAssetWarning {
   export interface Warning {
+    /**
+     * Human-readable detail for the warning.
+     */
     message?: string;
 
+    /**
+     * Short identifier for the warning, e.g. `custom_slate_unavailable`,
+     * `custom_slate_invalid`, `custom_slate_error`, `embedded_subtitles_unsupported`.
+     * New values may be added.
+     */
     type?: string;
   }
 }
@@ -5446,8 +5454,16 @@ export interface WebhookLiveStreamWarning {
 
 export namespace WebhookLiveStreamWarning {
   export interface Warning {
+    /**
+     * Human-readable detail for the warning.
+     */
     message?: string;
 
+    /**
+     * Short identifier for the warning, e.g. `custom_slate_unavailable`,
+     * `custom_slate_invalid`, `custom_slate_error`, `embedded_subtitles_unsupported`.
+     * New values may be added.
+     */
     type?: string;
   }
 }
