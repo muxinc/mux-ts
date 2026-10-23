@@ -20,6 +20,20 @@ Methods:
 - <code title="get /robots/v0/jobs">client.robotsV0.jobs.<a href="./src/resources/robots-v0/jobs/jobs.ts">list</a>({ ...params }) -> JobSummariesBasePage</code>
 - <code title="post /robots/v0/jobs/{JOB_ID}/cancel">client.robotsV0.jobs.<a href="./src/resources/robots-v0/jobs/jobs.ts">cancel</a>(jobID) -> JobSummary</code>
 
+### AnalyzeStructure
+
+Types:
+
+- <code><a href="./src/resources/robots-v0/jobs/analyze-structure.ts">AnalyzeStructureJob</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/analyze-structure.ts">AnalyzeStructureJobOutputs</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/analyze-structure.ts">AnalyzeStructureJobParameters</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/analyze-structure.ts">AnalyzeStructureOutputSteering</a></code>
+
+Methods:
+
+- <code title="post /robots/v0/jobs/analyze-structure">client.robotsV0.jobs.analyzeStructure.<a href="./src/resources/robots-v0/jobs/analyze-structure.ts">create</a>({ ...params }) -> AnalyzeStructureJob</code>
+- <code title="get /robots/v0/jobs/analyze-structure/{JOB_ID}">client.robotsV0.jobs.analyzeStructure.<a href="./src/resources/robots-v0/jobs/analyze-structure.ts">retrieve</a>(jobID) -> AnalyzeStructureJob</code>
+
 ### AskQuestions
 
 Types:
@@ -147,6 +161,20 @@ Methods:
 
 - <code title="post /robots/v0/jobs/find-scenes">client.robotsV0.jobs.findScenes.<a href="./src/resources/robots-v0/jobs/find-scenes.ts">create</a>({ ...params }) -> FindScenesJob</code>
 - <code title="get /robots/v0/jobs/find-scenes/{JOB_ID}">client.robotsV0.jobs.findScenes.<a href="./src/resources/robots-v0/jobs/find-scenes.ts">retrieve</a>(jobID) -> FindScenesJob</code>
+
+### GenerateContextualText
+
+Types:
+
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJob</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJobOutputs</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJobParameters</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextOutputSteering</a></code>
+
+Methods:
+
+- <code title="post /robots/v0/jobs/generate-contextual-text">client.robotsV0.jobs.generateContextualText.<a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">create</a>({ ...params }) -> GenerateContextualTextJob</code>
+- <code title="get /robots/v0/jobs/generate-contextual-text/{JOB_ID}">client.robotsV0.jobs.generateContextualText.<a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">retrieve</a>(jobID) -> GenerateContextualTextJob</code>
 
 ### GenerateEngagementInsights
 

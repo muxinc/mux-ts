@@ -143,12 +143,14 @@ export interface ModerateJobOutputs {
   exceeds_threshold: boolean;
 
   /**
-   * Highest scores across all thumbnails for each category.
+   * Highest scores across all thumbnails and transcript windows for each category.
    */
   max_scores: ModerateJobOutputs.MaxScores;
 
   /**
-   * Per-thumbnail moderation scores.
+   * Per-thumbnail moderation scores. Empty when thumbnail_moderation.status is
+   * "skipped", except for audio-only jobs created before transcript moderation
+   * existed: their transcript window scores appear here without a time.
    */
   thumbnail_scores: Array<ModerateJobOutputs.ThumbnailScore>;
 
@@ -157,11 +159,30 @@ export interface ModerateJobOutputs {
    * action taken and which playback IDs were deleted.
    */
   flagged_action?: ModerateJobOutputs.FlaggedAction;
+
+  /**
+   * Audit status for thumbnail moderation on this asset. Absent on jobs created
+   * before transcript moderation existed.
+   */
+  thumbnail_moderation?: ModerateJobOutputs.ThumbnailModeration;
+
+  /**
+   * Audit status for transcript moderation on this asset. Absent on jobs created
+   * before transcript moderation existed.
+   */
+  transcript_moderation?: ModerateJobOutputs.TranscriptModeration;
+
+  /**
+   * Per-time-window transcript moderation scores. Empty when
+   * transcript_moderation.status is "skipped". Absent on jobs created before
+   * transcript moderation existed.
+   */
+  transcript_scores?: Array<ModerateJobOutputs.TranscriptScore>;
 }
 
 export namespace ModerateJobOutputs {
   /**
-   * Highest scores across all thumbnails for each category.
+   * Highest scores across all thumbnails and transcript windows for each category.
    */
   export interface MaxScores {
     sexual: number;
@@ -181,8 +202,7 @@ export namespace ModerateJobOutputs {
     violence: number;
 
     /**
-     * Time in seconds of the thumbnail within the video. Absent for transcript
-     * moderation.
+     * Time in seconds of the thumbnail within the video.
      */
     time?: number;
   }
@@ -199,6 +219,78 @@ export namespace ModerateJobOutputs {
      */
     deleted_playback_ids: Array<string>;
   }
+
+  /**
+   * Audit status for thumbnail moderation on this asset. Absent on jobs created
+   * before transcript moderation existed.
+   */
+  export interface ThumbnailModeration {
+    /**
+     * "completed" if at least one thumbnail was moderated, "skipped" if nothing could
+     * be moderated on this surface (see skip_reason), "failed" if every thumbnail
+     * errored so this surface contributed no scores.
+     */
+    status: 'completed' | 'skipped' | 'failed';
+
+    /**
+     * Present only when status is "skipped". Human-readable explanation of
+     * skip_reason.
+     */
+    skip_message?: string;
+
+    /**
+     * Present only when status is "skipped". Machine-readable reason nothing was
+     * moderated.
+     */
+    skip_reason?: 'no_video_track' | 'no_video_in_scope';
+  }
+
+  /**
+   * Audit status for transcript moderation on this asset. Absent on jobs created
+   * before transcript moderation existed.
+   */
+  export interface TranscriptModeration {
+    /**
+     * "completed" if at least one transcript window was moderated, "skipped" if
+     * nothing could be moderated on this surface (see skip_reason), "failed" if every
+     * transcript window errored so this surface contributed no scores.
+     */
+    status: 'completed' | 'skipped' | 'failed';
+
+    /**
+     * Present only when status is "skipped". Human-readable explanation of
+     * skip_reason.
+     */
+    skip_message?: string;
+
+    /**
+     * Present only when status is "skipped". Machine-readable reason nothing was
+     * moderated.
+     */
+    skip_reason?: 'no_ready_text_track' | 'no_cues';
+  }
+
+  export interface TranscriptScore {
+    /**
+     * Time in seconds where the moderated transcript window ends.
+     */
+    end_time: number;
+
+    /**
+     * Sexual content score from 0.0 to 1.0.
+     */
+    sexual: number;
+
+    /**
+     * Time in seconds where the moderated transcript window starts.
+     */
+    start_time: number;
+
+    /**
+     * Violence content score from 0.0 to 1.0.
+     */
+    violence: number;
+  }
 }
 
 export interface ModerateJobParameters {
@@ -208,9 +300,8 @@ export interface ModerateJobParameters {
   asset_id: string;
 
   /**
-   * BCP 47 language code for transcript analysis. Used only for audio-only assets;
-   * ignored for video assets with visual content. Defaults to "en" for audio-only
-   * transcript analysis.
+   * BCP 47 language code of the caption track to moderate. When omitted, an English
+   * subtitles track is preferred and otherwise the first ready text track is used.
    */
   language_code?: string;
 

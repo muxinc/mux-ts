@@ -1,6 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../../core/resource';
+import * as AnalyzeStructureAPI from './analyze-structure';
+import {
+  AnalyzeStructure,
+  AnalyzeStructureCreateParams,
+  AnalyzeStructureJob,
+  AnalyzeStructureJobOutputs,
+  AnalyzeStructureJobParameters,
+  AnalyzeStructureOutputSteering,
+} from './analyze-structure';
 import * as AskQuestionsAPI from './ask-questions';
 import {
   AskQuestionCreateParams,
@@ -55,6 +64,15 @@ import {
   GenerateChaptersJobParameters,
   GenerateChaptersOutputSteering,
 } from './generate-chapters';
+import * as GenerateContextualTextAPI from './generate-contextual-text';
+import {
+  GenerateContextualText,
+  GenerateContextualTextCreateParams,
+  GenerateContextualTextJob,
+  GenerateContextualTextJobOutputs,
+  GenerateContextualTextJobParameters,
+  GenerateContextualTextOutputSteering,
+} from './generate-contextual-text';
 import * as GenerateEngagementInsightsAPI from './generate-engagement-insights';
 import {
   GenerateEngagementInsightCreateParams,
@@ -119,6 +137,9 @@ import { path } from '../../../internal/utils/path';
  * List and cancel jobs across all workflows.
  */
 export class Jobs extends APIResource {
+  analyzeStructure: AnalyzeStructureAPI.AnalyzeStructure = new AnalyzeStructureAPI.AnalyzeStructure(
+    this._client,
+  );
   askQuestions: AskQuestionsAPI.AskQuestions = new AskQuestionsAPI.AskQuestions(this._client);
   generateChapters: GenerateChaptersAPI.GenerateChapters = new GenerateChaptersAPI.GenerateChapters(
     this._client,
@@ -134,6 +155,8 @@ export class Jobs extends APIResource {
     this._client,
   );
   findScenes: FindScenesAPI.FindScenes = new FindScenesAPI.FindScenes(this._client);
+  generateContextualText: GenerateContextualTextAPI.GenerateContextualText =
+    new GenerateContextualTextAPI.GenerateContextualText(this._client);
   generateEngagementInsights: GenerateEngagementInsightsAPI.GenerateEngagementInsights =
     new GenerateEngagementInsightsAPI.GenerateEngagementInsights(this._client);
   generatePremiumCaptions: GeneratePremiumCaptionsAPI.GeneratePremiumCaptions =
@@ -262,7 +285,9 @@ export interface JobSummary {
    * The Robots workflow for this binding.
    */
   workflow:
+    | 'analyze-structure'
     | 'summarize'
+    | 'generate-contextual-text'
     | 'moderate'
     | 'generate-chapters'
     | 'find-scenes'
@@ -459,7 +484,9 @@ export interface JobListParams extends BasePageParams {
    * Filter by workflow name
    */
   workflow?:
+    | 'analyze-structure'
     | 'summarize'
+    | 'generate-contextual-text'
     | 'moderate'
     | 'generate-chapters'
     | 'find-scenes'
@@ -473,6 +500,7 @@ export interface JobListParams extends BasePageParams {
     | 'find-best-thumbnails';
 }
 
+Jobs.AnalyzeStructure = AnalyzeStructure;
 Jobs.AskQuestions = AskQuestions;
 Jobs.GenerateChapters = GenerateChapters;
 Jobs.FindKeyMoments = FindKeyMoments;
@@ -482,6 +510,7 @@ Jobs.TranslateCaptions = TranslateCaptions;
 Jobs.EditCaptions = EditCaptions;
 Jobs.FindBestThumbnails = FindBestThumbnails;
 Jobs.FindScenes = FindScenes;
+Jobs.GenerateContextualText = GenerateContextualText;
 Jobs.GenerateEngagementInsights = GenerateEngagementInsights;
 Jobs.GeneratePremiumCaptions = GeneratePremiumCaptions;
 Jobs.TranslateAudio = TranslateAudio;
@@ -500,6 +529,15 @@ export declare namespace Jobs {
     type SlimlineAsset as SlimlineAsset,
     type JobSummariesBasePage as JobSummariesBasePage,
     type JobListParams as JobListParams,
+  };
+
+  export {
+    AnalyzeStructure as AnalyzeStructure,
+    type AnalyzeStructureJob as AnalyzeStructureJob,
+    type AnalyzeStructureJobOutputs as AnalyzeStructureJobOutputs,
+    type AnalyzeStructureJobParameters as AnalyzeStructureJobParameters,
+    type AnalyzeStructureOutputSteering as AnalyzeStructureOutputSteering,
+    type AnalyzeStructureCreateParams as AnalyzeStructureCreateParams,
   };
 
   export {
@@ -583,6 +621,15 @@ export declare namespace Jobs {
     type FindScenesJobParameters as FindScenesJobParameters,
     type FindScenesOutputSteering as FindScenesOutputSteering,
     type FindSceneCreateParams as FindSceneCreateParams,
+  };
+
+  export {
+    GenerateContextualText as GenerateContextualText,
+    type GenerateContextualTextJob as GenerateContextualTextJob,
+    type GenerateContextualTextJobOutputs as GenerateContextualTextJobOutputs,
+    type GenerateContextualTextJobParameters as GenerateContextualTextJobParameters,
+    type GenerateContextualTextOutputSteering as GenerateContextualTextOutputSteering,
+    type GenerateContextualTextCreateParams as GenerateContextualTextCreateParams,
   };
 
   export {

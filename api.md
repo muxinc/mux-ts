@@ -8,6 +8,8 @@ Types:
 
 # [Video](src/resources/video/api.md)
 
+# [Robots](src/resources/robots/api.md)
+
 # [RobotsV0](src/resources/robots-v0/api.md)
 
 # [Data](src/resources/data/api.md)

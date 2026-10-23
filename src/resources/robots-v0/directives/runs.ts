@@ -158,7 +158,9 @@ export namespace NodeState {
      * The Robots workflow for this binding.
      */
     workflow_name:
+      | 'analyze-structure'
       | 'summarize'
+      | 'generate-contextual-text'
       | 'moderate'
       | 'generate-chapters'
       | 'find-scenes'
@@ -198,7 +200,9 @@ export namespace NodeState {
      * The Robots workflow for this binding.
      */
     workflow_name:
+      | 'analyze-structure'
       | 'summarize'
+      | 'generate-contextual-text'
       | 'moderate'
       | 'generate-chapters'
       | 'find-scenes'
@@ -230,7 +234,9 @@ export namespace NodeState {
      * The Robots workflow for this binding.
      */
     workflow_name:
+      | 'analyze-structure'
       | 'summarize'
+      | 'generate-contextual-text'
       | 'moderate'
       | 'generate-chapters'
       | 'find-scenes'

@@ -31,6 +31,7 @@ import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import { Data } from './resources/data/data';
 import { RobotsV0 } from './resources/robots-v0/robots-v0';
+import { Robots } from './resources/robots/robots';
 import { System } from './resources/system/system';
 import { Video } from './resources/video/video';
 import { Webhooks } from './resources/webhooks/webhooks';
@@ -864,6 +865,7 @@ export class Mux {
   static toFile = Uploads.toFile;
 
   video: API.Video = new API.Video(this);
+  robots: API.Robots = new API.Robots(this);
   robotsV0: API.RobotsV0 = new API.RobotsV0(this);
   data: API.Data = new API.Data(this);
   system: API.System = new API.System(this);
@@ -872,6 +874,7 @@ export class Mux {
 }
 
 Mux.Video = Video;
+Mux.Robots = Robots;
 Mux.RobotsV0 = RobotsV0;
 Mux.Data = Data;
 Mux.System = System;
@@ -899,6 +902,8 @@ export declare namespace Mux {
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
   export { Video as Video };
+
+  export { Robots as Robots };
 
   export { RobotsV0 as RobotsV0 };
 

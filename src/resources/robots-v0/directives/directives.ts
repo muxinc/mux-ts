@@ -11,12 +11,14 @@ import {
   RunListParams,
   Runs,
 } from './runs';
+import * as AnalyzeStructureAPI from '../jobs/analyze-structure';
 import * as AskQuestionsAPI from '../jobs/ask-questions';
 import * as EditCaptionsAPI from '../jobs/edit-captions';
 import * as FindBestThumbnailsAPI from '../jobs/find-best-thumbnails';
 import * as FindKeyMomentsAPI from '../jobs/find-key-moments';
 import * as FindScenesAPI from '../jobs/find-scenes';
 import * as GenerateChaptersAPI from '../jobs/generate-chapters';
+import * as GenerateContextualTextAPI from '../jobs/generate-contextual-text';
 import * as GeneratePremiumCaptionsAPI from '../jobs/generate-premium-captions';
 import * as ModerateAPI from '../jobs/moderate';
 import * as SummarizeAPI from '../jobs/summarize';
@@ -510,9 +512,11 @@ export namespace TrackResourceDeclaration {
 }
 
 export type WorkflowBinding =
+  | WorkflowBinding.AnalyzeStructureBindingV0
   | WorkflowBinding.SummarizeBindingV0
   | WorkflowBinding.ModerateBindingV0
   | WorkflowBinding.GenerateChaptersBindingV0
+  | WorkflowBinding.GenerateContextualTextBindingV0
   | WorkflowBinding.FindScenesBindingV0
   | WorkflowBinding.EditCaptionsBindingV0
   | WorkflowBinding.TranslateCaptionsBindingV0
@@ -524,6 +528,81 @@ export type WorkflowBinding =
   | WorkflowBinding.FindBestThumbnailsBindingV0;
 
 export namespace WorkflowBinding {
+  export interface AnalyzeStructureBindingV0 {
+    /**
+     * Customer-chosen identifier, unique within the directive. Resource
+     * `source.binding` refs point at this handle.
+     */
+    reference_id: string;
+
+    /**
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
+     */
+    workflow: 'analyze-structure';
+
+    /**
+     * reference_ids of declared resources this workflow depends on. Each entry is a
+     * hard dependency: the workflow is not dispatched until the referenced resource is
+     * ready.
+     */
+    inputs?: Array<string>;
+
+    /**
+     * Parameters for the analyze-structure workflow — the same fields accepted by POST
+     * /robots/v0/jobs/analyze-structure, minus engine-supplied fields such as
+     * asset_id.
+     */
+    params?: AnalyzeStructureBindingV0.Params;
+  }
+
+  export namespace AnalyzeStructureBindingV0 {
+    /**
+     * Parameters for the analyze-structure workflow — the same fields accepted by POST
+     * /robots/v0/jobs/analyze-structure, minus engine-supplied fields such as
+     * asset_id.
+     */
+    export interface Params {
+      /**
+       * BCP 47 language code of the caption source. An explicit language must match a
+       * ready source exactly, including case; for example, en does not match en-US.
+       * Translation target exclusion and track replacement instead compare base
+       * languages case-insensitively. When omitted, automatic selection applies. Uses
+       * the first ready subtitle in asset track order without English preference.
+       * Audio-only assets with one ready text track lacking subtitle metadata can use
+       * that legacy transcript.
+       */
+      language_code?: string;
+
+      /**
+       * BCP 47 language code for generated text. Auto-detected from available evidence
+       * when omitted.
+       */
+      output_language_code?: string;
+
+      /**
+       * Curated controls that restrict Analyze Structure execution or guide its
+       * generated metadata without exposing raw prompt editing. The scope start is
+       * inclusive, the end is exclusive, and returned timestamps remain absolute.
+       */
+      output_steering?: AnalyzeStructureAPI.AnalyzeStructureOutputSteering;
+
+      /**
+       * When true, replaces or creates the asset's chapters track after analysis.
+       * Defaults to false. Best-effort: a chapters-write failure does not fail the
+       * analysis. Check outputs.asset_updates.chapters for the outcome.
+       */
+      update_asset_chapters?: boolean;
+
+      /**
+       * When true, writes the generated title to asset.meta.title after analysis.
+       * Defaults to false. Best-effort: a metadata-write failure does not fail the
+       * analysis. Check outputs.asset_updates.title for the outcome.
+       */
+      update_asset_meta?: boolean;
+    }
+  }
+
   export interface SummarizeBindingV0 {
     /**
      * Customer-chosen identifier, unique within the directive. Resource
@@ -679,9 +758,8 @@ export namespace WorkflowBinding {
      */
     export interface Params {
       /**
-       * BCP 47 language code for transcript analysis. Used only for audio-only assets;
-       * ignored for video assets with visual content. Defaults to "en" for audio-only
-       * transcript analysis.
+       * BCP 47 language code of the caption track to moderate. When omitted, an English
+       * subtitles track is preferred and otherwise the first ready text track is used.
        */
       language_code?: string;
 
@@ -839,6 +917,151 @@ export namespace WorkflowBinding {
          * Override the chapter title style requirements.
          */
         title_guidelines?: string;
+      }
+    }
+  }
+
+  export interface GenerateContextualTextBindingV0 {
+    /**
+     * Parameters for the generate-contextual-text workflow — the same fields accepted
+     * by POST /robots/v0/jobs/generate-contextual-text, minus engine-supplied fields
+     * such as asset_id.
+     */
+    params: GenerateContextualTextBindingV0.Params;
+
+    /**
+     * Customer-chosen identifier, unique within the directive. Resource
+     * `source.binding` refs point at this handle.
+     */
+    reference_id: string;
+
+    /**
+     * The Robots workflow to dispatch — the same identifier as POST
+     * /robots/v0/jobs/{workflow}.
+     */
+    workflow: 'generate-contextual-text';
+
+    /**
+     * reference_ids of declared resources this workflow depends on. Each entry is a
+     * hard dependency: the workflow is not dispatched until the referenced resource is
+     * ready.
+     */
+    inputs?: Array<string>;
+  }
+
+  export namespace GenerateContextualTextBindingV0 {
+    /**
+     * Parameters for the generate-contextual-text workflow — the same fields accepted
+     * by POST /robots/v0/jobs/generate-contextual-text, minus engine-supplied fields
+     * such as asset_id.
+     */
+    export interface Params {
+      /**
+       * The deliverables to create for every variant. Supports 1-5 artifacts with unique
+       * keys.
+       */
+      artifacts: Array<Params.Artifact>;
+
+      /**
+       * Named versions of the complete artifact set. Supports 1-5 variants with unique
+       * keys.
+       */
+      variants: Array<Params.Variant>;
+
+      /**
+       * BCP 47 language code of the caption track to analyze. When omitted, the first
+       * ready text track is used.
+       */
+      language_code?: string;
+
+      /**
+       * BCP 47 language code for generated text. Defaults to the selected transcript
+       * track's language when available.
+       */
+      output_language_code?: string;
+
+      /**
+       * Curated controls that apply to every generated artifact. Scope bounds execution;
+       * the other fields are best-effort writing guidance.
+       */
+      output_steering?: GenerateContextualTextAPI.GenerateContextualTextOutputSteering;
+
+      /**
+       * When true for a video asset, generate or reuse Mux shots and attach a bounded
+       * sample of shot frames as additional visual evidence. Video assets always include
+       * a storyboard; the transcript remains authoritative. Not supported for audio-only
+       * assets.
+       */
+      use_shots?: boolean;
+    }
+
+    export namespace Params {
+      /**
+       * One deliverable, such as a social post, blog post, or newsletter entry. The
+       * channel sets conventions and a default cap, max_length sets the hard cap, and
+       * format controls Markdown.
+       */
+      export interface Artifact {
+        /**
+         * Customer-chosen lowercase snake_case identifier used to correlate requested and
+         * returned content.
+         */
+        key: string;
+
+        /**
+         * Publishing channel whose conventions guide the result and set its default
+         * length. generic is capped at 300 words.
+         */
+        channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
+
+        /**
+         * Whether the text may use Markdown syntax. plain contains no Markdown.
+         */
+        format?: 'plain' | 'markdown';
+
+        /**
+         * Optional guidance specific to this artifact.
+         */
+        instructions?: string;
+
+        /**
+         * Hard output cap in characters or words. Defaults to the channel's cap.
+         */
+        max_length?:
+          | Artifact.GenerateContextualTextCharacterMaxLengthV0
+          | Artifact.GenerateContextualTextWordMaxLengthV0;
+      }
+
+      export namespace Artifact {
+        export interface GenerateContextualTextCharacterMaxLengthV0 {
+          unit: 'characters';
+
+          value: number;
+        }
+
+        export interface GenerateContextualTextWordMaxLengthV0 {
+          unit: 'words';
+
+          value: number;
+        }
+      }
+
+      /**
+       * A named version of the complete artifact set. The key is an identifier only and
+       * does not steer generation.
+       */
+      export interface Variant {
+        /**
+         * Customer-chosen lowercase snake_case identifier used to correlate requested and
+         * returned content.
+         */
+        key: string;
+
+        /**
+         * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
+         * request another independent take on the same brief.
+         */
+        instructions?: string;
       }
     }
   }

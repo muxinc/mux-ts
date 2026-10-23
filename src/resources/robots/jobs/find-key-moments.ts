@@ -1,0 +1,379 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+import { APIResource } from '../../../core/resource';
+import * as JobsAPI from './jobs';
+import { APIPromise } from '../../../core/api-promise';
+import { RequestOptions } from '../../../internal/request-options';
+import { path } from '../../../internal/utils/path';
+
+/**
+ * Identify key moments in a video.
+ */
+export class FindKeyMoments extends APIResource {
+  /**
+   * Creates a new job that uses AI to identify key moments in a Mux Video asset. Set
+   * use_shots to true to automatically generate or reuse Mux shots and use visual
+   * evidence during selection, with transcript evidence incorporated when available;
+   * otherwise selection uses transcript evidence and the asset must have a caption
+   * track. Audio-only assets always use transcript evidence and require a caption
+   * track. Optional output steering can restrict execution to a time scope in
+   * seconds and guide selection strategy, title style, audience, topic taxonomy, and
+   * scoring priorities without changing the response schema. Scoped results retain
+   * absolute timestamps on the original asset timeline. Uses the first ready
+   * subtitle in asset track order without English preference. Audio-only assets with
+   * one ready text track lacking subtitle metadata can use that legacy transcript.
+   * Audio-only analysis requires a caption source; video analysis can proceed
+   * without automatic captions when the selected mode permits it.
+   *
+   * @example
+   * ```ts
+   * const findKeyMomentsJob =
+   *   await client.robots.jobs.findKeyMoments.create({
+   *     parameters: {
+   *       asset_id: 'mux_asset_123abc',
+   *       max_moments: 10,
+   *       target_duration: { min: 15.123, max: 45.456 },
+   *     },
+   *   });
+   * ```
+   */
+  create(body: FindKeyMomentCreateParams, options?: RequestOptions): APIPromise<FindKeyMomentsJob> {
+    return (
+      this._client.post('/robots/v1/jobs/find-key-moments', {
+        body,
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: FindKeyMomentsJob }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+
+  /**
+   * Retrieves the current status and results of a 'find-key-moments' job. Jobs are
+   * automatically deleted after 30 days.
+   *
+   * @example
+   * ```ts
+   * const findKeyMomentsJob =
+   *   await client.robots.jobs.findKeyMoments.retrieve('x');
+   * ```
+   */
+  retrieve(jobID: string, options?: RequestOptions): APIPromise<FindKeyMomentsJob> {
+    return (
+      this._client.get(path`/robots/v1/jobs/find-key-moments/${jobID}`, {
+        defaultBaseURL: 'https://api.mux.com',
+        ...options,
+      }) as APIPromise<{ data: FindKeyMomentsJob }>
+    )._thenUnwrap((obj) => obj.data);
+  }
+}
+
+export interface FindKeyMomentsJob {
+  /**
+   * Unique job identifier.
+   */
+  id: string;
+
+  /**
+   * Unix timestamp (seconds) when the job was created.
+   */
+  created_at: number;
+
+  parameters: FindKeyMomentsJobParameters;
+
+  /**
+   * Current job status.
+   */
+  status: JobsAPI.JobStatus;
+
+  /**
+   * Number of Mux AI units consumed by this job.
+   */
+  units_consumed: number;
+
+  /**
+   * Unix timestamp (seconds) of the job's last state transition (e.g. when it
+   * started processing or reached a terminal state).
+   */
+  updated_at: number;
+
+  workflow: 'find-key-moments';
+
+  /**
+   * The directive run that dispatched this job. Absent for jobs created via direct
+   * API POST.
+   */
+  directive?: JobsAPI.JobDirectiveContext;
+
+  /**
+   * Error details. Present when status is 'errored'.
+   */
+  errors?: Array<JobsAPI.JobError>;
+
+  /**
+   * Workflow results. Present when status is completed.
+   */
+  outputs?: FindKeyMomentsJobOutputs;
+
+  /**
+   * Arbitrary string supplied at creation, returned as-is.
+   */
+  passthrough?: string;
+
+  /**
+   * Related Mux resources linked to this job.
+   */
+  resources?: JobsAPI.JobResources;
+}
+
+/**
+ * Workflow results. Present when status is completed.
+ */
+export interface FindKeyMomentsJobOutputs {
+  /**
+   * Extracted key moments, ordered by their absolute position on the original asset
+   * timeline.
+   */
+  moments: Array<FindKeyMomentsJobOutputs.Moment>;
+}
+
+export namespace FindKeyMomentsJobOutputs {
+  export interface Moment {
+    /**
+     * One-sentence summary of what is being said during the moment. Empty when no
+     * transcript evidence is available.
+     */
+    audible_narrative: string;
+
+    /**
+     * Contiguous transcript segments that comprise this moment. Empty when video
+     * selection identifies the moment without transcript evidence.
+     */
+    cues: Array<Moment.Cue>;
+
+    /**
+     * Key moment end time in seconds on the original asset timeline. Fractional
+     * seconds are supported.
+     */
+    end_time: number;
+
+    /**
+     * Multi-word descriptive phrases (2-5 words each) capturing key audible concepts.
+     * Empty when no transcript evidence is available.
+     */
+    notable_audible_concepts: Array<string>;
+
+    /**
+     * Weighted quality score from 0.0 to 1.0 based on the audible and/or visual
+     * evidence available to the selected analysis mode.
+     */
+    overall_score: number;
+
+    /**
+     * Key moment start time in seconds on the original asset timeline. Fractional
+     * seconds are supported.
+     */
+    start_time: number;
+
+    /**
+     * Short catchy title for the moment (3-8 words).
+     */
+    title: string;
+
+    /**
+     * Scored visual concepts extracted from sampled frames. Present for video assets
+     * only.
+     */
+    notable_visual_concepts?: Array<Moment.NotableVisualConcept>;
+
+    /**
+     * Best short, verbatim quote from within this moment. Omitted when the selected
+     * video moment has no source-grounded transcript quote.
+     */
+    quotable_segment?: Moment.QuotableSegment;
+
+    /**
+     * One-sentence summary of what is visually happening. Present for video assets
+     * only.
+     */
+    visual_narrative?: string;
+  }
+
+  export namespace Moment {
+    export interface Cue {
+      /**
+       * Cue end time in seconds on the original asset timeline. Fractional seconds are
+       * supported.
+       */
+      end_time: number;
+
+      /**
+       * Cue start time in seconds on the original asset timeline. Fractional seconds are
+       * supported.
+       */
+      start_time: number;
+
+      /**
+       * Transcript text for this cue.
+       */
+      text: string;
+    }
+
+    export interface NotableVisualConcept {
+      /**
+       * Multi-word visual concept (2-5 words).
+       */
+      concept: string;
+
+      /**
+       * Brief explanation of the relevance score.
+       */
+      rationale: string;
+
+      /**
+       * Relevance score from 0.0 to 1.0 measuring how important the visual concept is to
+       * the moment's available evidence.
+       */
+      score: number;
+    }
+
+    /**
+     * Best short, verbatim quote from within this moment. Omitted when the selected
+     * video moment has no source-grounded transcript quote.
+     */
+    export interface QuotableSegment {
+      /**
+       * Verbatim transcript quote selected from within the key moment.
+       */
+      text: string;
+
+      /**
+       * Quote start timestamp in seconds on the original asset timeline. Fractional
+       * seconds are supported.
+       */
+      time: number;
+    }
+  }
+}
+
+export interface FindKeyMomentsJobParameters {
+  /**
+   * The Mux asset ID of the video to analyze.
+   */
+  asset_id: string;
+
+  /**
+   * Maximum number of key moments to extract. When omitted, defaults to 10 for
+   * assets up to one hour and 25 for longer assets.
+   */
+  max_moments?: number;
+
+  /**
+   * Curated output_steering controls for execution scope, selection strategy, title
+   * style, audience, taxonomy, and rubric tie-breakers. Scope is enforced; other
+   * controls guide model behavior but do not guarantee exact output.
+   */
+  output_steering?: FindKeyMomentsOutputSteering;
+
+  /**
+   * Preferred highlight duration range in seconds. Best-effort guidance, with
+   * millisecond precision.
+   */
+  target_duration?: FindKeyMomentsJobParameters.TargetDuration;
+
+  /**
+   * Controls whether video assets are analyzed using Mux shots. When true, shots are
+   * generated or reused and visual evidence drives selection. When false or omitted,
+   * selection uses transcript evidence and the asset must have a caption track. Not
+   * supported for audio-only assets.
+   */
+  use_shots?: boolean;
+}
+
+export namespace FindKeyMomentsJobParameters {
+  /**
+   * Preferred highlight duration range in seconds. Best-effort guidance, with
+   * millisecond precision.
+   */
+  export interface TargetDuration {
+    /**
+     * Preferred maximum highlight duration in seconds, with millisecond precision.
+     */
+    max: number;
+
+    /**
+     * Preferred minimum highlight duration in seconds, with millisecond precision.
+     */
+    min: number;
+  }
+}
+
+/**
+ * Curated output_steering controls for execution scope, selection strategy, title
+ * style, audience, taxonomy, and rubric tie-breakers. Scope is enforced; other
+ * controls guide model behavior but do not guarantee exact output.
+ */
+export interface FindKeyMomentsOutputSteering {
+  /**
+   * Intended audience used as best-effort model guidance. Does not change the output
+   * schema.
+   */
+  audience?: string;
+
+  /**
+   * Preferred brand or domain terms to use when supported by the source content.
+   */
+  brand_terms?: Array<string>;
+
+  /**
+   * Rubric dimensions to use as tie-breakers after applying selection strategy.
+   * Best-effort guidance only.
+   */
+  rubric_priorities?: Array<'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'>;
+
+  /**
+   * Optional media execution window. Results remain timestamped against the original
+   * media timeline.
+   */
+  scope?: JobsAPI.OutputSteeringScope;
+
+  /**
+   * Best-effort guidance for what qualifies as a strong standalone key moment.
+   */
+  selection_strategy?:
+    | 'standalone_hooks'
+    | 'educational_takeaways'
+    | 'story_beats'
+    | 'product_moments'
+    | 'speaker_highlights';
+
+  /**
+   * Best-effort title style guidance for generated moment titles.
+   */
+  title_style?: 'descriptive' | 'punchy' | 'educational' | 'social';
+
+  /**
+   * Controlled vocabulary used as best-effort guidance for generated labels and
+   * concepts.
+   */
+  topic_taxonomy?: JobsAPI.OutputSteeringTaxonomy;
+}
+
+export interface FindKeyMomentCreateParams {
+  parameters: FindKeyMomentsJobParameters;
+
+  /**
+   * Arbitrary string stored with the job and returned in responses. Useful for
+   * correlating jobs with your own systems.
+   */
+  passthrough?: string;
+}
+
+export declare namespace FindKeyMoments {
+  export {
+    type FindKeyMomentsJob as FindKeyMomentsJob,
+    type FindKeyMomentsJobOutputs as FindKeyMomentsJobOutputs,
+    type FindKeyMomentsJobParameters as FindKeyMomentsJobParameters,
+    type FindKeyMomentsOutputSteering as FindKeyMomentsOutputSteering,
+    type FindKeyMomentCreateParams as FindKeyMomentCreateParams,
+  };
+}

@@ -1,6 +1,14 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 export {
+  AnalyzeStructure,
+  type AnalyzeStructureJob,
+  type AnalyzeStructureJobOutputs,
+  type AnalyzeStructureJobParameters,
+  type AnalyzeStructureOutputSteering,
+  type AnalyzeStructureCreateParams,
+} from './analyze-structure';
+export {
   AskQuestions,
   type AskQuestionsJob,
   type AskQuestionsJobOutputs,
@@ -48,6 +56,14 @@ export {
   type GenerateChaptersOutputSteering,
   type GenerateChapterCreateParams,
 } from './generate-chapters';
+export {
+  GenerateContextualText,
+  type GenerateContextualTextJob,
+  type GenerateContextualTextJobOutputs,
+  type GenerateContextualTextJobParameters,
+  type GenerateContextualTextOutputSteering,
+  type GenerateContextualTextCreateParams,
+} from './generate-contextual-text';
 export {
   GenerateEngagementInsights,
   type GenerateEngagementInsightsJob,

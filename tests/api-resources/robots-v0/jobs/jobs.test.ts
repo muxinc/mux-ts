@@ -29,7 +29,7 @@ describe('resource jobs', () => {
           limit: 1,
           page: 1,
           status: 'pending',
-          workflow: 'summarize',
+          workflow: 'analyze-structure',
         },
         { path: '/_stainless_unknown_path' },
       ),
