@@ -1,6 +1,70 @@
 # Migration guide
 
-This guide covers the two most recent major migrations of the Mux TypeScript SDK: v14 → v15 (the rename to `@mux/ts`), and the earlier v12 → v14 core migration.
+This guide covers the three most recent major migrations of the Mux TypeScript SDK: v15 → v16 (Robots v1 becomes the default), v14 → v15 (the rename to `@mux/ts`), and the earlier v12 → v14 core migration.
+
+## Migrating from v15 to v16
+
+v16 makes the GA Robots API (v1) the default. Everything outside Robots is unchanged apart from a few type refinements, listed at the end.
+
+### `client.robots` is now Robots v1; the beta API moved to `client.robotsV0`
+
+In v15, `client.robots` called the Robots beta API (`/robots/v0`). In v16, `client.robots` calls the GA API (`/robots/v1`), and the beta API moved to `client.robotsV0` (types under `Mux.RobotsV0`). Every `client.robotsV0` method is deprecated and points at its v1 replacement.
+
+> [!WARNING]
+> Many v15 Robots calls still compile after upgrading, but they now send requests to v1. Ask Questions, for example, has the same request shape in both versions. Review every `client.robots` call: either move it to `client.robotsV0` deliberately to stay on the beta for now, or adopt v1 using the differences below.
+
+Access to v1 is granted by accepting the Robots terms in the Mux Dashboard; without it, v1 requests return 403.
+
+```diff
+  // Stay on the beta API for now:
+- await client.robots.jobs.summarize.create({ parameters: { asset_id } });
++ await client.robotsV0.jobs.summarize.create({ parameters: { asset_id } });
+```
+
+### Moving from v0 to v1
+
+**Times are in seconds.** Every millisecond field becomes a seconds field (fractional seconds allowed), on both requests and responses:
+
+| Workflow | v0 (milliseconds) | v1 (seconds) |
+|---|---|---|
+| Find Key Moments (request) | `target_duration_ms: { min, max }` | `target_duration: { min, max }` |
+| Find Key Moments | `moments[].start_ms`, `end_ms`, `cues[].start_ms`, `cues[].end_ms`, `quotable_segment.start_ms` | `moments[].start_time`, `end_time`, `cues[].start_time`, `cues[].end_time`, `quotable_segment.time` |
+| Find Best Thumbnails | `best_thumbnails[].timestamp_ms` | `best_thumbnails[].time` |
+| Generate Engagement Insights | `moment_insights[].start_ms`, `end_ms` | `moment_insights[].start_time`, `end_time` |
+
+Renaming `target_duration_ms` to `target_duration` without converting the values makes the requested durations 1000× longer.
+
+**Request parameters:**
+
+- Translate Captions and Translate Audio: `to_language_code` → `output_language_code` (required).
+- Summarize and Generate Chapters: `prompt_overrides` is removed; use `output_steering`.
+- Generate Premium Captions: `replace_existing` is removed; use `replace_existing_tracks`.
+- Edit Captions: `delete_original_track` and `track_name_suffix` are removed; use `replace_existing_tracks` and `track_name`.
+
+**Job outputs:**
+
+- Track-producing workflows (Edit Captions, Translate Captions, Translate Audio): `uploaded_track_id` → `track_id`.
+- `replaced_tracks` (track objects) → `replaced_track_ids` (IDs only). Generate Premium Captions also drops `replaced_track_id`, and Generate Chapters moves `asset_updates.chapters.replaced_track_id` to `replaced_track_ids`.
+- Generate Premium Captions: `detected_language` → `detected_language_code`.
+- Generate Chapters: the singular `asset_update` is removed; use `asset_updates.chapters`.
+
+**Workflows:**
+
+- Find Scenes has no v1 equivalent; use Analyze Structure, which returns scenes alongside chapters, key moments, title, summary and tags.
+- Analyze Structure and Generate Contextual Text are new in v16 and exist in both versions.
+
+**Directives and runs:**
+
+- A directive's `workflows` is now `bindings`, and each binding's `params` is now `parameters`.
+- Resource declarations: `language` → `language_code`, `source.params` → `source.parameters`, and `source_audio_language` → `source_audio_language_code`.
+- Runs: `run_id` → `id` (runs also carry `directive_id`). In `node_states`, `workflow_name` → `workflow` and `source_workflows` → `source_bindings`.
+
+**Webhooks:** v1 jobs and directive runs send `robots.v1.job.<workflow>.<status>` and `robots.v1.directive_run.<status>` events, with payload types such as `WebhookSummarizeJob` and `WebhookDirectiveRun`. Beta events keep their names (`robots.job.*`, `robots.directive_run.*`) and their payload types are suffixed `V0` (for example `WebhookSummarizeJobV0`).
+
+### Other type changes
+
+- Single-value type tags are now constants. This covers each webhook event's `type`, each Robots job's `workflow`, and the discriminators of Robots unions. The TypeScript types stay the same string literals.
+- Empty parameter objects (the Generate Engagement Insights directive-binding parameters in both versions, and the generate-shots request body) are typed as empty objects rather than `unknown`.
 
 ## Migrating from v14 to v15 (`@mux/ts`)
 
