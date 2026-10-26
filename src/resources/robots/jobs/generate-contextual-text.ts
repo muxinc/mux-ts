@@ -70,6 +70,54 @@ export class GenerateContextualText extends APIResource {
   }
 }
 
+/**
+ * One deliverable, such as a social post, blog post, or newsletter entry. Every
+ * variant produces each artifact. The channel sets conventions and a default cap,
+ * max_length sets the hard cap, and format controls Markdown.
+ */
+export interface GenerateContextualTextArtifact {
+  /**
+   * Customer-chosen lowercase snake_case identifier used to correlate requested and
+   * returned content.
+   */
+  key: string;
+
+  /**
+   * Publishing channel whose conventions guide the result and set its default
+   * length: 300 words for generic and linkedin, 250 words for facebook and youtube,
+   * 100 words for tiktok, 1,500 characters for instagram, and 280 characters for x.
+   * generic has no platform conventions; its style follows the length cap, and a
+   * max_length above 600 words produces article-style writing such as a blog post or
+   * newsletter entry.
+   */
+  channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
+
+  /**
+   * Whether the text may use Markdown syntax. plain contains no Markdown.
+   */
+  format?: 'plain' | 'markdown';
+
+  /**
+   * Optional guidance specific to this artifact, such as the deliverable to write.
+   * Applies in every variant.
+   */
+  instructions?: string;
+
+  /**
+   * Hard output cap in characters or words. Defaults to the channel's cap. Text aims
+   * for about 90% of the cap regardless of the source's length, so set the length
+   * you want rather than relying on the default. x is always capped at 280
+   * characters, even with a word cap.
+   */
+  max_length?: GenerateContextualTextCharacterMaxLength | GenerateContextualTextWordMaxLength;
+}
+
+export interface GenerateContextualTextCharacterMaxLength {
+  unit: 'characters';
+
+  value: number;
+}
+
 export interface GenerateContextualTextJob {
   /**
    * Unique job identifier.
@@ -161,10 +209,10 @@ export namespace GenerateContextualTextJobOutputs {
 
 export interface GenerateContextualTextJobParameters {
   /**
-   * The deliverables to create for every variant. Supports 1-5 artifacts with unique
-   * keys.
+   * The deliverables to create. Every variant produces each artifact. Supports 1-5
+   * artifacts with unique keys.
    */
-  artifacts: Array<GenerateContextualTextJobParameters.Artifact>;
+  artifacts: Array<GenerateContextualTextArtifact>;
 
   /**
    * The Mux asset ID whose transcript grounds the generated text.
@@ -172,10 +220,10 @@ export interface GenerateContextualTextJobParameters {
   asset_id: string;
 
   /**
-   * Named versions of the complete artifact set. Supports 1-5 variants with unique
-   * keys.
+   * Named versions of the complete artifact set. Every variant produces every
+   * artifact. Supports 1-5 variants with unique keys.
    */
-  variants: Array<GenerateContextualTextJobParameters.Variant>;
+  variants: Array<GenerateContextualTextVariant>;
 
   /**
    * BCP 47 language code of the caption source. An explicit language must match a
@@ -195,8 +243,9 @@ export interface GenerateContextualTextJobParameters {
   output_language_code?: string;
 
   /**
-   * Curated controls that apply to every generated artifact. Scope bounds execution;
-   * the other fields are best-effort writing guidance.
+   * Curated controls that apply to every generated artifact in every variant. Scope
+   * bounds execution; the other fields are best-effort writing guidance. To vary
+   * voice or audience between variants, use variant instructions.
    */
   output_steering?: GenerateContextualTextOutputSteering;
 
@@ -209,79 +258,10 @@ export interface GenerateContextualTextJobParameters {
   use_shots?: boolean;
 }
 
-export namespace GenerateContextualTextJobParameters {
-  /**
-   * One deliverable, such as a social post, blog post, or newsletter entry. The
-   * channel sets conventions and a default cap, max_length sets the hard cap, and
-   * format controls Markdown.
-   */
-  export interface Artifact {
-    /**
-     * Customer-chosen lowercase snake_case identifier used to correlate requested and
-     * returned content.
-     */
-    key: string;
-
-    /**
-     * Publishing channel whose conventions guide the result and set its default
-     * length. generic is capped at 300 words.
-     */
-    channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
-
-    /**
-     * Whether the text may use Markdown syntax. plain contains no Markdown.
-     */
-    format?: 'plain' | 'markdown';
-
-    /**
-     * Optional guidance specific to this artifact.
-     */
-    instructions?: string;
-
-    /**
-     * Hard output cap in characters or words. Defaults to the channel's cap.
-     */
-    max_length?:
-      | Artifact.GenerateContextualTextCharacterMaxLength
-      | Artifact.GenerateContextualTextWordMaxLength;
-  }
-
-  export namespace Artifact {
-    export interface GenerateContextualTextCharacterMaxLength {
-      unit: 'characters';
-
-      value: number;
-    }
-
-    export interface GenerateContextualTextWordMaxLength {
-      unit: 'words';
-
-      value: number;
-    }
-  }
-
-  /**
-   * A named version of the complete artifact set. The key is an identifier only and
-   * does not steer generation.
-   */
-  export interface Variant {
-    /**
-     * Customer-chosen lowercase snake_case identifier used to correlate requested and
-     * returned content.
-     */
-    key: string;
-
-    /**
-     * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
-     * request another independent take on the same brief.
-     */
-    instructions?: string;
-  }
-}
-
 /**
- * Curated controls that apply to every generated artifact. Scope bounds execution;
- * the other fields are best-effort writing guidance.
+ * Curated controls that apply to every generated artifact in every variant. Scope
+ * bounds execution; the other fields are best-effort writing guidance. To vary
+ * voice or audience between variants, use variant instructions.
  */
 export interface GenerateContextualTextOutputSteering {
   /**
@@ -308,9 +288,39 @@ export interface GenerateContextualTextOutputSteering {
   scope?: JobsAPI.OutputSteeringScope;
 
   /**
-   * Best-effort writing voice for every generated artifact.
+   * Best-effort writing voice for every generated artifact in every variant. To give
+   * variants different voices, describe the voice in each variant's instructions
+   * instead.
    */
   voice?: 'conversational' | 'editorial' | 'playful' | 'professional';
+}
+
+/**
+ * A named version of the complete artifact set: every variant produces every
+ * artifact, so 2 variants and 2 artifacts produce 4 pieces of text. The key is an
+ * identifier only and does not steer generation; use instructions to give the
+ * variant an angle.
+ */
+export interface GenerateContextualTextVariant {
+  /**
+   * Customer-chosen lowercase snake_case identifier used to correlate requested and
+   * returned content.
+   */
+  key: string;
+
+  /**
+   * Optional bounded guidance that gives this variant a deliberate angle, such as a
+   * voice, audience, or focus (for example, "Playful voice for a Gen Z audience").
+   * Applies to every artifact in the variant. Omit it to request another independent
+   * take on the same brief.
+   */
+  instructions?: string;
+}
+
+export interface GenerateContextualTextWordMaxLength {
+  unit: 'words';
+
+  value: number;
 }
 
 export interface GenerateContextualTextCreateParams {
@@ -325,10 +335,14 @@ export interface GenerateContextualTextCreateParams {
 
 export declare namespace GenerateContextualText {
   export {
+    type GenerateContextualTextArtifact as GenerateContextualTextArtifact,
+    type GenerateContextualTextCharacterMaxLength as GenerateContextualTextCharacterMaxLength,
     type GenerateContextualTextJob as GenerateContextualTextJob,
     type GenerateContextualTextJobOutputs as GenerateContextualTextJobOutputs,
     type GenerateContextualTextJobParameters as GenerateContextualTextJobParameters,
     type GenerateContextualTextOutputSteering as GenerateContextualTextOutputSteering,
+    type GenerateContextualTextVariant as GenerateContextualTextVariant,
+    type GenerateContextualTextWordMaxLength as GenerateContextualTextWordMaxLength,
     type GenerateContextualTextCreateParams as GenerateContextualTextCreateParams,
   };
 }

@@ -45,6 +45,7 @@ import {
   FindKeyMomentsJobOutputs,
   FindKeyMomentsJobParameters,
   FindKeyMomentsOutputSteering,
+  FindKeyMomentsTargetDuration,
 } from './find-key-moments';
 import * as GenerateChaptersAPI from './generate-chapters';
 import {
@@ -58,11 +59,15 @@ import {
 import * as GenerateContextualTextAPI from './generate-contextual-text';
 import {
   GenerateContextualText,
+  GenerateContextualTextArtifact,
+  GenerateContextualTextCharacterMaxLength,
   GenerateContextualTextCreateParams,
   GenerateContextualTextJob,
   GenerateContextualTextJobOutputs,
   GenerateContextualTextJobParameters,
   GenerateContextualTextOutputSteering,
+  GenerateContextualTextVariant,
+  GenerateContextualTextWordMaxLength,
 } from './generate-contextual-text';
 import * as GenerateEngagementInsightsAPI from './generate-engagement-insights';
 import {
@@ -524,6 +529,7 @@ export declare namespace Jobs {
     type FindKeyMomentsJobOutputs as FindKeyMomentsJobOutputs,
     type FindKeyMomentsJobParameters as FindKeyMomentsJobParameters,
     type FindKeyMomentsOutputSteering as FindKeyMomentsOutputSteering,
+    type FindKeyMomentsTargetDuration as FindKeyMomentsTargetDuration,
     type FindKeyMomentCreateParams as FindKeyMomentCreateParams,
   };
 
@@ -576,10 +582,14 @@ export declare namespace Jobs {
 
   export {
     GenerateContextualText as GenerateContextualText,
+    type GenerateContextualTextArtifact as GenerateContextualTextArtifact,
+    type GenerateContextualTextCharacterMaxLength as GenerateContextualTextCharacterMaxLength,
     type GenerateContextualTextJob as GenerateContextualTextJob,
     type GenerateContextualTextJobOutputs as GenerateContextualTextJobOutputs,
     type GenerateContextualTextJobParameters as GenerateContextualTextJobParameters,
     type GenerateContextualTextOutputSteering as GenerateContextualTextOutputSteering,
+    type GenerateContextualTextVariant as GenerateContextualTextVariant,
+    type GenerateContextualTextWordMaxLength as GenerateContextualTextWordMaxLength,
     type GenerateContextualTextCreateParams as GenerateContextualTextCreateParams,
   };
 

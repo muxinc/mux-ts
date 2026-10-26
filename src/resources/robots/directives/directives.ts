@@ -128,7 +128,7 @@ export interface Directive {
    */
   id: string;
 
-  _links: Directive._Links;
+  _links: DirectiveLinks;
 
   bindings: Array<DirectiveBinding>;
 
@@ -153,21 +153,6 @@ export interface Directive {
    * Last update Unix timestamp in seconds.
    */
   updated_at: number;
-}
-
-export namespace Directive {
-  export interface _Links {
-    self: _Links.Self;
-  }
-
-  export namespace _Links {
-    export interface Self {
-      /**
-       * URL to the directive in its creation API version.
-       */
-      href: string;
-    }
-  }
 }
 
 export type DirectiveBinding =
@@ -540,16 +525,16 @@ export namespace DirectiveBinding {
      */
     export interface Parameters {
       /**
-       * The deliverables to create for every variant. Supports 1-5 artifacts with unique
-       * keys.
+       * The deliverables to create. Every variant produces each artifact. Supports 1-5
+       * artifacts with unique keys.
        */
-      artifacts: Array<Parameters.Artifact>;
+      artifacts: Array<GenerateContextualTextAPI.GenerateContextualTextArtifact>;
 
       /**
-       * Named versions of the complete artifact set. Supports 1-5 variants with unique
-       * keys.
+       * Named versions of the complete artifact set. Every variant produces every
+       * artifact. Supports 1-5 variants with unique keys.
        */
-      variants: Array<Parameters.Variant>;
+      variants: Array<GenerateContextualTextAPI.GenerateContextualTextVariant>;
 
       /**
        * BCP 47 language code of the caption source. An explicit language must match a
@@ -569,8 +554,9 @@ export namespace DirectiveBinding {
       output_language_code?: string;
 
       /**
-       * Curated controls that apply to every generated artifact. Scope bounds execution;
-       * the other fields are best-effort writing guidance.
+       * Curated controls that apply to every generated artifact in every variant. Scope
+       * bounds execution; the other fields are best-effort writing guidance. To vary
+       * voice or audience between variants, use variant instructions.
        */
       output_steering?: GenerateContextualTextAPI.GenerateContextualTextOutputSteering;
 
@@ -581,76 +567,6 @@ export namespace DirectiveBinding {
        * assets.
        */
       use_shots?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * One deliverable, such as a social post, blog post, or newsletter entry. The
-       * channel sets conventions and a default cap, max_length sets the hard cap, and
-       * format controls Markdown.
-       */
-      export interface Artifact {
-        /**
-         * Customer-chosen lowercase snake_case identifier used to correlate requested and
-         * returned content.
-         */
-        key: string;
-
-        /**
-         * Publishing channel whose conventions guide the result and set its default
-         * length. generic is capped at 300 words.
-         */
-        channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
-
-        /**
-         * Whether the text may use Markdown syntax. plain contains no Markdown.
-         */
-        format?: 'plain' | 'markdown';
-
-        /**
-         * Optional guidance specific to this artifact.
-         */
-        instructions?: string;
-
-        /**
-         * Hard output cap in characters or words. Defaults to the channel's cap.
-         */
-        max_length?:
-          | Artifact.GenerateContextualTextCharacterMaxLength
-          | Artifact.GenerateContextualTextWordMaxLength;
-      }
-
-      export namespace Artifact {
-        export interface GenerateContextualTextCharacterMaxLength {
-          unit: 'characters';
-
-          value: number;
-        }
-
-        export interface GenerateContextualTextWordMaxLength {
-          unit: 'words';
-
-          value: number;
-        }
-      }
-
-      /**
-       * A named version of the complete artifact set. The key is an identifier only and
-       * does not steer generation.
-       */
-      export interface Variant {
-        /**
-         * Customer-chosen lowercase snake_case identifier used to correlate requested and
-         * returned content.
-         */
-        key: string;
-
-        /**
-         * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
-         * request another independent take on the same brief.
-         */
-        instructions?: string;
-      }
     }
   }
 
@@ -1059,7 +975,7 @@ export namespace DirectiveBinding {
        * Preferred highlight duration range in seconds. Best-effort guidance, with
        * millisecond precision.
        */
-      target_duration?: Parameters.TargetDuration;
+      target_duration?: FindKeyMomentsAPI.FindKeyMomentsTargetDuration;
 
       /**
        * Controls whether video assets are analyzed using Mux shots. When true, shots are
@@ -1068,24 +984,6 @@ export namespace DirectiveBinding {
        * supported for audio-only assets.
        */
       use_shots?: boolean;
-    }
-
-    export namespace Parameters {
-      /**
-       * Preferred highlight duration range in seconds. Best-effort guidance, with
-       * millisecond precision.
-       */
-      export interface TargetDuration {
-        /**
-         * Preferred maximum highlight duration in seconds, with millisecond precision.
-         */
-        max: number;
-
-        /**
-         * Preferred minimum highlight duration in seconds, with millisecond precision.
-         */
-        min: number;
-      }
     }
   }
 
@@ -1110,7 +1008,15 @@ export namespace DirectiveBinding {
      * Parameters for generate-engagement-insights, excluding engine-supplied asset_id
      * and source track_id where applicable.
      */
-    parameters?: unknown;
+    parameters?: GenerateEngagementInsightsDirectiveBinding.Parameters;
+  }
+
+  export namespace GenerateEngagementInsightsDirectiveBinding {
+    /**
+     * Parameters for generate-engagement-insights, excluding engine-supplied asset_id
+     * and source track_id where applicable.
+     */
+    export interface Parameters {}
   }
 
   export interface GeneratePremiumCaptionsDirectiveBinding {
@@ -1257,6 +1163,17 @@ export namespace DirectiveBinding {
       update_asset_thumbnail?: boolean;
     }
   }
+}
+
+export interface DirectiveLinks {
+  self: DirectiveSelfLink;
+}
+
+export interface DirectiveSelfLink {
+  /**
+   * URL to the directive in its creation API version.
+   */
+  href: string;
 }
 
 export interface DirectiveShotsResource {
@@ -1584,7 +1501,7 @@ export interface DirectiveListResponse {
    */
   id: string;
 
-  _links: DirectiveListResponse._Links;
+  _links: DirectiveLinks;
 
   /**
    * Creation Unix timestamp in seconds.
@@ -1600,21 +1517,6 @@ export interface DirectiveListResponse {
    * Last update Unix timestamp in seconds.
    */
   updated_at: number;
-}
-
-export namespace DirectiveListResponse {
-  export interface _Links {
-    self: _Links.Self;
-  }
-
-  export namespace _Links {
-    export interface Self {
-      /**
-       * URL to the directive in its creation API version.
-       */
-      href: string;
-    }
-  }
 }
 
 export interface DirectiveCreateParams {
@@ -1644,6 +1546,8 @@ export declare namespace Directives {
   export {
     type Directive as Directive,
     type DirectiveBinding as DirectiveBinding,
+    type DirectiveLinks as DirectiveLinks,
+    type DirectiveSelfLink as DirectiveSelfLink,
     type DirectiveShotsResource as DirectiveShotsResource,
     type DirectiveSubject as DirectiveSubject,
     type DirectiveTrackResource as DirectiveTrackResource,

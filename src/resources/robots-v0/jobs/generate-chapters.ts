@@ -11,25 +11,12 @@ import { path } from '../../../internal/utils/path';
  */
 export class GenerateChapters extends APIResource {
   /**
-   * Creates a new job that uses AI to generate chapters for a Mux Video asset.
-   * Optional output steering can guide chapter style, granularity, audience, and
-   * brand terms without changing the response schema.
+   * Deprecated: use `POST /robots/v1/jobs/generate-chapters` instead. Creates a new
+   * job that uses AI to generate chapters for a Mux Video asset. Optional output
+   * steering can guide chapter style, granularity, audience, and brand terms without
+   * changing the response schema.
    *
-   * @example
-   * ```ts
-   * const generateChaptersJob =
-   *   await client.robotsV0.jobs.generateChapters.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       update_asset_chapters: true,
-   *       output_steering: {
-   *         chapter_style: 'descriptive',
-   *         chapter_granularity: 'balanced',
-   *         audience: 'Developers',
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/generate-chapters` instead.
    */
   create(body: GenerateChapterCreateParams, options?: RequestOptions): APIPromise<GenerateChaptersJob> {
     return (
@@ -42,14 +29,11 @@ export class GenerateChapters extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/generate-chapters/{job_id}` instead.
    * Retrieves the current status and results of a 'generate-chapters' job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const generateChaptersJob =
-   *   await client.robotsV0.jobs.generateChapters.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/generate-chapters/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<GenerateChaptersJob> {
     return (

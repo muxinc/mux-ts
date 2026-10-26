@@ -11,16 +11,11 @@ import { path } from '../../../internal/utils/path';
  */
 export class Runs extends APIResource {
   /**
-   * Starts a directive run against a specific Mux asset. The directive engine
-   * dispatches the configured workflows and tracks the run to terminal.
+   * Deprecated: use `POST /robots/v1/directives/{directive_id}/runs` instead. Starts
+   * a directive run against a specific Mux asset. The directive engine dispatches
+   * the configured workflows and tracks the run to terminal.
    *
-   * @example
-   * ```ts
-   * const directiveRun =
-   *   await client.robotsV0.directives.runs.create('x', {
-   *     asset_id: 'abc123def456',
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/directives/{directive_id}/runs` instead.
    */
   create(directiveID: string, body: RunCreateParams, options?: RequestOptions): APIPromise<DirectiveRun> {
     return (
@@ -33,18 +28,11 @@ export class Runs extends APIResource {
   }
 
   /**
-   * Returns a paginated list of runs for a directive, newest first. Runs are
-   * retained for 30 days.
+   * Deprecated: use `GET /robots/v1/directives/{directive_id}/runs` instead. Returns
+   * a paginated list of runs for a directive, newest first. Runs are retained for 30
+   * days.
    *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const directiveRunDetail of client.robotsV0.directives.runs.list(
-   *   'x',
-   * )) {
-   *   // ...
-   * }
-   * ```
+   * @deprecated Use `GET /robots/v1/directives/{directive_id}/runs` instead.
    */
   list(
     directiveID: string,
@@ -59,14 +47,11 @@ export class Runs extends APIResource {
   }
 
   /**
-   * Retrieves the status, node states, and outcome of a specific directive run. Runs
-   * are retained for 30 days.
+   * Deprecated: use `GET /robots/v1/directives/{directive_id}/runs/{run_id}`
+   * instead. Retrieves the status, node states, and outcome of a specific directive
+   * run. Runs are retained for 30 days.
    *
-   * @example
-   * ```ts
-   * const directiveRunDetail =
-   *   await client.robotsV0.directives.runs.retrieve('x', 'x');
-   * ```
+   * @deprecated Use `GET /robots/v1/directives/{directive_id}/runs/{run_id}` instead.
    */
   retrieve(directiveID: string, runID: string, options?: RequestOptions): APIPromise<DirectiveRunDetail> {
     return (

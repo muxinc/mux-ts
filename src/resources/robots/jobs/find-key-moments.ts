@@ -278,7 +278,7 @@ export interface FindKeyMomentsJobParameters {
    * Preferred highlight duration range in seconds. Best-effort guidance, with
    * millisecond precision.
    */
-  target_duration?: FindKeyMomentsJobParameters.TargetDuration;
+  target_duration?: FindKeyMomentsTargetDuration;
 
   /**
    * Controls whether video assets are analyzed using Mux shots. When true, shots are
@@ -287,24 +287,6 @@ export interface FindKeyMomentsJobParameters {
    * supported for audio-only assets.
    */
   use_shots?: boolean;
-}
-
-export namespace FindKeyMomentsJobParameters {
-  /**
-   * Preferred highlight duration range in seconds. Best-effort guidance, with
-   * millisecond precision.
-   */
-  export interface TargetDuration {
-    /**
-     * Preferred maximum highlight duration in seconds, with millisecond precision.
-     */
-    max: number;
-
-    /**
-     * Preferred minimum highlight duration in seconds, with millisecond precision.
-     */
-    min: number;
-  }
 }
 
 /**
@@ -358,6 +340,22 @@ export interface FindKeyMomentsOutputSteering {
   topic_taxonomy?: JobsAPI.OutputSteeringTaxonomy;
 }
 
+/**
+ * Preferred highlight duration range in seconds. Best-effort guidance, with
+ * millisecond precision.
+ */
+export interface FindKeyMomentsTargetDuration {
+  /**
+   * Preferred maximum highlight duration in seconds, with millisecond precision.
+   */
+  max: number;
+
+  /**
+   * Preferred minimum highlight duration in seconds, with millisecond precision.
+   */
+  min: number;
+}
+
 export interface FindKeyMomentCreateParams {
   parameters: FindKeyMomentsJobParameters;
 
@@ -374,6 +372,7 @@ export declare namespace FindKeyMoments {
     type FindKeyMomentsJobOutputs as FindKeyMomentsJobOutputs,
     type FindKeyMomentsJobParameters as FindKeyMomentsJobParameters,
     type FindKeyMomentsOutputSteering as FindKeyMomentsOutputSteering,
+    type FindKeyMomentsTargetDuration as FindKeyMomentsTargetDuration,
     type FindKeyMomentCreateParams as FindKeyMomentCreateParams,
   };
 }

@@ -11,28 +11,13 @@ import { path } from '../../../internal/utils/path';
  */
 export class Summarize extends APIResource {
   /**
-   * Creates a new job that uses AI to generate a title, description, and tags for a
-   * Mux Video asset. Optional output steering can restrict execution to a time scope
-   * in seconds and guide summary style, audience, brand terms, and tag taxonomy
-   * without changing the response schema.
+   * Deprecated: use `POST /robots/v1/jobs/summarize` instead. Creates a new job that
+   * uses AI to generate a title, description, and tags for a Mux Video asset.
+   * Optional output steering can restrict execution to a time scope in seconds and
+   * guide summary style, audience, brand terms, and tag taxonomy without changing
+   * the response schema.
    *
-   * @example
-   * ```ts
-   * const summarizeJob =
-   *   await client.robotsV0.jobs.summarize.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       tone: 'neutral',
-   *       tag_count: 10,
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 180 },
-   *         summary_style: 'concise',
-   *         audience: 'Product marketers',
-   *         brand_terms: ['Mux', 'Robots'],
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/summarize` instead.
    */
   create(body: SummarizeCreateParams, options?: RequestOptions): APIPromise<SummarizeJob> {
     return (
@@ -45,14 +30,11 @@ export class Summarize extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of a 'summarize' job. Jobs are
-   * automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs/summarize/{job_id}` instead. Retrieves the
+   * current status and results of a 'summarize' job. Jobs are automatically deleted
+   * after 30 days.
    *
-   * @example
-   * ```ts
-   * const summarizeJob =
-   *   await client.robotsV0.jobs.summarize.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/summarize/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<SummarizeJob> {
     return (

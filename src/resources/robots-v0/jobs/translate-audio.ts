@@ -11,21 +11,10 @@ import { path } from '../../../internal/utils/path';
  */
 export class TranslateAudio extends APIResource {
   /**
-   * Creates a new job that translates the audio track of a Mux Video asset to
-   * another language.
+   * Deprecated: use `POST /robots/v1/jobs/translate-audio` instead. Creates a new
+   * job that translates the audio track of a Mux Video asset to another language.
    *
-   * @example
-   * ```ts
-   * const translateAudioJob =
-   *   await client.robotsV0.jobs.translateAudio.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       to_language_code: 'es',
-   *       upload_to_mux: true,
-   *       replace_existing_tracks: 'fail',
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/translate-audio` instead.
    */
   create(body: TranslateAudioCreateParams, options?: RequestOptions): APIPromise<TranslateAudioJob> {
     return (
@@ -38,14 +27,11 @@ export class TranslateAudio extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/translate-audio/{job_id}` instead.
    * Retrieves the current status and results of a 'translate-audio' job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const translateAudioJob =
-   *   await client.robotsV0.jobs.translateAudio.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/translate-audio/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<TranslateAudioJob> {
     return (

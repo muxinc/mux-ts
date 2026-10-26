@@ -166,10 +166,14 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextArtifact</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextCharacterMaxLength</a></code>
 - <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJob</a></code>
 - <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJobOutputs</a></code>
 - <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextJobParameters</a></code>
 - <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextOutputSteering</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextVariant</a></code>
+- <code><a href="./src/resources/robots-v0/jobs/generate-contextual-text.ts">GenerateContextualTextWordMaxLength</a></code>
 
 Methods:
 

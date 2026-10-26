@@ -23,6 +23,7 @@ export class TranslateCaptions extends APIResource {
    *       track_id: 'enabc123def456',
    *       output_language_code: 'es',
    *       upload_to_mux: true,
+   *       never_translate: ['Mux'],
    *       replace_existing_tracks: 'fail',
    *     },
    *   });

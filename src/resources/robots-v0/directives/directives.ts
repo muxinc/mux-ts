@@ -37,27 +37,11 @@ export class Directives extends APIResource {
   runs: RunsAPI.Runs = new RunsAPI.Runs(this._client);
 
   /**
-   * Creates a new directive that defines which Robots workflows should run against
-   * Mux assets, and under what resource conditions.
+   * Deprecated: use `POST /robots/v1/directives` instead. Creates a new directive
+   * that defines which Robots workflows should run against Mux assets, and under
+   * what resource conditions.
    *
-   * @example
-   * ```ts
-   * const directive = await client.robotsV0.directives.create({
-   *   name: 'Generate captions, then translate',
-   *   subject: { type: 'video.asset' },
-   *   workflows: [
-   *     {
-   *       reference_id: 'premium_captions',
-   *       workflow: 'generate-premium-captions',
-   *     },
-   *     {
-   *       params: { to_language_code: 'es' },
-   *       reference_id: 'translate_es',
-   *       workflow: 'translate-captions',
-   *     },
-   *   ],
-   * });
-   * ```
+   * @deprecated Use `POST /robots/v1/directives` instead.
    */
   create(body: DirectiveCreateParams, options?: RequestOptions): APIPromise<Directive> {
     return (
@@ -70,16 +54,10 @@ export class Directives extends APIResource {
   }
 
   /**
-   * Returns a paginated list of active directives for the current environment,
-   * newest first.
+   * Deprecated: use `GET /robots/v1/directives` instead. Returns a paginated list of
+   * active directives for the current environment, newest first.
    *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const directive of client.robotsV0.directives.list()) {
-   *   // ...
-   * }
-   * ```
+   * @deprecated Use `GET /robots/v1/directives` instead.
    */
   list(
     query: DirectiveListParams | null | undefined = {},
@@ -93,14 +71,10 @@ export class Directives extends APIResource {
   }
 
   /**
-   * Retrieves a directive by ID.
+   * Deprecated: use `GET /robots/v1/directives/{directive_id}` instead. Retrieves a
+   * directive by ID.
    *
-   * @example
-   * ```ts
-   * const directive = await client.robotsV0.directives.retrieve(
-   *   'x',
-   * );
-   * ```
+   * @deprecated Use `GET /robots/v1/directives/{directive_id}` instead.
    */
   retrieve(directiveID: string, options?: RequestOptions): APIPromise<Directive> {
     return (
@@ -112,14 +86,12 @@ export class Directives extends APIResource {
   }
 
   /**
-   * Deletes a directive. After this call, subsequent GET and LIST requests will no
-   * longer return it and new directive runs cannot be triggered for it. In-flight
-   * runs that have already read the directive config continue to completion.
+   * Deprecated: use `DELETE /robots/v1/directives/{directive_id}` instead. Deletes a
+   * directive. After this call, subsequent GET and LIST requests will no longer
+   * return it and new directive runs cannot be triggered for it. In-flight runs that
+   * have already read the directive config continue to completion.
    *
-   * @example
-   * ```ts
-   * await client.robotsV0.directives.delete('x');
-   * ```
+   * @deprecated Use `DELETE /robots/v1/directives/{directive_id}` instead.
    */
   delete(directiveID: string, options?: RequestOptions): APIPromise<void> {
     return this._client.delete(path`/robots/v0/directives/${directiveID}`, {
@@ -758,8 +730,9 @@ export namespace WorkflowBinding {
      */
     export interface Params {
       /**
-       * BCP 47 language code of the caption track to moderate. When omitted, an English
-       * subtitles track is preferred and otherwise the first ready text track is used.
+       * BCP 47 language code of the caption track to moderate. Used only for audio-only
+       * assets; ignored for video assets. When omitted, an English subtitles track is
+       * preferred and otherwise the first ready text track is used.
        */
       language_code?: string;
 
@@ -957,16 +930,16 @@ export namespace WorkflowBinding {
      */
     export interface Params {
       /**
-       * The deliverables to create for every variant. Supports 1-5 artifacts with unique
-       * keys.
+       * The deliverables to create. Every variant produces each artifact. Supports 1-5
+       * artifacts with unique keys.
        */
-      artifacts: Array<Params.Artifact>;
+      artifacts: Array<GenerateContextualTextAPI.GenerateContextualTextArtifact>;
 
       /**
-       * Named versions of the complete artifact set. Supports 1-5 variants with unique
-       * keys.
+       * Named versions of the complete artifact set. Every variant produces every
+       * artifact. Supports 1-5 variants with unique keys.
        */
-      variants: Array<Params.Variant>;
+      variants: Array<GenerateContextualTextAPI.GenerateContextualTextVariant>;
 
       /**
        * BCP 47 language code of the caption track to analyze. When omitted, the first
@@ -981,8 +954,9 @@ export namespace WorkflowBinding {
       output_language_code?: string;
 
       /**
-       * Curated controls that apply to every generated artifact. Scope bounds execution;
-       * the other fields are best-effort writing guidance.
+       * Curated controls that apply to every generated artifact in every variant. Scope
+       * bounds execution; the other fields are best-effort writing guidance. To vary
+       * voice or audience between variants, use variant instructions.
        */
       output_steering?: GenerateContextualTextAPI.GenerateContextualTextOutputSteering;
 
@@ -993,76 +967,6 @@ export namespace WorkflowBinding {
        * assets.
        */
       use_shots?: boolean;
-    }
-
-    export namespace Params {
-      /**
-       * One deliverable, such as a social post, blog post, or newsletter entry. The
-       * channel sets conventions and a default cap, max_length sets the hard cap, and
-       * format controls Markdown.
-       */
-      export interface Artifact {
-        /**
-         * Customer-chosen lowercase snake_case identifier used to correlate requested and
-         * returned content.
-         */
-        key: string;
-
-        /**
-         * Publishing channel whose conventions guide the result and set its default
-         * length. generic is capped at 300 words.
-         */
-        channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
-
-        /**
-         * Whether the text may use Markdown syntax. plain contains no Markdown.
-         */
-        format?: 'plain' | 'markdown';
-
-        /**
-         * Optional guidance specific to this artifact.
-         */
-        instructions?: string;
-
-        /**
-         * Hard output cap in characters or words. Defaults to the channel's cap.
-         */
-        max_length?:
-          | Artifact.GenerateContextualTextCharacterMaxLengthV0
-          | Artifact.GenerateContextualTextWordMaxLengthV0;
-      }
-
-      export namespace Artifact {
-        export interface GenerateContextualTextCharacterMaxLengthV0 {
-          unit: 'characters';
-
-          value: number;
-        }
-
-        export interface GenerateContextualTextWordMaxLengthV0 {
-          unit: 'words';
-
-          value: number;
-        }
-      }
-
-      /**
-       * A named version of the complete artifact set. The key is an identifier only and
-       * does not steer generation.
-       */
-      export interface Variant {
-        /**
-         * Customer-chosen lowercase snake_case identifier used to correlate requested and
-         * returned content.
-         */
-        key: string;
-
-        /**
-         * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
-         * request another independent take on the same brief.
-         */
-        instructions?: string;
-      }
     }
   }
 
@@ -1609,7 +1513,16 @@ export namespace WorkflowBinding {
      * accepted by POST /robots/v0/jobs/generate-engagement-insights, minus
      * engine-supplied fields such as asset_id.
      */
-    params?: unknown;
+    params?: GenerateEngagementInsightsBindingV0.Params;
+  }
+
+  export namespace GenerateEngagementInsightsBindingV0 {
+    /**
+     * Parameters for the generate-engagement-insights workflow — the same fields
+     * accepted by POST /robots/v0/jobs/generate-engagement-insights, minus
+     * engine-supplied fields such as asset_id.
+     */
+    export interface Params {}
   }
 
   export interface GeneratePremiumCaptionsBindingV0 {

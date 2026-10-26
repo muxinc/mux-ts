@@ -70,6 +70,7 @@ Types:
 - <code><a href="./src/resources/robots/jobs/find-key-moments.ts">FindKeyMomentsJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/find-key-moments.ts">FindKeyMomentsJobParameters</a></code>
 - <code><a href="./src/resources/robots/jobs/find-key-moments.ts">FindKeyMomentsOutputSteering</a></code>
+- <code><a href="./src/resources/robots/jobs/find-key-moments.ts">FindKeyMomentsTargetDuration</a></code>
 
 Methods:
 
@@ -152,10 +153,14 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextArtifact</a></code>
+- <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextCharacterMaxLength</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextJob</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextJobOutputs</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextJobParameters</a></code>
 - <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextOutputSteering</a></code>
+- <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextVariant</a></code>
+- <code><a href="./src/resources/robots/jobs/generate-contextual-text.ts">GenerateContextualTextWordMaxLength</a></code>
 
 Methods:
 
@@ -209,6 +214,8 @@ Types:
 
 - <code><a href="./src/resources/robots/directives/directives.ts">Directive</a></code>
 - <code><a href="./src/resources/robots/directives/directives.ts">DirectiveBinding</a></code>
+- <code><a href="./src/resources/robots/directives/directives.ts">DirectiveLinks</a></code>
+- <code><a href="./src/resources/robots/directives/directives.ts">DirectiveSelfLink</a></code>
 - <code><a href="./src/resources/robots/directives/directives.ts">DirectiveShotsResource</a></code>
 - <code><a href="./src/resources/robots/directives/directives.ts">DirectiveSubject</a></code>
 - <code><a href="./src/resources/robots/directives/directives.ts">DirectiveTrackResource</a></code>

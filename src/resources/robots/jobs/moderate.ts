@@ -139,33 +139,14 @@ export interface ModerateJobOutputs {
   exceeds_threshold: boolean;
 
   /**
-   * Highest scores across all thumbnails and transcript windows for each category.
+   * Highest scores across all thumbnails for each category.
    */
   max_scores: ModerateJobOutputs.MaxScores;
 
   /**
-   * Audit status for thumbnail moderation on this asset: whether it completed, was
-   * skipped (and why), or failed because every thumbnail errored.
-   */
-  thumbnail_moderation: ModerateJobOutputs.ThumbnailModeration;
-
-  /**
-   * Per-thumbnail moderation scores. Empty when thumbnail_moderation.status is
-   * "skipped".
+   * Per-thumbnail moderation scores.
    */
   thumbnail_scores: Array<ModerateJobOutputs.ThumbnailScore>;
-
-  /**
-   * Audit status for transcript moderation on this asset: whether it completed, was
-   * skipped (and why), or failed because every transcript window errored.
-   */
-  transcript_moderation: ModerateJobOutputs.TranscriptModeration;
-
-  /**
-   * Per-time-window transcript moderation scores. Empty when
-   * transcript_moderation.status is "skipped".
-   */
-  transcript_scores: Array<ModerateJobOutputs.TranscriptScore>;
 
   /**
    * Present only when on_flagged was set and exceeds_threshold was true. Records the
@@ -176,37 +157,12 @@ export interface ModerateJobOutputs {
 
 export namespace ModerateJobOutputs {
   /**
-   * Highest scores across all thumbnails and transcript windows for each category.
+   * Highest scores across all thumbnails for each category.
    */
   export interface MaxScores {
     sexual: number;
 
     violence: number;
-  }
-
-  /**
-   * Audit status for thumbnail moderation on this asset: whether it completed, was
-   * skipped (and why), or failed because every thumbnail errored.
-   */
-  export interface ThumbnailModeration {
-    /**
-     * "completed" if at least one thumbnail was moderated, "skipped" if nothing could
-     * be moderated on this surface (see skip_reason), "failed" if every thumbnail
-     * errored so this surface contributed no scores.
-     */
-    status: 'completed' | 'skipped' | 'failed';
-
-    /**
-     * Present only when status is "skipped". Human-readable explanation of
-     * skip_reason.
-     */
-    skip_message?: string;
-
-    /**
-     * Present only when status is "skipped". Machine-readable reason nothing was
-     * moderated.
-     */
-    skip_reason?: 'no_video_track' | 'no_video_in_scope';
   }
 
   export interface ThumbnailScore {
@@ -221,56 +177,10 @@ export namespace ModerateJobOutputs {
     violence: number;
 
     /**
-     * Time in seconds of the thumbnail within the video.
+     * Time in seconds of the thumbnail within the video. Absent for transcript
+     * moderation.
      */
     time?: number;
-  }
-
-  /**
-   * Audit status for transcript moderation on this asset: whether it completed, was
-   * skipped (and why), or failed because every transcript window errored.
-   */
-  export interface TranscriptModeration {
-    /**
-     * "completed" if at least one transcript window was moderated, "skipped" if
-     * nothing could be moderated on this surface (see skip_reason), "failed" if every
-     * transcript window errored so this surface contributed no scores.
-     */
-    status: 'completed' | 'skipped' | 'failed';
-
-    /**
-     * Present only when status is "skipped". Human-readable explanation of
-     * skip_reason.
-     */
-    skip_message?: string;
-
-    /**
-     * Present only when status is "skipped". Machine-readable reason nothing was
-     * moderated.
-     */
-    skip_reason?: 'no_ready_text_track' | 'no_cues';
-  }
-
-  export interface TranscriptScore {
-    /**
-     * Time in seconds where the moderated transcript window ends.
-     */
-    end_time: number;
-
-    /**
-     * Sexual content score from 0.0 to 1.0.
-     */
-    sexual: number;
-
-    /**
-     * Time in seconds where the moderated transcript window starts.
-     */
-    start_time: number;
-
-    /**
-     * Violence content score from 0.0 to 1.0.
-     */
-    violence: number;
   }
 
   /**

@@ -24,6 +24,7 @@ export class Summarize extends APIResource {
    *       asset_id: 'mux_asset_123abc',
    *       tone: 'neutral',
    *       tag_count: 10,
+   *       update_asset_meta: true,
    *       output_steering: {
    *         scope: { start_time: 30, end_time: 180 },
    *         summary_style: 'concise',

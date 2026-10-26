@@ -11,16 +11,11 @@ import { path } from '../../../internal/utils/path';
  */
 export class GenerateEngagementInsights extends APIResource {
   /**
+   * Deprecated: use `POST /robots/v1/jobs/generate-engagement-insights` instead.
    * Creates a new job that uses AI to analyze viewer engagement patterns and
    * generate insights for a Mux Video asset.
    *
-   * @example
-   * ```ts
-   * const generateEngagementInsightsJob =
-   *   await client.robotsV0.jobs.generateEngagementInsights.create(
-   *     { parameters: { asset_id: 'mux_asset_123abc' } },
-   *   );
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/generate-engagement-insights` instead.
    */
   create(
     body: GenerateEngagementInsightCreateParams,
@@ -36,16 +31,12 @@ export class GenerateEngagementInsights extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of a 'generate-engagement-insights'
-   * job. Jobs are automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs/generate-engagement-insights/{job_id}`
+   * instead. Retrieves the current status and results of a
+   * 'generate-engagement-insights' job. Jobs are automatically deleted after 30
+   * days.
    *
-   * @example
-   * ```ts
-   * const generateEngagementInsightsJob =
-   *   await client.robotsV0.jobs.generateEngagementInsights.retrieve(
-   *     'x',
-   *   );
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/generate-engagement-insights/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<GenerateEngagementInsightsJob> {
     return (

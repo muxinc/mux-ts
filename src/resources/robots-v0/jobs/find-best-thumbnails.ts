@@ -11,29 +11,15 @@ import { path } from '../../../internal/utils/path';
  */
 export class FindBestThumbnails extends APIResource {
   /**
-   * Creates a new job that samples thumbnails from a Mux Video asset, scores them
-   * with AI, and selects the best thumbnail candidates. Optional
-   * output_steering.scope hard-limits sampling to a time window expressed in seconds
-   * while returned timestamps stay absolute to the asset timeline. Other output
-   * steering can guide scoring strategy, explicit user intent, audience, and
-   * campaign style without changing the response schema.
+   * Deprecated: use `POST /robots/v1/jobs/find-best-thumbnails` instead. Creates a
+   * new job that samples thumbnails from a Mux Video asset, scores them with AI, and
+   * selects the best thumbnail candidates. Optional output_steering.scope
+   * hard-limits sampling to a time window expressed in seconds while returned
+   * timestamps stay absolute to the asset timeline. Other output steering can guide
+   * scoring strategy, explicit user intent, audience, and campaign style without
+   * changing the response schema.
    *
-   * @example
-   * ```ts
-   * const findBestThumbnailsJob =
-   *   await client.robotsV0.jobs.findBestThumbnails.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       max_thumbnails: 3,
-   *       update_asset_thumbnail: true,
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 180 },
-   *         selection_strategy: 'campaign_thumbnail',
-   *         scoring_priorities: ['composition', 'brand_fit'],
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/find-best-thumbnails` instead.
    */
   create(body: FindBestThumbnailCreateParams, options?: RequestOptions): APIPromise<FindBestThumbnailsJob> {
     return (
@@ -46,16 +32,11 @@ export class FindBestThumbnails extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/find-best-thumbnails/{job_id}` instead.
    * Retrieves the current status and results of a 'find-best-thumbnails' job. Jobs
    * are automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const findBestThumbnailsJob =
-   *   await client.robotsV0.jobs.findBestThumbnails.retrieve(
-   *     'x',
-   *   );
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/find-best-thumbnails/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<FindBestThumbnailsJob> {
     return (

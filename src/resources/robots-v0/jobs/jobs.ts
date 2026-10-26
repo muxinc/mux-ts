@@ -67,11 +67,15 @@ import {
 import * as GenerateContextualTextAPI from './generate-contextual-text';
 import {
   GenerateContextualText,
+  GenerateContextualTextArtifact,
+  GenerateContextualTextCharacterMaxLength,
   GenerateContextualTextCreateParams,
   GenerateContextualTextJob,
   GenerateContextualTextJobOutputs,
   GenerateContextualTextJobParameters,
   GenerateContextualTextOutputSteering,
+  GenerateContextualTextVariant,
+  GenerateContextualTextWordMaxLength,
 } from './generate-contextual-text';
 import * as GenerateEngagementInsightsAPI from './generate-engagement-insights';
 import {
@@ -164,16 +168,11 @@ export class Jobs extends APIResource {
   translateAudio: TranslateAudioAPI.TranslateAudio = new TranslateAudioAPI.TranslateAudio(this._client);
 
   /**
-   * Returns a paginated list of Robots jobs, with optional filters for workflow,
-   * status, and asset_id. Jobs are automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs` instead. Returns a paginated list of
+   * Robots jobs, with optional filters for workflow, status, and asset_id. Jobs are
+   * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * // Automatically fetches more pages as needed.
-   * for await (const jobSummary of client.robotsV0.jobs.list()) {
-   *   // ...
-   * }
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs` instead.
    */
   list(
     query: JobListParams | null | undefined = {},
@@ -187,12 +186,10 @@ export class Jobs extends APIResource {
   }
 
   /**
-   * Cancels a job that is currently pending or processing.
+   * Deprecated: use `POST /robots/v1/jobs/{job_id}/cancel` instead. Cancels a job
+   * that is currently pending or processing.
    *
-   * @example
-   * ```ts
-   * const jobSummary = await client.robotsV0.jobs.cancel('x');
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/{job_id}/cancel` instead.
    */
   cancel(jobID: string, options?: RequestOptions): APIPromise<JobSummary> {
     return (
@@ -625,10 +622,14 @@ export declare namespace Jobs {
 
   export {
     GenerateContextualText as GenerateContextualText,
+    type GenerateContextualTextArtifact as GenerateContextualTextArtifact,
+    type GenerateContextualTextCharacterMaxLength as GenerateContextualTextCharacterMaxLength,
     type GenerateContextualTextJob as GenerateContextualTextJob,
     type GenerateContextualTextJobOutputs as GenerateContextualTextJobOutputs,
     type GenerateContextualTextJobParameters as GenerateContextualTextJobParameters,
     type GenerateContextualTextOutputSteering as GenerateContextualTextOutputSteering,
+    type GenerateContextualTextVariant as GenerateContextualTextVariant,
+    type GenerateContextualTextWordMaxLength as GenerateContextualTextWordMaxLength,
     type GenerateContextualTextCreateParams as GenerateContextualTextCreateParams,
   };
 

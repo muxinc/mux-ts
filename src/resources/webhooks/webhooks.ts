@@ -3768,10 +3768,10 @@ export interface WebhookDirectiveRun {
    * diagnostic.
    */
   node_states: Array<
-    | WebhookDirectiveRun.UnionMember0
-    | WebhookDirectiveRun.UnionMember1
-    | WebhookDirectiveRun.UnionMember2
-    | WebhookDirectiveRun.UnionMember3
+    | WebhookDirectiveRun.DirectiveNodeDispatched
+    | WebhookDirectiveRun.DirectiveNodeFailed
+    | WebhookDirectiveRun.DirectiveNodeWaitingForResources
+    | WebhookDirectiveRun.DirectiveNodeWaitingForSourceBindings
   >;
 
   /**
@@ -3788,7 +3788,7 @@ export interface WebhookDirectiveRun {
 }
 
 export namespace WebhookDirectiveRun {
-  export interface UnionMember0 {
+  export interface DirectiveNodeDispatched {
     /**
      * Workflow job ID (rjob\_...).
      */
@@ -3820,7 +3820,7 @@ export namespace WebhookDirectiveRun {
       | 'find-best-thumbnails';
   }
 
-  export interface UnionMember1 {
+  export interface DirectiveNodeFailed {
     /**
      * Human-readable diagnostic explaining why the binding didn't dispatch.
      */
@@ -3834,7 +3834,7 @@ export namespace WebhookDirectiveRun {
     status: 'failed';
   }
 
-  export interface UnionMember2 {
+  export interface DirectiveNodeWaitingForResources {
     /**
      * Declared binding reference_id from directive.bindings[].
      */
@@ -3861,7 +3861,7 @@ export namespace WebhookDirectiveRun {
       | 'find-best-thumbnails';
   }
 
-  export interface UnionMember3 {
+  export interface DirectiveNodeWaitingForSourceBindings {
     /**
      * Declared binding reference_id from directive.bindings[].
      */
@@ -7417,8 +7417,8 @@ export interface WebhookGenerateContextualTextJob {
 export namespace WebhookGenerateContextualTextJob {
   export interface Parameters {
     /**
-     * The deliverables to create for every variant. Supports 1-5 artifacts with unique
-     * keys.
+     * The deliverables to create. Every variant produces each artifact. Supports 1-5
+     * artifacts with unique keys.
      */
     artifacts: Array<Parameters.Artifact>;
 
@@ -7428,8 +7428,8 @@ export namespace WebhookGenerateContextualTextJob {
     asset_id: string;
 
     /**
-     * Named versions of the complete artifact set. Supports 1-5 variants with unique
-     * keys.
+     * Named versions of the complete artifact set. Every variant produces every
+     * artifact. Supports 1-5 variants with unique keys.
      */
     variants: Array<Parameters.Variant>;
 
@@ -7451,8 +7451,9 @@ export namespace WebhookGenerateContextualTextJob {
     output_language_code?: string;
 
     /**
-     * Curated controls that apply to every generated artifact. Scope bounds execution;
-     * the other fields are best-effort writing guidance.
+     * Curated controls that apply to every generated artifact in every variant. Scope
+     * bounds execution; the other fields are best-effort writing guidance. To vary
+     * voice or audience between variants, use variant instructions.
      */
     output_steering?: Parameters.OutputSteering;
 
@@ -7467,9 +7468,9 @@ export namespace WebhookGenerateContextualTextJob {
 
   export namespace Parameters {
     /**
-     * One deliverable, such as a social post, blog post, or newsletter entry. The
-     * channel sets conventions and a default cap, max_length sets the hard cap, and
-     * format controls Markdown.
+     * One deliverable, such as a social post, blog post, or newsletter entry. Every
+     * variant produces each artifact. The channel sets conventions and a default cap,
+     * max_length sets the hard cap, and format controls Markdown.
      */
     export interface Artifact {
       /**
@@ -7480,7 +7481,11 @@ export namespace WebhookGenerateContextualTextJob {
 
       /**
        * Publishing channel whose conventions guide the result and set its default
-       * length. generic is capped at 300 words.
+       * length: 300 words for generic and linkedin, 250 words for facebook and youtube,
+       * 100 words for tiktok, 1,500 characters for instagram, and 280 characters for x.
+       * generic has no platform conventions; its style follows the length cap, and a
+       * max_length above 600 words produces article-style writing such as a blog post or
+       * newsletter entry.
        */
       channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
 
@@ -7490,24 +7495,30 @@ export namespace WebhookGenerateContextualTextJob {
       format?: 'plain' | 'markdown';
 
       /**
-       * Optional guidance specific to this artifact.
+       * Optional guidance specific to this artifact, such as the deliverable to write.
+       * Applies in every variant.
        */
       instructions?: string;
 
       /**
-       * Hard output cap in characters or words. Defaults to the channel's cap.
+       * Hard output cap in characters or words. Defaults to the channel's cap. Text aims
+       * for about 90% of the cap regardless of the source's length, so set the length
+       * you want rather than relying on the default. x is always capped at 280
+       * characters, even with a word cap.
        */
-      max_length?: Artifact.UnionMember0 | Artifact.UnionMember1;
+      max_length?:
+        | Artifact.GenerateContextualTextCharacterMaxLength
+        | Artifact.GenerateContextualTextWordMaxLength;
     }
 
     export namespace Artifact {
-      export interface UnionMember0 {
+      export interface GenerateContextualTextCharacterMaxLength {
         unit: 'characters';
 
         value: number;
       }
 
-      export interface UnionMember1 {
+      export interface GenerateContextualTextWordMaxLength {
         unit: 'words';
 
         value: number;
@@ -7515,8 +7526,10 @@ export namespace WebhookGenerateContextualTextJob {
     }
 
     /**
-     * A named version of the complete artifact set. The key is an identifier only and
-     * does not steer generation.
+     * A named version of the complete artifact set: every variant produces every
+     * artifact, so 2 variants and 2 artifacts produce 4 pieces of text. The key is an
+     * identifier only and does not steer generation; use instructions to give the
+     * variant an angle.
      */
     export interface Variant {
       /**
@@ -7526,15 +7539,18 @@ export namespace WebhookGenerateContextualTextJob {
       key: string;
 
       /**
-       * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
-       * request another independent take on the same brief.
+       * Optional bounded guidance that gives this variant a deliberate angle, such as a
+       * voice, audience, or focus (for example, "Playful voice for a Gen Z audience").
+       * Applies to every artifact in the variant. Omit it to request another independent
+       * take on the same brief.
        */
       instructions?: string;
     }
 
     /**
-     * Curated controls that apply to every generated artifact. Scope bounds execution;
-     * the other fields are best-effort writing guidance.
+     * Curated controls that apply to every generated artifact in every variant. Scope
+     * bounds execution; the other fields are best-effort writing guidance. To vary
+     * voice or audience between variants, use variant instructions.
      */
     export interface OutputSteering {
       /**
@@ -7561,7 +7577,9 @@ export namespace WebhookGenerateContextualTextJob {
       scope?: OutputSteering.Scope;
 
       /**
-       * Best-effort writing voice for every generated artifact.
+       * Best-effort writing voice for every generated artifact in every variant. To give
+       * variants different voices, describe the voice in each variant's instructions
+       * instead.
        */
       voice?: 'conversational' | 'editorial' | 'playful' | 'professional';
     }
@@ -7789,8 +7807,8 @@ export interface WebhookGenerateContextualTextJobV0 {
 export namespace WebhookGenerateContextualTextJobV0 {
   export interface Parameters {
     /**
-     * The deliverables to create for every variant. Supports 1-5 artifacts with unique
-     * keys.
+     * The deliverables to create. Every variant produces each artifact. Supports 1-5
+     * artifacts with unique keys.
      */
     artifacts: Array<Parameters.Artifact>;
 
@@ -7800,8 +7818,8 @@ export namespace WebhookGenerateContextualTextJobV0 {
     asset_id: string;
 
     /**
-     * Named versions of the complete artifact set. Supports 1-5 variants with unique
-     * keys.
+     * Named versions of the complete artifact set. Every variant produces every
+     * artifact. Supports 1-5 variants with unique keys.
      */
     variants: Array<Parameters.Variant>;
 
@@ -7818,8 +7836,9 @@ export namespace WebhookGenerateContextualTextJobV0 {
     output_language_code?: string;
 
     /**
-     * Curated controls that apply to every generated artifact. Scope bounds execution;
-     * the other fields are best-effort writing guidance.
+     * Curated controls that apply to every generated artifact in every variant. Scope
+     * bounds execution; the other fields are best-effort writing guidance. To vary
+     * voice or audience between variants, use variant instructions.
      */
     output_steering?: Parameters.OutputSteering;
 
@@ -7834,9 +7853,9 @@ export namespace WebhookGenerateContextualTextJobV0 {
 
   export namespace Parameters {
     /**
-     * One deliverable, such as a social post, blog post, or newsletter entry. The
-     * channel sets conventions and a default cap, max_length sets the hard cap, and
-     * format controls Markdown.
+     * One deliverable, such as a social post, blog post, or newsletter entry. Every
+     * variant produces each artifact. The channel sets conventions and a default cap,
+     * max_length sets the hard cap, and format controls Markdown.
      */
     export interface Artifact {
       /**
@@ -7847,7 +7866,11 @@ export namespace WebhookGenerateContextualTextJobV0 {
 
       /**
        * Publishing channel whose conventions guide the result and set its default
-       * length. generic is capped at 300 words.
+       * length: 300 words for generic and linkedin, 250 words for facebook and youtube,
+       * 100 words for tiktok, 1,500 characters for instagram, and 280 characters for x.
+       * generic has no platform conventions; its style follows the length cap, and a
+       * max_length above 600 words produces article-style writing such as a blog post or
+       * newsletter entry.
        */
       channel?: 'generic' | 'x' | 'linkedin' | 'facebook' | 'instagram' | 'tiktok' | 'youtube';
 
@@ -7857,24 +7880,30 @@ export namespace WebhookGenerateContextualTextJobV0 {
       format?: 'plain' | 'markdown';
 
       /**
-       * Optional guidance specific to this artifact.
+       * Optional guidance specific to this artifact, such as the deliverable to write.
+       * Applies in every variant.
        */
       instructions?: string;
 
       /**
-       * Hard output cap in characters or words. Defaults to the channel's cap.
+       * Hard output cap in characters or words. Defaults to the channel's cap. Text aims
+       * for about 90% of the cap regardless of the source's length, so set the length
+       * you want rather than relying on the default. x is always capped at 280
+       * characters, even with a word cap.
        */
-      max_length?: Artifact.UnionMember0 | Artifact.UnionMember1;
+      max_length?:
+        | Artifact.GenerateContextualTextCharacterMaxLengthV0
+        | Artifact.GenerateContextualTextWordMaxLengthV0;
     }
 
     export namespace Artifact {
-      export interface UnionMember0 {
+      export interface GenerateContextualTextCharacterMaxLengthV0 {
         unit: 'characters';
 
         value: number;
       }
 
-      export interface UnionMember1 {
+      export interface GenerateContextualTextWordMaxLengthV0 {
         unit: 'words';
 
         value: number;
@@ -7882,8 +7911,10 @@ export namespace WebhookGenerateContextualTextJobV0 {
     }
 
     /**
-     * A named version of the complete artifact set. The key is an identifier only and
-     * does not steer generation.
+     * A named version of the complete artifact set: every variant produces every
+     * artifact, so 2 variants and 2 artifacts produce 4 pieces of text. The key is an
+     * identifier only and does not steer generation; use instructions to give the
+     * variant an angle.
      */
     export interface Variant {
       /**
@@ -7893,15 +7924,18 @@ export namespace WebhookGenerateContextualTextJobV0 {
       key: string;
 
       /**
-       * Optional bounded guidance that gives this variant a deliberate angle. Omit it to
-       * request another independent take on the same brief.
+       * Optional bounded guidance that gives this variant a deliberate angle, such as a
+       * voice, audience, or focus (for example, "Playful voice for a Gen Z audience").
+       * Applies to every artifact in the variant. Omit it to request another independent
+       * take on the same brief.
        */
       instructions?: string;
     }
 
     /**
-     * Curated controls that apply to every generated artifact. Scope bounds execution;
-     * the other fields are best-effort writing guidance.
+     * Curated controls that apply to every generated artifact in every variant. Scope
+     * bounds execution; the other fields are best-effort writing guidance. To vary
+     * voice or audience between variants, use variant instructions.
      */
     export interface OutputSteering {
       /**
@@ -7928,7 +7962,9 @@ export namespace WebhookGenerateContextualTextJobV0 {
       scope?: OutputSteering.Scope;
 
       /**
-       * Best-effort writing voice for every generated artifact.
+       * Best-effort writing voice for every generated artifact in every variant. To give
+       * variants different voices, describe the voice in each variant's instructions
+       * instead.
        */
       voice?: 'conversational' | 'editorial' | 'playful' | 'professional';
     }
@@ -10186,33 +10222,14 @@ export namespace WebhookModerateJob {
     exceeds_threshold: boolean;
 
     /**
-     * Highest scores across all thumbnails and transcript windows for each category.
+     * Highest scores across all thumbnails for each category.
      */
     max_scores: Outputs.MaxScores;
 
     /**
-     * Audit status for thumbnail moderation on this asset: whether it completed, was
-     * skipped (and why), or failed because every thumbnail errored.
-     */
-    thumbnail_moderation: Outputs.ThumbnailModeration;
-
-    /**
-     * Per-thumbnail moderation scores. Empty when thumbnail_moderation.status is
-     * "skipped".
+     * Per-thumbnail moderation scores.
      */
     thumbnail_scores: Array<Outputs.ThumbnailScore>;
-
-    /**
-     * Audit status for transcript moderation on this asset: whether it completed, was
-     * skipped (and why), or failed because every transcript window errored.
-     */
-    transcript_moderation: Outputs.TranscriptModeration;
-
-    /**
-     * Per-time-window transcript moderation scores. Empty when
-     * transcript_moderation.status is "skipped".
-     */
-    transcript_scores: Array<Outputs.TranscriptScore>;
 
     /**
      * Present only when on_flagged was set and exceeds_threshold was true. Records the
@@ -10223,37 +10240,12 @@ export namespace WebhookModerateJob {
 
   export namespace Outputs {
     /**
-     * Highest scores across all thumbnails and transcript windows for each category.
+     * Highest scores across all thumbnails for each category.
      */
     export interface MaxScores {
       sexual: number;
 
       violence: number;
-    }
-
-    /**
-     * Audit status for thumbnail moderation on this asset: whether it completed, was
-     * skipped (and why), or failed because every thumbnail errored.
-     */
-    export interface ThumbnailModeration {
-      /**
-       * "completed" if at least one thumbnail was moderated, "skipped" if nothing could
-       * be moderated on this surface (see skip_reason), "failed" if every thumbnail
-       * errored so this surface contributed no scores.
-       */
-      status: 'completed' | 'skipped' | 'failed';
-
-      /**
-       * Present only when status is "skipped". Human-readable explanation of
-       * skip_reason.
-       */
-      skip_message?: string;
-
-      /**
-       * Present only when status is "skipped". Machine-readable reason nothing was
-       * moderated.
-       */
-      skip_reason?: 'no_video_track' | 'no_video_in_scope';
     }
 
     export interface ThumbnailScore {
@@ -10268,56 +10260,10 @@ export namespace WebhookModerateJob {
       violence: number;
 
       /**
-       * Time in seconds of the thumbnail within the video.
+       * Time in seconds of the thumbnail within the video. Absent for transcript
+       * moderation.
        */
       time?: number;
-    }
-
-    /**
-     * Audit status for transcript moderation on this asset: whether it completed, was
-     * skipped (and why), or failed because every transcript window errored.
-     */
-    export interface TranscriptModeration {
-      /**
-       * "completed" if at least one transcript window was moderated, "skipped" if
-       * nothing could be moderated on this surface (see skip_reason), "failed" if every
-       * transcript window errored so this surface contributed no scores.
-       */
-      status: 'completed' | 'skipped' | 'failed';
-
-      /**
-       * Present only when status is "skipped". Human-readable explanation of
-       * skip_reason.
-       */
-      skip_message?: string;
-
-      /**
-       * Present only when status is "skipped". Machine-readable reason nothing was
-       * moderated.
-       */
-      skip_reason?: 'no_ready_text_track' | 'no_cues';
-    }
-
-    export interface TranscriptScore {
-      /**
-       * Time in seconds where the moderated transcript window ends.
-       */
-      end_time: number;
-
-      /**
-       * Sexual content score from 0.0 to 1.0.
-       */
-      sexual: number;
-
-      /**
-       * Time in seconds where the moderated transcript window starts.
-       */
-      start_time: number;
-
-      /**
-       * Violence content score from 0.0 to 1.0.
-       */
-      violence: number;
     }
 
     /**
@@ -10477,8 +10423,9 @@ export namespace WebhookModerateJobV0 {
     asset_id: string;
 
     /**
-     * BCP 47 language code of the caption track to moderate. When omitted, an English
-     * subtitles track is preferred and otherwise the first ready text track is used.
+     * BCP 47 language code of the caption track to moderate. Used only for audio-only
+     * assets; ignored for video assets. When omitted, an English subtitles track is
+     * preferred and otherwise the first ready text track is used.
      */
     language_code?: string;
 
@@ -10629,14 +10576,12 @@ export namespace WebhookModerateJobV0 {
     exceeds_threshold: boolean;
 
     /**
-     * Highest scores across all thumbnails and transcript windows for each category.
+     * Highest scores across all thumbnails for each category.
      */
     max_scores: Outputs.MaxScores;
 
     /**
-     * Per-thumbnail moderation scores. Empty when thumbnail_moderation.status is
-     * "skipped", except for audio-only jobs created before transcript moderation
-     * existed: their transcript window scores appear here without a time.
+     * Per-thumbnail moderation scores.
      */
     thumbnail_scores: Array<Outputs.ThumbnailScore>;
 
@@ -10645,30 +10590,11 @@ export namespace WebhookModerateJobV0 {
      * action taken and which playback IDs were deleted.
      */
     flagged_action?: Outputs.FlaggedAction;
-
-    /**
-     * Audit status for thumbnail moderation on this asset. Absent on jobs created
-     * before transcript moderation existed.
-     */
-    thumbnail_moderation?: Outputs.ThumbnailModeration;
-
-    /**
-     * Audit status for transcript moderation on this asset. Absent on jobs created
-     * before transcript moderation existed.
-     */
-    transcript_moderation?: Outputs.TranscriptModeration;
-
-    /**
-     * Per-time-window transcript moderation scores. Empty when
-     * transcript_moderation.status is "skipped". Absent on jobs created before
-     * transcript moderation existed.
-     */
-    transcript_scores?: Array<Outputs.TranscriptScore>;
   }
 
   export namespace Outputs {
     /**
-     * Highest scores across all thumbnails and transcript windows for each category.
+     * Highest scores across all thumbnails for each category.
      */
     export interface MaxScores {
       sexual: number;
@@ -10688,7 +10614,8 @@ export namespace WebhookModerateJobV0 {
       violence: number;
 
       /**
-       * Time in seconds of the thumbnail within the video.
+       * Time in seconds of the thumbnail within the video. Absent for transcript
+       * moderation.
        */
       time?: number;
     }
@@ -10704,78 +10631,6 @@ export namespace WebhookModerateJobV0 {
        * Playback IDs that were deleted from the asset because it exceeded the threshold.
        */
       deleted_playback_ids: Array<string>;
-    }
-
-    /**
-     * Audit status for thumbnail moderation on this asset. Absent on jobs created
-     * before transcript moderation existed.
-     */
-    export interface ThumbnailModeration {
-      /**
-       * "completed" if at least one thumbnail was moderated, "skipped" if nothing could
-       * be moderated on this surface (see skip_reason), "failed" if every thumbnail
-       * errored so this surface contributed no scores.
-       */
-      status: 'completed' | 'skipped' | 'failed';
-
-      /**
-       * Present only when status is "skipped". Human-readable explanation of
-       * skip_reason.
-       */
-      skip_message?: string;
-
-      /**
-       * Present only when status is "skipped". Machine-readable reason nothing was
-       * moderated.
-       */
-      skip_reason?: 'no_video_track' | 'no_video_in_scope';
-    }
-
-    /**
-     * Audit status for transcript moderation on this asset. Absent on jobs created
-     * before transcript moderation existed.
-     */
-    export interface TranscriptModeration {
-      /**
-       * "completed" if at least one transcript window was moderated, "skipped" if
-       * nothing could be moderated on this surface (see skip_reason), "failed" if every
-       * transcript window errored so this surface contributed no scores.
-       */
-      status: 'completed' | 'skipped' | 'failed';
-
-      /**
-       * Present only when status is "skipped". Human-readable explanation of
-       * skip_reason.
-       */
-      skip_message?: string;
-
-      /**
-       * Present only when status is "skipped". Machine-readable reason nothing was
-       * moderated.
-       */
-      skip_reason?: 'no_ready_text_track' | 'no_cues';
-    }
-
-    export interface TranscriptScore {
-      /**
-       * Time in seconds where the moderated transcript window ends.
-       */
-      end_time: number;
-
-      /**
-       * Sexual content score from 0.0 to 1.0.
-       */
-      sexual: number;
-
-      /**
-       * Time in seconds where the moderated transcript window starts.
-       */
-      start_time: number;
-
-      /**
-       * Violence content score from 0.0 to 1.0.
-       */
-      violence: number;
     }
   }
 

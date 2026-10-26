@@ -11,37 +11,18 @@ import { path } from '../../../internal/utils/path';
  */
 export class FindKeyMoments extends APIResource {
   /**
-   * Creates a new job that uses AI to identify key moments in a Mux Video asset. Set
-   * use_shots to true to automatically generate or reuse Mux shots and use visual
-   * evidence during selection, with transcript evidence incorporated when available;
-   * otherwise selection uses transcript evidence and the asset must have a caption
-   * track. Audio-only assets always use transcript evidence and require a caption
-   * track. Optional output steering can restrict execution to a time scope in
-   * seconds and guide selection strategy, title style, audience, topic taxonomy, and
-   * scoring priorities without changing the response schema. Scoped results retain
-   * absolute timestamps on the original asset timeline.
+   * Deprecated: use `POST /robots/v1/jobs/find-key-moments` instead. Creates a new
+   * job that uses AI to identify key moments in a Mux Video asset. Set use_shots to
+   * true to automatically generate or reuse Mux shots and use visual evidence during
+   * selection, with transcript evidence incorporated when available; otherwise
+   * selection uses transcript evidence and the asset must have a caption track.
+   * Audio-only assets always use transcript evidence and require a caption track.
+   * Optional output steering can restrict execution to a time scope in seconds and
+   * guide selection strategy, title style, audience, topic taxonomy, and scoring
+   * priorities without changing the response schema. Scoped results retain absolute
+   * timestamps on the original asset timeline.
    *
-   * @example
-   * ```ts
-   * const findKeyMomentsJob =
-   *   await client.robotsV0.jobs.findKeyMoments.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       max_moments: 10,
-   *       target_duration_ms: { min: 15000, max: 45000 },
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 180 },
-   *         selection_strategy: 'educational_takeaways',
-   *         title_style: 'punchy',
-   *         audience: 'Developer advocates',
-   *         rubric_priorities: [
-   *           'clarity_in_isolation',
-   *           'soundbite_quality',
-   *         ],
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/find-key-moments` instead.
    */
   create(body: FindKeyMomentCreateParams, options?: RequestOptions): APIPromise<FindKeyMomentsJob> {
     return (
@@ -54,14 +35,11 @@ export class FindKeyMoments extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/find-key-moments/{job_id}` instead.
    * Retrieves the current status and results of a 'find-key-moments' job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const findKeyMomentsJob =
-   *   await client.robotsV0.jobs.findKeyMoments.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/find-key-moments/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<FindKeyMomentsJob> {
     return (

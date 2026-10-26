@@ -32,7 +32,7 @@ describe('resource translateCaptions', () => {
         asset_id: 'mux_asset_123abc',
         output_language_code: 'es',
         track_id: 'enabc123def456',
-        never_translate: ['Mux', 'Springfield'],
+        never_translate: ['Mux'],
         replace_existing_tracks: 'fail',
         track_name: 'x',
         upload_to_mux: true,

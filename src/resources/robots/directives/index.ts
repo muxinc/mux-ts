@@ -4,6 +4,8 @@ export {
   Directives,
   type Directive,
   type DirectiveBinding,
+  type DirectiveLinks,
+  type DirectiveSelfLink,
   type DirectiveShotsResource,
   type DirectiveSubject,
   type DirectiveTrackResource,

@@ -11,33 +11,17 @@ import { path } from '../../../internal/utils/path';
  */
 export class FindScenes extends APIResource {
   /**
-   * Creates a new job that segments a Mux video asset into ordered scenes using
-   * storyboard-backed generated shots for shot-level visual evidence, combined with
-   * transcript cues when available. If the asset has no generated shots, the job
-   * generates them on demand and waits for completion — they do not need to exist
-   * beforehand. Optional output steering can restrict execution to a time scope in
-   * seconds and guide segmentation strategy, title style, narration detail,
-   * audience, brand terms, and topic taxonomy without changing the response schema.
-   * Scoped results retain absolute timestamps on the original asset timeline.
+   * Deprecated: use `POST /robots/v1/jobs/analyze-structure` instead. Creates a new
+   * job that segments a Mux video asset into ordered scenes using storyboard-backed
+   * generated shots for shot-level visual evidence, combined with transcript cues
+   * when available. If the asset has no generated shots, the job generates them on
+   * demand and waits for completion — they do not need to exist beforehand. Optional
+   * output steering can restrict execution to a time scope in seconds and guide
+   * segmentation strategy, title style, narration detail, audience, brand terms, and
+   * topic taxonomy without changing the response schema. Scoped results retain
+   * absolute timestamps on the original asset timeline.
    *
-   * @example
-   * ```ts
-   * const findScenesJob =
-   *   await client.robotsV0.jobs.findScenes.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       language_code: 'en',
-   *       min_scenes: 4,
-   *       min_scene_duration_ms: 15000,
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 180 },
-   *         segmentation_strategy: 'editorial_beats',
-   *         title_style: 'descriptive',
-   *         narration_detail: 'balanced',
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/analyze-structure` instead.
    */
   create(body: FindSceneCreateParams, options?: RequestOptions): APIPromise<FindScenesJob> {
     return (
@@ -50,14 +34,11 @@ export class FindScenes extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/analyze-structure/{job_id}` instead.
    * Retrieves the current status and results of a 'find-scenes' job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const findScenesJob =
-   *   await client.robotsV0.jobs.findScenes.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/analyze-structure/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<FindScenesJob> {
     return (

@@ -11,28 +11,11 @@ import { path } from '../../../internal/utils/path';
  */
 export class AnalyzeStructure extends APIResource {
   /**
-   * Creates a job that generates a coherent title, summary, tags, chapters, scenes,
-   * and key moments from shared evidence for a Mux asset.
+   * Deprecated: use `POST /robots/v1/jobs/analyze-structure` instead. Creates a job
+   * that generates a coherent title, summary, tags, chapters, scenes, and key
+   * moments from shared evidence for a Mux asset.
    *
-   * @example
-   * ```ts
-   * const analyzeStructureJob =
-   *   await client.robotsV0.jobs.analyzeStructure.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       language_code: 'en',
-   *       output_language_code: 'en',
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 300 },
-   *         audience: 'Developers evaluating video APIs',
-   *         brand_terms: ['Mux', 'Mux Data'],
-   *         granularity: 'balanced',
-   *       },
-   *       update_asset_meta: true,
-   *       update_asset_chapters: true,
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/analyze-structure` instead.
    */
   create(body: AnalyzeStructureCreateParams, options?: RequestOptions): APIPromise<AnalyzeStructureJob> {
     return (
@@ -45,14 +28,11 @@ export class AnalyzeStructure extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/analyze-structure/{job_id}` instead.
    * Retrieves the current status and results of an Analyze Structure job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const analyzeStructureJob =
-   *   await client.robotsV0.jobs.analyzeStructure.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/analyze-structure/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<AnalyzeStructureJob> {
     return (

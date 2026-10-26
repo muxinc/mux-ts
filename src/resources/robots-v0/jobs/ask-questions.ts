@@ -11,39 +11,11 @@ import { path } from '../../../internal/utils/path';
  */
 export class AskQuestions extends APIResource {
   /**
-   * Creates a new job that uses AI to answer questions about a Mux Video asset.
-   * Optional output steering can restrict execution to a time scope in seconds.
+   * Deprecated: use `POST /robots/v1/jobs/ask-questions` instead. Creates a new job
+   * that uses AI to answer questions about a Mux Video asset. Optional output
+   * steering can restrict execution to a time scope in seconds.
    *
-   * @example
-   * ```ts
-   * const askQuestionsJob =
-   *   await client.robotsV0.jobs.askQuestions.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       questions: [
-   *         { question: 'Is this video about glasses?' },
-   *         {
-   *           question: 'What is the primary subject?',
-   *           answer_options: [
-   *             'glasses',
-   *             'watches',
-   *             'shoes',
-   *             'hats',
-   *           ],
-   *         },
-   *         {
-   *           question:
-   *             'Describe the primary subject in one sentence.',
-   *           free_form_reply: true,
-   *         },
-   *       ],
-   *       max_free_form_answer_length: 300,
-   *       output_steering: {
-   *         scope: { start_time: 30, end_time: 180 },
-   *       },
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/ask-questions` instead.
    */
   create(body: AskQuestionCreateParams, options?: RequestOptions): APIPromise<AskQuestionsJob> {
     return (
@@ -56,14 +28,11 @@ export class AskQuestions extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of an 'ask-questions' job. Jobs are
-   * automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs/ask-questions/{job_id}` instead. Retrieves
+   * the current status and results of an 'ask-questions' job. Jobs are automatically
+   * deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const askQuestionsJob =
-   *   await client.robotsV0.jobs.askQuestions.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/ask-questions/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<AskQuestionsJob> {
     return (

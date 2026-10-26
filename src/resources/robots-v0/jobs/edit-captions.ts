@@ -11,34 +11,12 @@ import { path } from '../../../internal/utils/path';
  */
 export class EditCaptions extends APIResource {
   /**
-   * Creates a new job that edits an existing Mux text track using static
-   * replacements, speaker-label replacements, and optional profanity censoring.
-   * Provide at least one of `replacements`, `speaker_replacements`, or
-   * `auto_censor_profanity`.
+   * Deprecated: use `POST /robots/v1/jobs/edit-captions` instead. Creates a new job
+   * that edits an existing Mux text track using static replacements, speaker-label
+   * replacements, and optional profanity censoring. Provide at least one of
+   * `replacements`, `speaker_replacements`, or `auto_censor_profanity`.
    *
-   * @example
-   * ```ts
-   * const editCaptionsJob =
-   *   await client.robotsV0.jobs.editCaptions.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       track_id: 'text_track_456def',
-   *       replacements: [
-   *         {
-   *           find: 'Mucks',
-   *           replace: 'Mux',
-   *           case_sensitive: true,
-   *         },
-   *         { find: 'gonna', replace: 'going to' },
-   *       ],
-   *       speaker_replacements: [
-   *         { find: 'speaker_0', replace: 'Alice' },
-   *       ],
-   *       upload_to_mux: true,
-   *       replace_existing_tracks: 'replace',
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/edit-captions` instead.
    */
   create(body: EditCaptionCreateParams, options?: RequestOptions): APIPromise<EditCaptionsJob> {
     return (
@@ -51,14 +29,11 @@ export class EditCaptions extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of an 'edit-captions' job. Jobs are
-   * automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs/edit-captions/{job_id}` instead. Retrieves
+   * the current status and results of an 'edit-captions' job. Jobs are automatically
+   * deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const editCaptionsJob =
-   *   await client.robotsV0.jobs.editCaptions.retrieve('x');
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/edit-captions/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<EditCaptionsJob> {
     return (

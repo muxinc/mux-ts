@@ -38,6 +38,7 @@ export {
   type FindKeyMomentsJobOutputs,
   type FindKeyMomentsJobParameters,
   type FindKeyMomentsOutputSteering,
+  type FindKeyMomentsTargetDuration,
   type FindKeyMomentCreateParams,
 } from './find-key-moments';
 export {
@@ -50,10 +51,14 @@ export {
 } from './generate-chapters';
 export {
   GenerateContextualText,
+  type GenerateContextualTextArtifact,
+  type GenerateContextualTextCharacterMaxLength,
   type GenerateContextualTextJob,
   type GenerateContextualTextJobOutputs,
   type GenerateContextualTextJobParameters,
   type GenerateContextualTextOutputSteering,
+  type GenerateContextualTextVariant,
+  type GenerateContextualTextWordMaxLength,
   type GenerateContextualTextCreateParams,
 } from './generate-contextual-text';
 export {

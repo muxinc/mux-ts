@@ -11,23 +11,10 @@ import { path } from '../../../internal/utils/path';
  */
 export class TranslateCaptions extends APIResource {
   /**
-   * Creates a new job that translates captions on a Mux Video asset from one
-   * language to another.
+   * Deprecated: use `POST /robots/v1/jobs/translate-captions` instead. Creates a new
+   * job that translates captions on a Mux Video asset from one language to another.
    *
-   * @example
-   * ```ts
-   * const translateCaptionsJob =
-   *   await client.robotsV0.jobs.translateCaptions.create({
-   *     parameters: {
-   *       asset_id: 'mux_asset_123abc',
-   *       track_id: 'enabc123def456',
-   *       to_language_code: 'es',
-   *       upload_to_mux: true,
-   *       never_translate: ['Mux'],
-   *       replace_existing_tracks: 'fail',
-   *     },
-   *   });
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/translate-captions` instead.
    */
   create(body: TranslateCaptionCreateParams, options?: RequestOptions): APIPromise<TranslateCaptionsJob> {
     return (
@@ -40,16 +27,11 @@ export class TranslateCaptions extends APIResource {
   }
 
   /**
+   * Deprecated: use `GET /robots/v1/jobs/translate-captions/{job_id}` instead.
    * Retrieves the current status and results of a 'translate-captions' job. Jobs are
    * automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const translateCaptionsJob =
-   *   await client.robotsV0.jobs.translateCaptions.retrieve(
-   *     'x',
-   *   );
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/translate-captions/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<TranslateCaptionsJob> {
     return (

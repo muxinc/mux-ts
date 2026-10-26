@@ -11,25 +11,10 @@ import { path } from '../../../internal/utils/path';
  */
 export class GeneratePremiumCaptions extends APIResource {
   /**
+   * Deprecated: use `POST /robots/v1/jobs/generate-premium-captions` instead.
    * Creates a new job that generates high-quality captions for a Mux Video asset.
    *
-   * @example
-   * ```ts
-   * const generatePremiumCaptionsJob =
-   *   await client.robotsV0.jobs.generatePremiumCaptions.create(
-   *     {
-   *       parameters: {
-   *         asset_id: 'mux_asset_123abc',
-   *         language_code: 'en',
-   *         replace_existing_tracks: 'fail',
-   *         include_speakers: false,
-   *         include_words: false,
-   *         upload_to_mux: true,
-   *         phrases: ['Mux', 'API'],
-   *       },
-   *     },
-   *   );
-   * ```
+   * @deprecated Use `POST /robots/v1/jobs/generate-premium-captions` instead.
    */
   create(
     body: GeneratePremiumCaptionCreateParams,
@@ -45,16 +30,11 @@ export class GeneratePremiumCaptions extends APIResource {
   }
 
   /**
-   * Retrieves the current status and results of a 'generate-premium-captions' job.
-   * Jobs are automatically deleted after 30 days.
+   * Deprecated: use `GET /robots/v1/jobs/generate-premium-captions/{job_id}`
+   * instead. Retrieves the current status and results of a
+   * 'generate-premium-captions' job. Jobs are automatically deleted after 30 days.
    *
-   * @example
-   * ```ts
-   * const generatePremiumCaptionsJob =
-   *   await client.robotsV0.jobs.generatePremiumCaptions.retrieve(
-   *     'x',
-   *   );
-   * ```
+   * @deprecated Use `GET /robots/v1/jobs/generate-premium-captions/{job_id}` instead.
    */
   retrieve(jobID: string, options?: RequestOptions): APIPromise<GeneratePremiumCaptionsJob> {
     return (
