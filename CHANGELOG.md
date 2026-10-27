@@ -1,5 +1,39 @@
 # Changelog
 
+## [16.0.0](https://github.com/muxinc/mux-ts/compare/v15.6.1...v16.0.0) (2026-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* **data:** remove the deprecated real-time methods and global_value
+* **robots:** add the Robots v1 GA API
+* **robots:** mark the Robots beta API as v0
+
+### Features
+
+* **data:** remove the deprecated real-time methods and global_value ([6ef7c10](https://github.com/muxinc/mux-ts/commit/6ef7c10b2179dfd7feb52a6c10f8afcd098cb59f))
+* **robots:** add the Robots v1 GA API ([eb082cc](https://github.com/muxinc/mux-ts/commit/eb082cc9eabff380f9c4af4d8cb2e864afde46c0))
+* **robots:** add the Robots v1 GA API ([1694b13](https://github.com/muxinc/mux-ts/commit/1694b13cf3e9bd6f1ec1eaf49ffb936f837f46a5))
+* **robots:** mark the Robots beta API as v0 ([1a8104e](https://github.com/muxinc/mux-ts/commit/1a8104e20ec46d4b2633316d07c34408ae8f72e5))
+* **robots:** update Robots spec, fix directive run webhook payload types ([69ec74f](https://github.com/muxinc/mux-ts/commit/69ec74f81f868d473ba6f0c3cfe0f26d9f3da7e3))
+* **webhooks:** document asset_id on video.asset.shots.* events ([586a7fd](https://github.com/muxinc/mux-ts/commit/586a7fd041091faf30667e5d1f4d4d7cc5e6ee6a))
+* **webhooks:** validate every sample against its schema, and fix every disagreement found ([7894fcc](https://github.com/muxinc/mux-ts/commit/7894fcc5f30c3bacf349a352d6ff24127ceb7f83))
+
+
+### Bug Fixes
+
+* **ci:** stop the promote preview from failing on SIGPIPE ([#24](https://github.com/muxinc/mux-ts/issues/24)) ([5ef39e6](https://github.com/muxinc/mux-ts/commit/5ef39e636cf71c3bd9129668ea877834a34f05ea))
+* **release-doctor:** check the App installation; drop the release-as dispatch ([#21](https://github.com/muxinc/mux-ts/issues/21)) ([04a90c5](https://github.com/muxinc/mux-ts/commit/04a90c5e4a945e4904eeb37826fe7c6b137a2143))
+
+
+### Documentation
+
+* **migration:** correct the v15 → v16 type changes ([#23](https://github.com/muxinc/mux-ts/issues/23)) ([f30d363](https://github.com/muxinc/mux-ts/commit/f30d3635437746ebfc578cd24d094ea53b3a52b4))
+* **migration:** cover the Data real-time removals and remaining v16 Robots changes ([#25](https://github.com/muxinc/mux-ts/issues/25)) ([1813797](https://github.com/muxinc/mux-ts/commit/1813797346dafeecfc545b260dbc628c85c4f029))
+* **migration:** format the v16 time-units table ([24fbc4b](https://github.com/muxinc/mux-ts/commit/24fbc4bae6abb584ee96674f49bcfeb2faf916c2))
+* **migration:** v15 → v16 for Robots v1 becoming the default ([8ee7580](https://github.com/muxinc/mux-ts/commit/8ee75801e0d604717ac7d44692e538de2d6dbbff))
+* **migration:** v15 → v16 for Robots v1 becoming the default ([f850102](https://github.com/muxinc/mux-ts/commit/f850102205d1931e71c88041206b6f5473b8c513))
+
 ## [15.6.1](https://github.com/muxinc/mux-ts/compare/v15.6.0...v15.6.1) (2026-10-05)
 
 
