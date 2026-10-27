@@ -7502,7 +7502,7 @@ export namespace WebhookGenerateContextualTextJob {
 
       /**
        * Hard output cap in characters or words. Defaults to the channel's cap. Text aims
-       * for about 90% of the cap regardless of the source's length, so set the length
+       * for about 85% of the cap regardless of the source's length, so set the length
        * you want rather than relying on the default. x is always capped at 280
        * characters, even with a word cap.
        */
