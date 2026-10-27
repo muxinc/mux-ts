@@ -25,12 +25,12 @@ Access to v1 is granted by accepting the Robots terms in the Mux Dashboard; with
 
 **Times are in seconds.** Every millisecond field becomes a seconds field (fractional seconds allowed), on both requests and responses:
 
-| Workflow | v0 (milliseconds) | v1 (seconds) |
-|---|---|---|
-| Find Key Moments (request) | `target_duration_ms: { min, max }` | `target_duration: { min, max }` |
-| Find Key Moments | `moments[].start_ms`, `end_ms`, `cues[].start_ms`, `cues[].end_ms`, `quotable_segment.start_ms` | `moments[].start_time`, `end_time`, `cues[].start_time`, `cues[].end_time`, `quotable_segment.time` |
-| Find Best Thumbnails | `best_thumbnails[].timestamp_ms` | `best_thumbnails[].time` |
-| Generate Engagement Insights | `moment_insights[].start_ms`, `end_ms` | `moment_insights[].start_time`, `end_time` |
+| Workflow                     | v0 (milliseconds)                                                                               | v1 (seconds)                                                                                        |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Find Key Moments (request)   | `target_duration_ms: { min, max }`                                                              | `target_duration: { min, max }`                                                                     |
+| Find Key Moments             | `moments[].start_ms`, `end_ms`, `cues[].start_ms`, `cues[].end_ms`, `quotable_segment.start_ms` | `moments[].start_time`, `end_time`, `cues[].start_time`, `cues[].end_time`, `quotable_segment.time` |
+| Find Best Thumbnails         | `best_thumbnails[].timestamp_ms`                                                                | `best_thumbnails[].time`                                                                            |
+| Generate Engagement Insights | `moment_insights[].start_ms`, `end_ms`                                                          | `moment_insights[].start_time`, `end_time`                                                          |
 
 Renaming `target_duration_ms` to `target_duration` without converting the values makes the requested durations 1000× longer.
 
