@@ -4,11 +4,11 @@ This guide covers the three most recent major migrations of the Mux TypeScript S
 
 ## Migrating from v15 to v16
 
-v16 makes the GA Robots API (v1) the default. Everything outside Robots is unchanged apart from a few type refinements, listed at the end.
+v16 makes the GA Robots API (v1) the default. Outside Robots, one webhook field changes type and a few types are refined; see [Other type changes](#other-type-changes).
 
 ### `client.robots` is now Robots v1; the beta API moved to `client.robotsV0`
 
-In v15, `client.robots` called the Robots beta API (`/robots/v0`). In v16, `client.robots` calls the GA API (`/robots/v1`), and the beta API moved to `client.robotsV0` (types under `Mux.RobotsV0`). Every `client.robotsV0` method is deprecated and points at its v1 replacement.
+In v15, `client.robots` called the Robots beta API (`/robots/v0`). In v16, `client.robots` calls the GA API (`/robots/v1`), and the beta API moved to `client.robotsV0`. Its types keep their v15 names under `Mux.RobotsV0` (for example `Mux.Robots.WorkflowBinding` → `Mux.RobotsV0.WorkflowBinding`). Every `client.robotsV0` method is deprecated and points at its v1 replacement.
 
 > [!WARNING]
 > Many v15 Robots calls still compile after upgrading, but they now send requests to v1. Ask Questions, for example, has the same request shape in both versions. Review every `client.robots` call: either move it to `client.robotsV0` deliberately to stay on the beta for now, or adopt v1 using the differences below.
@@ -63,8 +63,9 @@ Renaming `target_duration_ms` to `target_duration` without converting the values
 
 ### Other type changes
 
-- Single-value type tags are now constants. This covers each webhook event's `type`, each Robots job's `workflow`, and the discriminators of Robots unions. The TypeScript types stay the same string literals.
-- Empty parameter objects (the Generate Engagement Insights directive-binding parameters in both versions, and the generate-shots request body) are typed as empty objects rather than `unknown`.
+- `WebhookAssetStaticRendition.filesize` is now a `number` (was `string`), matching what static rendition webhooks deliver. The static rendition `status` also gains `deleted`.
+- The Generate Engagement Insights directive-binding parameters (`params` in v0, `parameters` in v1) are typed as an empty object rather than `unknown`.
+- Single-value type tags (each webhook event's `type`, each Robots job's `workflow`, and the discriminators of Robots unions) keep the same string literal types.
 
 ## Migrating from v14 to v15 (`@mux/ts`)
 
