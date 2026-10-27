@@ -1007,36 +1007,6 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}',
   },
   {
-    clientCallName: 'client.data.realTime.retrieveBreakdown',
-    fullyQualifiedName: 'data.realTime.retrieveBreakdown',
-    httpMethod: 'get',
-    httpPath: '/data/v1/realtime/metrics/{REALTIME_METRIC_ID}/breakdown',
-  },
-  {
-    clientCallName: 'client.data.realTime.retrieveTimeseries',
-    fullyQualifiedName: 'data.realTime.retrieveTimeseries',
-    httpMethod: 'get',
-    httpPath: '/data/v1/realtime/metrics/{REALTIME_METRIC_ID}/timeseries',
-  },
-  {
-    clientCallName: 'client.data.realTime.listMetrics',
-    fullyQualifiedName: 'data.realTime.listMetrics',
-    httpMethod: 'get',
-    httpPath: '/data/v1/realtime/metrics',
-  },
-  {
-    clientCallName: 'client.data.realTime.retrieveHistogramTimeseries',
-    fullyQualifiedName: 'data.realTime.retrieveHistogramTimeseries',
-    httpMethod: 'get',
-    httpPath: '/data/v1/realtime/metrics/{REALTIME_HISTOGRAM_METRIC_ID}/histogram-timeseries',
-  },
-  {
-    clientCallName: 'client.data.realTime.listDimensions',
-    fullyQualifiedName: 'data.realTime.listDimensions',
-    httpMethod: 'get',
-    httpPath: '/data/v1/realtime/dimensions',
-  },
-  {
     clientCallName: 'client.data.videoViews.list',
     fullyQualifiedName: 'data.videoViews.list',
     httpMethod: 'get',

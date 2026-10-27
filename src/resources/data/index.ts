@@ -56,17 +56,6 @@ export {
 } from './metrics';
 export { Monitoring, type MonitoringListDimensionsResponse } from './monitoring/index';
 export {
-  RealTime,
-  type RealTimeBreakdownResponse,
-  type RealTimeDimensionsResponse,
-  type RealTimeHistogramTimeseriesResponse,
-  type RealTimeMetricsResponse,
-  type RealTimeTimeseriesResponse,
-  type RealTimeRetrieveBreakdownParams,
-  type RealTimeRetrieveTimeseriesParams,
-  type RealTimeRetrieveHistogramTimeseriesParams,
-} from './real-time';
-export {
   SubviewMetrics,
   type SubviewBreakdownTimeseriesDatapoint,
   type SubviewBreakdownTimeseriesResponse,

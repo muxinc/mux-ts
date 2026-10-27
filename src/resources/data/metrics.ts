@@ -487,11 +487,6 @@ export namespace OverallValuesResponse {
     total_watch_time: number | null;
 
     value: number;
-
-    /**
-     * @deprecated No longer updated; do not use.
-     */
-    global_value?: number | null;
   }
 
   export interface Meta {

@@ -120,24 +120,6 @@ Methods:
 - <code title="get /data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listDimensions</a>(subviewType) -> SubviewDimensionsResponse</code>
 - <code title="get /data/v1/subview-metrics/{SUBVIEW_TYPE}/dimensions/{DIMENSION_NAME}">client.data.subviewMetrics.<a href="./src/resources/data/subview-metrics.ts">listDimensionValues</a>(subviewType, dimensionName, { ...params }) -> SubviewDimensionValuesBasePage</code>
 
-## RealTime
-
-Types:
-
-- <code><a href="./src/resources/data/real-time.ts">RealTimeBreakdownResponse</a></code>
-- <code><a href="./src/resources/data/real-time.ts">RealTimeDimensionsResponse</a></code>
-- <code><a href="./src/resources/data/real-time.ts">RealTimeHistogramTimeseriesResponse</a></code>
-- <code><a href="./src/resources/data/real-time.ts">RealTimeMetricsResponse</a></code>
-- <code><a href="./src/resources/data/real-time.ts">RealTimeTimeseriesResponse</a></code>
-
-Methods:
-
-- <code title="get /data/v1/realtime/metrics/{REALTIME_METRIC_ID}/breakdown">client.data.realTime.<a href="./src/resources/data/real-time.ts">retrieveBreakdown</a>(realtimeMetricID, { ...params }) -> RealTimeBreakdownResponse</code>
-- <code title="get /data/v1/realtime/metrics/{REALTIME_METRIC_ID}/timeseries">client.data.realTime.<a href="./src/resources/data/real-time.ts">retrieveTimeseries</a>(realtimeMetricID, { ...params }) -> RealTimeTimeseriesResponse</code>
-- <code title="get /data/v1/realtime/metrics">client.data.realTime.<a href="./src/resources/data/real-time.ts">listMetrics</a>() -> RealTimeMetricsResponse</code>
-- <code title="get /data/v1/realtime/metrics/{REALTIME_HISTOGRAM_METRIC_ID}/histogram-timeseries">client.data.realTime.<a href="./src/resources/data/real-time.ts">retrieveHistogramTimeseries</a>(realtimeHistogramMetricID, { ...params }) -> RealTimeHistogramTimeseriesResponse</code>
-- <code title="get /data/v1/realtime/dimensions">client.data.realTime.<a href="./src/resources/data/real-time.ts">listDimensions</a>() -> RealTimeDimensionsResponse</code>
-
 ## VideoViews
 
 Types:

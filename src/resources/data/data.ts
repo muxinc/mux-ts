@@ -54,18 +54,6 @@ import {
   Metrics,
   OverallValuesResponse,
 } from './metrics';
-import * as RealTimeAPI from './real-time';
-import {
-  RealTime,
-  RealTimeBreakdownResponse,
-  RealTimeDimensionsResponse,
-  RealTimeHistogramTimeseriesResponse,
-  RealTimeMetricsResponse,
-  RealTimeRetrieveBreakdownParams,
-  RealTimeRetrieveHistogramTimeseriesParams,
-  RealTimeRetrieveTimeseriesParams,
-  RealTimeTimeseriesResponse,
-} from './real-time';
 import * as SubviewMetricsAPI from './subview-metrics';
 import {
   SubviewBreakdownTimeseriesDatapoint,
@@ -108,7 +96,6 @@ export class Data extends APIResource {
   incidents: IncidentsAPI.Incidents = new IncidentsAPI.Incidents(this._client);
   metrics: MetricsAPI.Metrics = new MetricsAPI.Metrics(this._client);
   subviewMetrics: SubviewMetricsAPI.SubviewMetrics = new SubviewMetricsAPI.SubviewMetrics(this._client);
-  realTime: RealTimeAPI.RealTime = new RealTimeAPI.RealTime(this._client);
   videoViews: VideoViewsAPI.VideoViews = new VideoViewsAPI.VideoViews(this._client);
   annotations: AnnotationsAPI.Annotations = new AnnotationsAPI.Annotations(this._client);
   engagement: EngagementAPI.Engagement = new EngagementAPI.Engagement(this._client);
@@ -121,7 +108,6 @@ Data.Exports = Exports;
 Data.Incidents = Incidents;
 Data.Metrics = Metrics;
 Data.SubviewMetrics = SubviewMetrics;
-Data.RealTime = RealTime;
 Data.VideoViews = VideoViews;
 Data.Annotations = Annotations;
 Data.Engagement = Engagement;
@@ -192,18 +178,6 @@ export declare namespace Data {
     type SubviewMetricListComparisonValuesParams as SubviewMetricListComparisonValuesParams,
     type SubviewMetricGetBreakdownTimeseriesParams as SubviewMetricGetBreakdownTimeseriesParams,
     type SubviewMetricListDimensionValuesParams as SubviewMetricListDimensionValuesParams,
-  };
-
-  export {
-    RealTime as RealTime,
-    type RealTimeBreakdownResponse as RealTimeBreakdownResponse,
-    type RealTimeDimensionsResponse as RealTimeDimensionsResponse,
-    type RealTimeHistogramTimeseriesResponse as RealTimeHistogramTimeseriesResponse,
-    type RealTimeMetricsResponse as RealTimeMetricsResponse,
-    type RealTimeTimeseriesResponse as RealTimeTimeseriesResponse,
-    type RealTimeRetrieveBreakdownParams as RealTimeRetrieveBreakdownParams,
-    type RealTimeRetrieveTimeseriesParams as RealTimeRetrieveTimeseriesParams,
-    type RealTimeRetrieveHistogramTimeseriesParams as RealTimeRetrieveHistogramTimeseriesParams,
   };
 
   export {
