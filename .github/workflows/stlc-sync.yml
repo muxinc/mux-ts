@@ -187,7 +187,8 @@ jobs:
           fi
 
           # PR bodies cap at 65,536 chars; keep generous room for all sections.
-          manifest=$(git log --no-decorate --format='- %h %s' origin/production-mirror..origin/main | head -c 20000)
+          # Drain past head's cut so the producer never takes SIGPIPE under pipefail.
+          manifest=$(git log --no-decorate --format='- %h %s' origin/production-mirror..origin/main | { head -c 20000; cat >/dev/null; })
 
           # Approximate the release-please grouping: feat/fix subjects are
           # user-facing; everything else is excluded from the changelog. The
@@ -204,7 +205,7 @@ jobs:
           )
           # Root api.md is an index; the per-resource surface lives in
           # src/resources/*/api.md — the glob covers both.
-          api_diff=$(git diff origin/production-mirror origin/main -- ':(glob)**/api.md' | head -c 30000)
+          api_diff=$(git diff origin/production-mirror origin/main -- ':(glob)**/api.md' | { head -c 30000; cat >/dev/null; })
           if [ -z "$api_diff" ]; then
             api_section="_No \`api.md\` changes (root or per-resource) — no user-facing API surface delta._"
           else
