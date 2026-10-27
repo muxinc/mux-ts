@@ -12850,6 +12850,11 @@ export namespace VideoAssetShotsCreatedWebhookEvent {
     status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
 
     /**
+     * Unique identifier for the Asset. Max 255 characters.
+     */
+    asset_id?: string;
+
+    /**
      * An object describing any errors encountered during the shot detection process.
      * This field is only present when `status` is `errored`.
      */
@@ -12902,6 +12907,11 @@ export namespace VideoAssetShotsReadyWebhookEvent {
      * The status of the shot detection process
      */
     status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
+
+    /**
+     * Unique identifier for the Asset. Max 255 characters.
+     */
+    asset_id?: string;
 
     /**
      * An object describing any errors encountered during the shot detection process.
@@ -12958,6 +12968,11 @@ export namespace VideoAssetShotsSkippedWebhookEvent {
     status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
 
     /**
+     * Unique identifier for the Asset. Max 255 characters.
+     */
+    asset_id?: string;
+
+    /**
      * An object describing any errors encountered during the shot detection process.
      * This field is only present when `status` is `errored`.
      */
@@ -13012,6 +13027,11 @@ export namespace VideoAssetShotsErroredWebhookEvent {
     status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
 
     /**
+     * Unique identifier for the Asset. Max 255 characters.
+     */
+    asset_id?: string;
+
+    /**
      * An object describing any errors encountered during the shot detection process.
      * This field is only present when `status` is `errored`.
      */
@@ -13064,6 +13084,11 @@ export namespace VideoAssetShotsDeletedWebhookEvent {
      * The status of the shot detection process
      */
     status: 'pending' | 'completed' | 'errored' | 'skipped' | 'deleted';
+
+    /**
+     * Unique identifier for the Asset. Max 255 characters.
+     */
+    asset_id?: string;
 
     /**
      * An object describing any errors encountered during the shot detection process.
