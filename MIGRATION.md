@@ -4,7 +4,7 @@ This guide covers the three most recent major migrations of the Mux TypeScript S
 
 ## Migrating from v15 to v16
 
-v16 makes the GA Robots API (v1) the default. Outside Robots, one webhook field changes type and a few types are refined; see [Other type changes](#other-type-changes).
+v16 makes the GA Robots API (v1) the default and removes the deprecated real-time Data methods. Outside those, one webhook field changes type and a few types are refined; see [Other type changes](#other-type-changes).
 
 ### `client.robots` is now Robots v1; the beta API moved to `client.robotsV0`
 
@@ -44,7 +44,7 @@ Renaming `target_duration_ms` to `target_duration` without converting the values
 **Job outputs:**
 
 - Track-producing workflows (Edit Captions, Translate Captions, Translate Audio): `uploaded_track_id` → `track_id`.
-- `replaced_tracks` (track objects) → `replaced_track_ids` (IDs only). Generate Premium Captions also drops `replaced_track_id`, and Generate Chapters moves `asset_updates.chapters.replaced_track_id` to `replaced_track_ids`.
+- `replaced_tracks` (track objects) → `replaced_track_ids` (IDs only), and the `ReplacedTrack` type is removed. Generate Premium Captions also drops `replaced_track_id`, and Generate Chapters moves `asset_updates.chapters.replaced_track_id` to `replaced_track_ids`.
 - Generate Premium Captions: `detected_language` → `detected_language_code`.
 - Generate Chapters: the singular `asset_update` is removed; use `asset_updates.chapters`.
 
@@ -56,10 +56,32 @@ Renaming `target_duration_ms` to `target_duration` without converting the values
 **Directives and runs:**
 
 - A directive's `workflows` is now `bindings`, and each binding's `params` is now `parameters`.
-- Resource declarations: `language` → `language_code`, `source.params` → `source.parameters`, and `source_audio_language` → `source_audio_language_code`.
+- Directives target assets only: `subject.type` no longer accepts `video.live_stream`.
+- Resource declarations: a track's `kind: 'caption'` → `kind: 'subtitles'`, `language` → `language_code`, `source.params` → `source.parameters`, and `source_audio_language` → `source_audio_language_code`.
 - Runs: `run_id` → `id` (runs also carry `directive_id`). In `node_states`, `workflow_name` → `workflow` and `source_workflows` → `source_bindings`.
+- `directives.list()` returns summaries (`DirectiveListResponse`: `id`, `name`, timestamps and links); retrieve a directive for its bindings, subject and resources.
+- Types: `WorkflowBinding` → `DirectiveBinding`, `TrackResourceDeclaration` → `DirectiveTrackResource`, `ShotsResourceDeclaration` → `DirectiveShotsResource`, `NodeState` → `DirectiveNodeState`, and `DirectiveRunDetail` → `DirectiveRun`. In v15, `Mux.Robots.DirectiveRun` was the create-run response (`run_id`, `status: 'pending'`); in v16 the same name is the full run, which creating a run now returns.
 
 **Webhooks:** v1 jobs and directive runs send `robots.v1.job.<workflow>.<status>` and `robots.v1.directive_run.<status>` events, with payload types such as `WebhookSummarizeJob` and `WebhookDirectiveRun`. Beta events keep their names (`robots.job.*`, `robots.directive_run.*`) and their payload types are suffixed `V0` (for example `WebhookSummarizeJobV0`).
+
+If you stay on v0, two webhook types change shape:
+
+- The directive-run events (`robots.directive_run.*`) now type `data` as the run itself (`id`, `directive_id`, `asset_id`, `status`, `node_states`, `started_at`, `completed_at`), which is what Mux delivers. The v15 types described a `directive_run` wrapper alongside `environment_id` and `internal_id`.
+- Find Scenes, Find Best Thumbnails, Generate Premium Captions, Translate Audio and Generate Engagement Insights events use the named `V0` payload types instead of per-event `Data` types (for example `RobotsJobFindScenesCompletedWebhookEvent.Data` → `WebhookFindScenesJobV0`).
+
+### Removed real-time Data methods
+
+`client.data.realTime` is removed; use the Monitoring API under `client.data.monitoring`. Parameter and response types differ, so check [`src/resources/data/api.md`](./src/resources/data/api.md) for each method.
+
+| v15 (`client.data.realTime`)    | v16 (`client.data.monitoring`)     |
+| ------------------------------- | ---------------------------------- |
+| `listDimensions()`              | `listDimensions()`                 |
+| `listMetrics()`                 | `metrics.list()`                   |
+| `retrieveBreakdown()`           | `metrics.getBreakdown()`           |
+| `retrieveTimeseries()`          | `metrics.getTimeseries()`          |
+| `retrieveHistogramTimeseries()` | `metrics.getHistogramTimeseries()` |
+
+`global_value` is removed from `client.data.metrics.getOverallValues()` responses (`OverallValuesResponse.Data`); the API no longer populates it.
 
 ### Other type changes
 
