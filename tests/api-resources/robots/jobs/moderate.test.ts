@@ -26,6 +26,7 @@ describe('resource moderate', () => {
     const response = await client.robots.jobs.moderate.create({
       parameters: {
         asset_id: 'mux_asset_123abc',
+        include_transcript: true,
         language_code: 'x',
         max_samples: 1,
         on_flagged: { action: 'delete_playback_ids' },

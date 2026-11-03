@@ -32,6 +32,7 @@ describe('resource directives', () => {
           workflow: 'moderate',
           inputs: ['x'],
           parameters: {
+            include_transcript: true,
             language_code: 'x',
             max_samples: 1,
             on_flagged: { action: 'delete_playback_ids' },

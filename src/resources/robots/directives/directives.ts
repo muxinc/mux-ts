@@ -357,9 +357,16 @@ export namespace DirectiveBinding {
      */
     export interface Parameters {
       /**
-       * Used only for audio-only transcript analysis; ignored for video assets. BCP 47
-       * language code of the caption source. An explicit language must match a ready
-       * source exactly, including case; for example, en does not match en-US.
+       * Whether to moderate the asset's caption transcript in addition to sampled
+       * thumbnails. Applies to video assets with a ready caption track; audio-only
+       * assets are always moderated on their transcript. Set to false to moderate
+       * thumbnails only.
+       */
+      include_transcript?: boolean;
+
+      /**
+       * BCP 47 language code of the caption source. An explicit language must match a
+       * ready source exactly, including case; for example, en does not match en-US.
        * Translation target exclusion and track replacement instead compare base
        * languages case-insensitively. When omitted, automatic selection applies. Uses
        * the first ready subtitle in asset track order without English preference.

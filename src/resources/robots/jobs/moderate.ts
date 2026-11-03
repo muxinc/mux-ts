@@ -21,6 +21,7 @@ export class Moderate extends APIResource {
    *   await client.robots.jobs.moderate.create({
    *     parameters: {
    *       asset_id: 'mux_asset_123abc',
+   *       include_transcript: true,
    *       on_flagged: { action: 'delete_playback_ids' },
    *     },
    *   });
@@ -139,14 +140,31 @@ export interface ModerateJobOutputs {
   exceeds_threshold: boolean;
 
   /**
-   * Highest scores across all thumbnails for each category.
+   * Highest scores across every moderated thumbnail and transcript window for each
+   * category.
    */
   max_scores: ModerateJobOutputs.MaxScores;
 
   /**
-   * Per-thumbnail moderation scores.
+   * Outcome of thumbnail moderation.
+   */
+  thumbnail_moderation: ModerateJobOutputs.ThumbnailModeration;
+
+  /**
+   * Per-thumbnail moderation scores. Empty for audio-only assets.
    */
   thumbnail_scores: Array<ModerateJobOutputs.ThumbnailScore>;
+
+  /**
+   * Outcome of transcript moderation.
+   */
+  transcript_moderation: ModerateJobOutputs.TranscriptModeration;
+
+  /**
+   * Per-window transcript moderation scores. Empty when transcript moderation was
+   * skipped.
+   */
+  transcript_scores: Array<ModerateJobOutputs.TranscriptScore>;
 
   /**
    * Present only when on_flagged was set and exceeds_threshold was true. Records the
@@ -157,12 +175,37 @@ export interface ModerateJobOutputs {
 
 export namespace ModerateJobOutputs {
   /**
-   * Highest scores across all thumbnails for each category.
+   * Highest scores across every moderated thumbnail and transcript window for each
+   * category.
    */
   export interface MaxScores {
     sexual: number;
 
     violence: number;
+  }
+
+  /**
+   * Outcome of thumbnail moderation.
+   */
+  export interface ThumbnailModeration {
+    /**
+     * "completed" if at least one thumbnail was moderated, "skipped" if nothing could
+     * be moderated on this surface (see skip_reason), "failed" if every thumbnail
+     * errored so this surface contributed no scores.
+     */
+    status: 'completed' | 'skipped' | 'failed';
+
+    /**
+     * Present only when status is "skipped". Human-readable explanation of
+     * skip_reason.
+     */
+    skip_message?: string;
+
+    /**
+     * Present only when status is "skipped". Machine-readable reason nothing was
+     * moderated.
+     */
+    skip_reason?: 'no_video_track' | 'no_video_in_scope';
   }
 
   export interface ThumbnailScore {
@@ -172,15 +215,60 @@ export namespace ModerateJobOutputs {
     sexual: number;
 
     /**
+     * Time in seconds of the thumbnail within the video.
+     */
+    time: number;
+
+    /**
      * Violence content score from 0.0 to 1.0.
      */
     violence: number;
+  }
+
+  /**
+   * Outcome of transcript moderation.
+   */
+  export interface TranscriptModeration {
+    /**
+     * "completed" if at least one transcript window was moderated, "skipped" if
+     * nothing could be moderated on this surface (see skip_reason), "failed" if every
+     * transcript window errored so this surface contributed no scores.
+     */
+    status: 'completed' | 'skipped' | 'failed';
 
     /**
-     * Time in seconds of the thumbnail within the video. Absent for transcript
-     * moderation.
+     * Present only when status is "skipped". Human-readable explanation of
+     * skip_reason.
      */
-    time?: number;
+    skip_message?: string;
+
+    /**
+     * Present only when status is "skipped". Machine-readable reason nothing was
+     * moderated.
+     */
+    skip_reason?: 'no_ready_text_track' | 'no_cues' | 'disabled';
+  }
+
+  export interface TranscriptScore {
+    /**
+     * Time in seconds where the moderated transcript window ends.
+     */
+    end_time: number;
+
+    /**
+     * Sexual content score from 0.0 to 1.0.
+     */
+    sexual: number;
+
+    /**
+     * Time in seconds where the moderated transcript window starts.
+     */
+    start_time: number;
+
+    /**
+     * Violence content score from 0.0 to 1.0.
+     */
+    violence: number;
   }
 
   /**
@@ -204,9 +292,16 @@ export interface ModerateJobParameters {
   asset_id: string;
 
   /**
-   * Used only for audio-only transcript analysis; ignored for video assets. BCP 47
-   * language code of the caption source. An explicit language must match a ready
-   * source exactly, including case; for example, en does not match en-US.
+   * Whether to moderate the asset's caption transcript in addition to sampled
+   * thumbnails. Applies to video assets with a ready caption track; audio-only
+   * assets are always moderated on their transcript. Set to false to moderate
+   * thumbnails only.
+   */
+  include_transcript?: boolean;
+
+  /**
+   * BCP 47 language code of the caption source. An explicit language must match a
+   * ready source exactly, including case; for example, en does not match en-US.
    * Translation target exclusion and track replacement instead compare base
    * languages case-insensitively. When omitted, automatic selection applies. Uses
    * the first ready subtitle in asset track order without English preference.
