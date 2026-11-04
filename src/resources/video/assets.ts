@@ -1603,9 +1603,11 @@ export interface Track {
   primary?: boolean;
 
   /**
-   * The status of the track.
+   * The status of the track. `skipped` means the track was not created because the
+   * asset doesn't support it, for example generated subtitles on an asset with no
+   * audio.
    */
-  status?: 'preparing' | 'ready' | 'errored' | 'deleted';
+  status?: 'preparing' | 'ready' | 'errored' | 'deleted' | 'skipped';
 
   /**
    * The source of the text contained in a Track of type `text`. Valid `text_source`

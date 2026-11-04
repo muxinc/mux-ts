@@ -58,6 +58,7 @@ Types:
 - <code><a href="./webhooks.ts">VideoAssetTrackCreatedWebhookEvent</a></code>
 - <code><a href="./webhooks.ts">VideoAssetTrackReadyWebhookEvent</a></code>
 - <code><a href="./webhooks.ts">VideoAssetTrackErroredWebhookEvent</a></code>
+- <code><a href="./webhooks.ts">VideoAssetTrackSkippedWebhookEvent</a></code>
 - <code><a href="./webhooks.ts">VideoAssetTrackDeletedWebhookEvent</a></code>
 - <code><a href="./webhooks.ts">VideoAssetShotsCreatedWebhookEvent</a></code>
 - <code><a href="./webhooks.ts">VideoAssetShotsReadyWebhookEvent</a></code>

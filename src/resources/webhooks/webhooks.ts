@@ -2898,9 +2898,11 @@ export interface WebhookAssetEmbeddedTrack {
   primary?: boolean;
 
   /**
-   * The status of the track.
+   * The status of the track. `skipped` means the track was not created because the
+   * asset doesn't support it, for example generated subtitles on an asset with no
+   * audio.
    */
-  status?: 'preparing' | 'ready' | 'errored' | 'deleted';
+  status?: 'preparing' | 'ready' | 'errored' | 'deleted' | 'skipped';
 
   /**
    * The source of the text contained in a Track of type `text`. Valid `text_source`
@@ -3181,9 +3183,11 @@ export interface WebhookAssetTrack {
   primary?: boolean;
 
   /**
-   * The status of the track.
+   * The status of the track. `skipped` means the track was not created because the
+   * asset doesn't support it, for example generated subtitles on an asset with no
+   * audio.
    */
-  status?: 'preparing' | 'ready' | 'errored' | 'deleted';
+  status?: 'preparing' | 'ready' | 'errored' | 'deleted' | 'skipped';
 
   /**
    * The source of the text contained in a Track of type `text`. Valid `text_source`
@@ -12916,6 +12920,12 @@ export interface VideoAssetTrackErroredWebhookEvent extends Omit<BaseWebhookEven
   type: 'video.asset.track.errored';
 }
 
+export interface VideoAssetTrackSkippedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
+  data: WebhookAssetTrack;
+
+  type: 'video.asset.track.skipped';
+}
+
 export interface VideoAssetTrackDeletedWebhookEvent extends Omit<BaseWebhookEvent, 'data'> {
   data: WebhookAssetTrack;
 
@@ -15500,6 +15510,7 @@ export type UnwrapWebhookEvent =
   | VideoAssetTrackCreatedWebhookEvent
   | VideoAssetTrackReadyWebhookEvent
   | VideoAssetTrackErroredWebhookEvent
+  | VideoAssetTrackSkippedWebhookEvent
   | VideoAssetTrackDeletedWebhookEvent
   | VideoAssetShotsCreatedWebhookEvent
   | VideoAssetShotsReadyWebhookEvent
@@ -15738,6 +15749,7 @@ export declare namespace Webhooks {
     type VideoAssetTrackCreatedWebhookEvent as VideoAssetTrackCreatedWebhookEvent,
     type VideoAssetTrackReadyWebhookEvent as VideoAssetTrackReadyWebhookEvent,
     type VideoAssetTrackErroredWebhookEvent as VideoAssetTrackErroredWebhookEvent,
+    type VideoAssetTrackSkippedWebhookEvent as VideoAssetTrackSkippedWebhookEvent,
     type VideoAssetTrackDeletedWebhookEvent as VideoAssetTrackDeletedWebhookEvent,
     type VideoAssetShotsCreatedWebhookEvent as VideoAssetShotsCreatedWebhookEvent,
     type VideoAssetShotsReadyWebhookEvent as VideoAssetShotsReadyWebhookEvent,
