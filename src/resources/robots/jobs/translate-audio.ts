@@ -126,8 +126,8 @@ export interface TranslateAudioJobOutputs {
   replaced_track_ids?: JobsAPI.ReplacedTrackIDs;
 
   /**
-   * Temporary pre-signed URL to download the dubbed audio file. Expires 7 days after
-   * the job completes.
+   * Temporary pre-signed URL to download the dubbed audio with the FLAC output
+   * format. Expires 7 days after the job completes.
    */
   temporary_audio_url?: string;
 
@@ -144,8 +144,10 @@ export interface TranslateAudioJobParameters {
   asset_id: string;
 
   /**
-   * BCP 47 language code for the target translation language (e.g. "es", "fr",
-   * "ja").
+   * BCP 47 language tag for the target audio (e.g. "es", "ur", "yue"). See
+   * [supported languages](https://www.mux.com/docs/guides/robots-supported-languages#translate-audio).
+   * Known ISO 639-3 aliases are accepted. Region and script subtags are retained on
+   * Mux tracks, but dubbing uses the base language.
    */
   output_language_code: string;
 
