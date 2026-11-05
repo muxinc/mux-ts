@@ -1,9 +1,9 @@
 name: Sync SDK repos
 
 # Keeps the staging and production trunks in sync, the config repo's tracking
-# files fresh, and the standing promote-preview PR current. Each job
-# self-routes by repo + event, so this one file can live in both repos and
-# only the right job runs.
+# files fresh, and the standing promote-preview PR current. Every job runs on
+# the staging repo only; the promote carries this file to production, where
+# each job skips.
 #
 on:
   schedule:
@@ -13,10 +13,6 @@ on:
     # production is ahead.
     - cron: '7,37 * * * *'
   workflow_dispatch: {}
-  repository_dispatch:
-    types: [prod-released]
-  release:
-    types: [published]
   push:
     # main only. stlc preview/integrated/codegen branches never push to main.
     branches: [main]
@@ -30,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >-
       github.repository == 'muxinc/mux-ts-staging' &&
-      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch')
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     permissions:
       # contents: write — the production-mirror push uses GITHUB_TOKEN.
       contents: write
@@ -109,21 +105,6 @@ jobs:
             production/main:refs/heads/main
           echo "Fast-forwarded staging/main to production/main."
 
-      - name: Alert on failure
-        if: failure()
-        env:
-          ALERT_WEBHOOK_URL: ${{ secrets.STLC_ALERT_WEBHOOK_URL }}
-        run: |
-          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          msg="stlc back-sync (sync from production) failed in ${{ github.repository }}. A stalled back-sync lets custom-code tracking drift, which later builds refuse on — investigate before the next build. Run: $run_url"
-          echo "::error title=stlc workflow failed::$msg"
-          { echo "### ⚠️ stlc workflow failed"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
-          if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
-            curl -sS -X POST -H 'Content-Type: application/json' \
-              -d "$(jq -n --arg text "$msg" '{text:$text}')" "$ALERT_WEBHOOK_URL" \
-              || echo "::warning::Alert webhook POST failed"
-          fi
-
   promote-preview:
     # Maintains a standing draft PR (base production-mirror ← head main) whose
     # diff is exactly what the next promote ships. GitHub refreshes the diff on
@@ -158,6 +139,15 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Render changelog preview
+        # 17.3.0 is the release-please version release-please-action v4.4.1 bundles.
+        run: |
+          set -euo pipefail
+          git rev-parse --verify --quiet origin/production-mirror >/dev/null || exit 0
+          npm install --prefix "$RUNNER_TEMP/rp" --no-save --no-audit --no-fund --ignore-scripts --loglevel=error release-please@17.3.0
+          RP_PREFIX="$RUNNER_TEMP/rp" node bin/render-changelog-preview.mjs > "$RUNNER_TEMP/changelog.md"
 
       - name: Refresh preview PR
         env:
@@ -190,19 +180,7 @@ jobs:
           # Drain past head's cut so the producer never takes SIGPIPE under pipefail.
           manifest=$(git log --no-decorate --format='- %h %s' origin/production-mirror..origin/main | { head -c 20000; cat >/dev/null; })
 
-          # Approximate the release-please grouping: feat/fix subjects are
-          # user-facing; everything else is excluded from the changelog. The
-          # release PR is the changelog of record.
-          subjects=$(git log --no-decorate --format='%s' origin/production-mirror..origin/main)
-          feats=$(grep -E '^feat(\([^)]*\))?!?:' <<<"$subjects" | sed 's/^/- /' | head -c 5000 || true)
-          fixes=$(grep -E '^fix(\([^)]*\))?!?:' <<<"$subjects" | sed 's/^/- /' | head -c 5000 || true)
-          other_count=$(grep -vcE '^(feat|fix)(\([^)]*\))?!?:' <<<"$subjects" || true)
-          changelog_section=$(
-            if [ -n "$feats" ]; then printf '### Features\n\n%s\n\n' "$feats"; fi
-            if [ -n "$fixes" ]; then printf '### Bug Fixes\n\n%s\n\n' "$fixes"; fi
-            if [ -z "$feats$fixes" ]; then printf '_No user-facing commits pending._\n\n'; fi
-            printf '_%s infrastructure commit(s) excluded. Approximate (subjects only) — the release-please release PR is the changelog of record._' "$other_count"
-          )
+          changelog_section=$({ head -c 10000; cat >/dev/null; } < "$RUNNER_TEMP/changelog.md")
           # Root api.md is an index; the per-resource surface lives in
           # src/resources/*/api.md — the glob covers both.
           api_diff=$(git diff origin/production-mirror origin/main -- ':(glob)**/api.md' | { head -c 30000; cat >/dev/null; })
@@ -229,75 +207,6 @@ jobs:
               --title "Promote preview: pending release contents" \
               --body "$body"
             echo "Opened preview PR ($count commits pending)."
-          fi
-
-      - name: Alert on failure
-        if: failure()
-        env:
-          ALERT_WEBHOOK_URL: ${{ secrets.STLC_ALERT_WEBHOOK_URL }}
-        run: |
-          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          msg="stlc promote-preview refresh failed in ${{ github.repository }} — the standing preview PR may be stale or missing. Promote safety is unaffected; fix before relying on the preview. Run: $run_url"
-          echo "::error title=stlc workflow failed::$msg"
-          { echo "### ⚠️ stlc workflow failed"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
-          if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
-            curl -sS -X POST -H 'Content-Type: application/json' \
-              -d "$(jq -n --arg text "$msg" '{text:$text}')" "$ALERT_WEBHOOK_URL" \
-              || echo "::warning::Alert webhook POST failed"
-          fi
-
-  notify-back-sync:
-    # On a published release, tell staging to back-sync now instead of waiting
-    # for the poll. Dispatch-only: it cannot write production or staging
-    # contents, and the production repo deliberately holds no key that could —
-    # without STAGING_DISPATCH_TOKEN this no-ops and the poll covers it.
-    runs-on: ubuntu-latest
-    if: >-
-      github.repository == 'muxinc/mux-ts' &&
-      (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
-    permissions:
-      contents: read
-    env:
-      STAGING_REPO: muxinc/mux-ts-staging
-    steps:
-      - name: Dispatch back-sync to staging
-        env:
-          DISPATCH_TOKEN: ${{ secrets.STAGING_DISPATCH_TOKEN }}
-          REF_NAME: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${DISPATCH_TOKEN:-}" ]; then
-            echo "::notice::STAGING_DISPATCH_TOKEN not configured — skipping the eager back-sync notify. The staging repo's twice-hourly poll covers this."
-            exit 0
-          fi
-
-          payload=$(jq -n --arg ref "$REF_NAME" '{event_type:"prod-released",client_payload:{ref:$ref}}')
-          code=$(curl -sS -o /tmp/dispatch.txt -w '%{http_code}' -X POST \
-            -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${STAGING_REPO}/dispatches" \
-            -d "$payload")
-          if [ "$code" = "204" ]; then
-            echo "Back-sync dispatched to ${STAGING_REPO}."
-          else
-            echo "Dispatch failed (HTTP $code)" >&2; cat /tmp/dispatch.txt >&2; exit 1
-          fi
-
-      - name: Alert on failure
-        if: failure()
-        env:
-          ALERT_WEBHOOK_URL: ${{ secrets.STLC_ALERT_WEBHOOK_URL }}
-        run: |
-          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          msg="stlc release back-sync trigger failed in ${{ github.repository }} — the staging repo was NOT notified to back-sync this release (likely an expired STAGING_DISPATCH_TOKEN). Staging catches up on its next poll, but verify the token. Run: $run_url"
-          echo "::error title=stlc workflow failed::$msg"
-          { echo "### ⚠️ stlc workflow failed"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
-          if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
-            curl -sS -X POST -H 'Content-Type: application/json' \
-              -d "$(jq -n --arg text "$msg" '{text:$text}')" "$ALERT_WEBHOOK_URL" \
-              || echo "::warning::Alert webhook POST failed"
           fi
 
   seal-dispatch:
@@ -377,17 +286,31 @@ jobs:
             echo "Dispatch failed (HTTP $code)" >&2; cat /tmp/dispatch.txt >&2; exit 1
           fi
 
+  alert:
+    # One alert for any failed job above; STLC_ALERT_WEBHOOK_URL also posts it.
+    runs-on: ubuntu-latest
+    needs: [back-sync, promote-preview, seal-dispatch]
+    if: failure()
+    permissions: {}
+    steps:
       - name: Alert on failure
-        if: failure()
         env:
           ALERT_WEBHOOK_URL: ${{ secrets.STLC_ALERT_WEBHOOK_URL }}
+          NEEDS: ${{ toJSON(needs) }}
         run: |
           run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          msg="stlc seal-dispatch failed in ${{ github.repository }} — the config repo was NOT notified to re-seal. Its twice-daily tracking sync is the backstop. Run: $run_url"
-          echo "::error title=stlc workflow failed::$msg"
-          { echo "### ⚠️ stlc workflow failed"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
-          if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
-            curl -sS -X POST -H 'Content-Type: application/json' \
-              -d "$(jq -n --arg text "$msg" '{text:$text}')" "$ALERT_WEBHOOK_URL" \
-              || echo "::warning::Alert webhook POST failed"
-          fi
+          for job in $(jq -r 'to_entries[] | select(.value.result == "failure") | .key' <<<"$NEEDS"); do
+            case "$job" in
+              back-sync) why="A stalled back-sync lets custom-code tracking drift, which later builds refuse on; investigate before the next build." ;;
+              promote-preview) why="The standing preview PR may be stale or missing. Promote safety is unaffected." ;;
+              seal-dispatch) why="The config repo was not notified to re-seal; its twice-daily tracking sync is the backstop." ;;
+            esac
+            msg="stlc $job failed in ${{ github.repository }}. $why Run: $run_url"
+            echo "::error title=stlc workflow failed::$msg"
+            { echo "### ⚠️ stlc workflow failed"; echo ""; echo "$msg"; } >> "$GITHUB_STEP_SUMMARY"
+            if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
+              curl -sS -X POST -H 'Content-Type: application/json' \
+                -d "$(jq -n --arg text "$msg" '{text:$text}')" "$ALERT_WEBHOOK_URL" \
+                || echo "::warning::Alert webhook POST failed"
+            fi
+          done
