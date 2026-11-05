@@ -1,5 +1,21 @@
 # Changelog
 
+## [16.1.0](https://github.com/muxinc/mux-ts/compare/v16.0.0...v16.1.0) (2026-11-05)
+
+
+### Features
+
+* **robots:** add include_transcript and transcript moderation outputs to v1 moderate ([e66552f](https://github.com/muxinc/mux-ts/commit/e66552fb25b239944a02f9b152dfbe7b0a1241c0))
+* **video:** Add skipped track ([11bc16f](https://github.com/muxinc/mux-ts/commit/11bc16f2b5be2b7b62fb5ed050c309110aff01d7))
+
+
+### Documentation
+
+* clarify translate-audio languages and downloads ([2297f03](https://github.com/muxinc/mux-ts/commit/2297f03141adf07687c6b3fb098803d255360ab5))
+* fix dead links in the TypeScript per-resource api.md references ([bf5f816](https://github.com/muxinc/mux-ts/commit/bf5f816194db13ae21254eeb9ca44c21f78c14c5))
+* fix dead links in the TypeScript per-resource api.md references ([1e1b6ab](https://github.com/muxinc/mux-ts/commit/1e1b6ab044e8b5ec3e36c4b1d4a2373b43f88b00))
+* publish Robots v1 permission recovery guidance ([5b42ecd](https://github.com/muxinc/mux-ts/commit/5b42ecdc83258ed07b034bd30538f3554691681e))
+
 ## [16.0.0](https://github.com/muxinc/mux-ts/compare/v15.6.1...v16.0.0) (2026-10-27)
 
 
