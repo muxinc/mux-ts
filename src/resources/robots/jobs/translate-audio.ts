@@ -23,6 +23,10 @@ export class TranslateAudio extends APIResource {
    *       output_language_code: 'es',
    *       upload_to_mux: true,
    *       replace_existing_tracks: 'fail',
+   *       captions: {
+   *         upload_to_mux: true,
+   *         replace_existing_tracks: 'fail',
+   *       },
    *     },
    *   });
    * ```
@@ -56,6 +60,48 @@ export class TranslateAudio extends APIResource {
     )._thenUnwrap((obj) => obj.data);
   }
 }
+
+/**
+ * Optional subtitle attachment settings. Omitting this object or its upload_to_mux
+ * disables caption upload; the dub's WebVTT download remains available when
+ * retrieval succeeds.
+ */
+export interface TranslateAudioCaptions {
+  /**
+   * Subtitle conflict policy. Defaults to fail. Conflicts under this policy prevent
+   * subtitle attachment and omit caption_track_id without failing the dubbing job.
+   * replace_generated deletes only Mux-generated subtitles; uploaded tracks,
+   * including earlier Robots outputs, block it. replace_all deletes every
+   * conflicting subtitle or same-name text track. Conflicts match language ignoring
+   * region or name ignoring case. A deleting policy requires captions.upload_to_mux
+   * to be true. This policy never applies to audio tracks.
+   */
+  replace_existing_tracks?: TranslateAudioCaptionsReplaceExistingTracks;
+
+  /**
+   * Name for the dubbed subtitle track. Defaults to {Language} (dub), e.g. Spanish
+   * (dub). Independent of the audio track_name.
+   */
+  track_name?: string;
+
+  /**
+   * Whether to attach the dub's translated WebVTT as a subtitle track. Defaults to
+   * false, independently of the audio upload_to_mux. Caption conflicts and other
+   * attachment failures omit caption_track_id without failing the completed dub.
+   */
+  upload_to_mux?: boolean;
+}
+
+/**
+ * Subtitle conflict policy. Defaults to fail. Conflicts under this policy prevent
+ * subtitle attachment and omit caption_track_id without failing the dubbing job.
+ * replace_generated deletes only Mux-generated subtitles; uploaded tracks,
+ * including earlier Robots outputs, block it. replace_all deletes every
+ * conflicting subtitle or same-name text track. Conflicts match language ignoring
+ * region or name ignoring case. A deleting policy requires captions.upload_to_mux
+ * to be true. This policy never applies to audio tracks.
+ */
+export type TranslateAudioCaptionsReplaceExistingTracks = 'fail' | 'replace_all' | 'replace_generated';
 
 export interface TranslateAudioJob {
   /**
@@ -120,6 +166,19 @@ export interface TranslateAudioJob {
  */
 export interface TranslateAudioJobOutputs {
   /**
+   * Mux subtitle track ID when caption upload succeeded. Omitted when caption upload
+   * was not requested or failed. Mux has accepted the track, which may still be
+   * preparing.
+   */
+  caption_track_id?: string;
+
+  /**
+   * IDs of tracks deleted during replacement. Omitted when no deletions were
+   * recorded; historical jobs may lack this information.
+   */
+  replaced_caption_track_ids?: JobsAPI.ReplacedTrackIDs;
+
+  /**
    * IDs of tracks deleted during replacement. Omitted when no deletions were
    * recorded; historical jobs may lack this information.
    */
@@ -130,6 +189,13 @@ export interface TranslateAudioJobOutputs {
    * format. Expires 7 days after the job completes.
    */
   temporary_audio_url?: string;
+
+  /**
+   * Temporary download URL for the dub's translated WebVTT, available independently
+   * of asset uploads when retrieval succeeds. Expires after 7 days. This is the
+   * dubbing translation, not a separate caption translation.
+   */
+  temporary_vtt_url?: string;
 
   /**
    * Mux audio track ID, present when upload_to_mux is true.
@@ -150,6 +216,13 @@ export interface TranslateAudioJobParameters {
    * Mux tracks, but dubbing uses the base language.
    */
   output_language_code: string;
+
+  /**
+   * Optional subtitle attachment settings. Omitting this object or its upload_to_mux
+   * disables caption upload; the dub's WebVTT download remains available when
+   * retrieval succeeds.
+   */
+  captions?: TranslateAudioCaptions;
 
   /**
    * What to do when the asset already has an audio track in the same language as, or
@@ -203,6 +276,8 @@ export interface TranslateAudioCreateParams {
 
 export declare namespace TranslateAudio {
   export {
+    type TranslateAudioCaptions as TranslateAudioCaptions,
+    type TranslateAudioCaptionsReplaceExistingTracks as TranslateAudioCaptionsReplaceExistingTracks,
     type TranslateAudioJob as TranslateAudioJob,
     type TranslateAudioJobOutputs as TranslateAudioJobOutputs,
     type TranslateAudioJobParameters as TranslateAudioJobParameters,

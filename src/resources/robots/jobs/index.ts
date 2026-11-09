@@ -111,6 +111,8 @@ export {
 } from './summarize';
 export {
   TranslateAudio,
+  type TranslateAudioCaptions,
+  type TranslateAudioCaptionsReplaceExistingTracks,
   type TranslateAudioJob,
   type TranslateAudioJobOutputs,
   type TranslateAudioJobParameters,

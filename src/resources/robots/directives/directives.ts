@@ -824,6 +824,13 @@ export namespace DirectiveBinding {
       output_language_code: string;
 
       /**
+       * Optional subtitle attachment settings. Omitting this object or its upload_to_mux
+       * disables caption upload; the dub's WebVTT download remains available when
+       * retrieval succeeds.
+       */
+      captions?: TranslateAudioAPI.TranslateAudioCaptions;
+
+      /**
        * What to do when the asset already has an audio track in the same language as, or
        * with the same name as, the new dubbed track. Defaults to `fail`, which rejects
        * the request before any dubbing is billed. `replace_all` deletes every such track

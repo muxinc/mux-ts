@@ -211,6 +211,8 @@ Methods:
 
 Types:
 
+- <code><a href="./jobs/translate-audio.ts">TranslateAudioCaptions</a></code>
+- <code><a href="./jobs/translate-audio.ts">TranslateAudioCaptionsReplaceExistingTracks</a></code>
 - <code><a href="./jobs/translate-audio.ts">TranslateAudioJob</a></code>
 - <code><a href="./jobs/translate-audio.ts">TranslateAudioJobOutputs</a></code>
 - <code><a href="./jobs/translate-audio.ts">TranslateAudioJobParameters</a></code>

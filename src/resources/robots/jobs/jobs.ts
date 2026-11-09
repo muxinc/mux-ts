@@ -109,6 +109,8 @@ import {
 import * as TranslateAudioAPI from './translate-audio';
 import {
   TranslateAudio,
+  TranslateAudioCaptions,
+  TranslateAudioCaptionsReplaceExistingTracks,
   TranslateAudioCreateParams,
   TranslateAudioJob,
   TranslateAudioJobOutputs,
@@ -612,6 +614,8 @@ export declare namespace Jobs {
 
   export {
     TranslateAudio as TranslateAudio,
+    type TranslateAudioCaptions as TranslateAudioCaptions,
+    type TranslateAudioCaptionsReplaceExistingTracks as TranslateAudioCaptionsReplaceExistingTracks,
     type TranslateAudioJob as TranslateAudioJob,
     type TranslateAudioJobOutputs as TranslateAudioJobOutputs,
     type TranslateAudioJobParameters as TranslateAudioJobParameters,
