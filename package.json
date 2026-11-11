@@ -31,6 +31,9 @@
     "lint": "./scripts/lint",
     "fix": "./scripts/format"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {},
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.0",
