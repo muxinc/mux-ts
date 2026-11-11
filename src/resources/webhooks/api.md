@@ -242,4 +242,4 @@ Types:
 
 Methods:
 
-- <code>client.webhooks.<a href="./webhooks.ts">unwrap</a>(body) -> Promise&lt;UnwrapWebhookEvent&gt;</code>
+- <code>client.webhooks.<a href="./webhooks.ts">unwrap</a>(body) -> void</code>

@@ -1,3 +1,3 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { Webhooks, type WebhookBody } from './webhooks';
+export { Webhooks } from './webhooks';

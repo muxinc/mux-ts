@@ -870,7 +870,6 @@ export class Mux {
   data: API.Data = new API.Data(this);
   system: API.System = new API.System(this);
   webhooks: API.Webhooks = new API.Webhooks(this);
-  jwt: API.Jwt = new API.Jwt(this);
 }
 
 Mux.Video = Video;
@@ -912,8 +911,6 @@ export declare namespace Mux {
   export { System as System };
 
   export { Webhooks as Webhooks };
-
-  export import Jwt = API.Jwt;
 
   export type CreatePlaybackIdRequest = API.CreatePlaybackIdRequest;
   export type PlaybackId = API.PlaybackId;

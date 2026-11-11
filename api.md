@@ -69,10 +69,3 @@ Methods:
 - <code title="delete /system/v1/webhooks/{WEBHOOK_ID}">client.system.webhooks.<a href="./src/resources/system/webhooks.ts">delete</a>(webhookID) -> void</code>
 
 # [Webhooks](src/resources/webhooks/api.md)
-
-# JWT
-
-Methods:
-
-- <code>client.jwt.<a href="./src/resources/jwt.ts">signPlaybackId</a>(playbackId, config) -> Promise&lt;string&gt;</code>
-- <code>client.jwt.<a href="./src/resources/jwt.ts">signViewerCounts</a>(id, config) -> Promise&lt;string&gt;</code>
