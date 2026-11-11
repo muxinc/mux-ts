@@ -66,6 +66,87 @@ const asset: Mux.Video.Asset = await client.video.assets.create(params);
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
 
+## JWT helpers
+
+`client.jwt` signs the tokens Mux uses for [signed playback](https://www.mux.com/docs/guides/secure-video-playback) and [viewer counts](https://www.mux.com/docs/guides/see-how-many-people-are-watching). The signing key ID defaults to the `jwtSigningKey` client option (`MUX_SIGNING_KEY`) and the private key to the `jwtPrivateKey` client option (`MUX_PRIVATE_KEY`); pass `keyId` and `keySecret` to override them for one call. Tokens expire after 7 days unless you pass an `expiration` such as `'1d'`. Full signatures are in [api.md](api.md#jwt).
+
+```ts
+import Mux from '@mux/ts';
+
+const client = new Mux();
+
+// Playback; `type` defaults to 'video'
+const token = await client.jwt.signPlaybackId('PLAYBACK_ID');
+// https://stream.mux.com/PLAYBACK_ID.m3u8?token=${token}
+
+// Images: 'thumbnail', 'gif' or 'storyboard', with image options as string params
+const thumbnailToken = await client.jwt.signPlaybackId('PLAYBACK_ID', {
+  type: 'thumbnail',
+  params: { time: '14', width: '100' },
+});
+// https://image.mux.com/PLAYBACK_ID/thumbnail.jpg?token=${thumbnailToken}
+
+const drmToken = await client.jwt.signDrmLicense('PLAYBACK_ID');
+
+// Viewer counts: type is 'live_stream', 'asset', 'video' or 'playback'
+const countsToken = await client.jwt.signViewerCounts('LIVE_STREAM_ID', { type: 'live_stream' });
+// https://stats.mux.com/counts?token=${countsToken}
+```
+
+### Signing several tokens at once
+
+Pass an array of types to get one token per type, keyed by Mux Player's token attribute names (`playback-token`, `thumbnail-token`, `storyboard-token`, `drm-token`). To give one type its own params, pass a `[type, params]` pair:
+
+```ts
+const tokens = await client.jwt.signPlaybackId('PLAYBACK_ID', {
+  expiration: '1d',
+  type: ['video', ['thumbnail', { time: '2' }], 'storyboard', 'drm_license'],
+});
+// { 'playback-token': '…', 'thumbnail-token': '…', 'storyboard-token': '…', 'drm-token': '…' }
+```
+
+## Webhooks
+
+`client.webhooks.unwrap(body, headers)` checks a webhook's `Mux-Signature` header against your webhook signing secret and returns the parsed event. It throws if the header is missing or malformed, the signature doesn't match, or the request is more than 5 minutes old. See [Verify webhook signatures](https://www.mux.com/docs/core/verify-webhook-signatures).
+
+Pass the raw request body (a string, `Buffer`, `Uint8Array` or `ArrayBuffer`), not parsed JSON: re-serializing changes the bytes, and the signature no longer matches. The secret defaults to the `webhookSecret` client option (`MUX_WEBHOOK_SECRET`). It's the signing secret shown for the webhook in your dashboard, not your API token secret; you can also pass it as a third argument.
+
+```ts
+import Mux from '@mux/ts';
+
+const client = new Mux();
+
+// A fetch-style handler, such as a Next.js route handler
+export async function POST(request: Request) {
+  const event = await client.webhooks.unwrap(await request.text(), request.headers);
+
+  // `event` is a union of every webhook event; checking `event.type` narrows it
+  console.log(event.type);
+
+  return Response.json({ received: true });
+}
+```
+
+With Express, read the body with `express.raw()`:
+
+```ts
+import express from 'express';
+
+const app = express();
+
+app.post('/webhooks', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const event = await client.webhooks.unwrap(req.body, req.headers);
+    console.log(event.type);
+    res.json({ received: true });
+  } catch (err) {
+    res.status(400).send(`Webhook error: ${(err as Error).message}`);
+  }
+});
+```
+
+To check a signature without parsing the body, `await client.webhooks.verifySignature(body, headers)` resolves when it's valid and throws otherwise. Always `await` it: an unawaited check can't stop your handler.
+
 ## Handling errors
 
 When the library is unable to connect to the API,

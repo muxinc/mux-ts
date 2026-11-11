@@ -29,6 +29,7 @@ import {
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
+import { Jwt } from './resources/jwt';
 import { Data } from './resources/data/data';
 import { RobotsV0 } from './resources/robots-v0/robots-v0';
 import { Robots } from './resources/robots/robots';
@@ -870,6 +871,7 @@ export class Mux {
   data: API.Data = new API.Data(this);
   system: API.System = new API.System(this);
   webhooks: API.Webhooks = new API.Webhooks(this);
+  jwt: API.Jwt = new API.Jwt(this);
 }
 
 Mux.Video = Video;
@@ -878,6 +880,7 @@ Mux.RobotsV0 = RobotsV0;
 Mux.Data = Data;
 Mux.System = System;
 Mux.Webhooks = Webhooks;
+Mux.Jwt = Jwt;
 
 export declare namespace Mux {
   export type RequestOptions = Opts.RequestOptions;
@@ -911,6 +914,8 @@ export declare namespace Mux {
   export { System as System };
 
   export { Webhooks as Webhooks };
+
+  export { Jwt as Jwt };
 
   export type CreatePlaybackIdRequest = API.CreatePlaybackIdRequest;
   export type PlaybackId = API.PlaybackId;

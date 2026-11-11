@@ -242,4 +242,5 @@ Types:
 
 Methods:
 
-- <code>client.webhooks.<a href="./webhooks.ts">unwrap</a>(body) -> void</code>
+- <code>client.webhooks.<a href="./webhooks.ts">unwrap</a>(body, headers, secret?) -> Promise&lt;UnwrapWebhookEvent&gt;</code>
+- <code>client.webhooks.<a href="./webhooks.ts">verifySignature</a>(body, headers, secret?) -> Promise&lt;void&gt;</code>
