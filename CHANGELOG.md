@@ -1,5 +1,17 @@
 # Changelog
 
+## [16.2.0](https://github.com/muxinc/mux-ts/compare/v16.1.0...v16.2.0) (2026-11-11)
+
+
+### Features
+
+* publish translate-audio caption settings and outputs ([432ba8f](https://github.com/muxinc/mux-ts/commit/432ba8f065d73cc6d6f7e4381e3b99e4363ef960))
+
+
+### Bug Fixes
+
+* **mcp:** make `npx -y @mux/mcp` run the server again; bump vulnerable MCP dependencies ([3a61f11](https://github.com/muxinc/mux-ts/commit/3a61f11a486a7ea3ee7524920e73fb2cdd732bb2))
+
 ## [16.1.0](https://github.com/muxinc/mux-ts/compare/v16.0.0...v16.1.0) (2026-11-05)
 
 
