@@ -17,6 +17,8 @@ export type CLIOptions = McpOptions & {
 export type McpOptions = {
   includeCodeTool?: boolean | undefined;
   includeDocsTools?: boolean | undefined;
+  includeOperationTools?: boolean | undefined;
+  operationToolNames?: string[] | undefined;
   stainlessApiKey?: string | undefined;
   docsSearchMode?: 'local' | undefined;
   docsDir?: string | undefined;
@@ -100,8 +102,14 @@ export function parseCLIOptions(): CLIOptions {
     .option('no-tools', {
       type: 'string',
       array: true,
-      choices: ['code', 'docs'],
+      choices: ['code', 'docs', 'operations'],
       description: 'Tools to explicitly disable',
+    })
+    .option('operation-tool', {
+      type: 'string',
+      array: true,
+      description:
+        'Only expose the per-operation tools with these names (e.g. list_video_assets). Implies --tools=operations unless operations are explicitly disabled.',
     })
     .option('port', {
       type: 'number',
@@ -112,8 +120,9 @@ export function parseCLIOptions(): CLIOptions {
     .option('tools', {
       type: 'string',
       array: true,
-      choices: ['code', 'docs'],
-      description: 'Tools to explicitly enable',
+      choices: ['code', 'docs', 'operations'],
+      description:
+        "Tools to explicitly enable. 'code' is the execute tool, 'docs' is search_docs (both on by default); 'operations' adds one tool per Mux API operation (off by default). Combine with --no-tools=code for an operations-only server.",
     })
     .option('transport', {
       type: 'string',
@@ -134,13 +143,17 @@ export function parseCLIOptions(): CLIOptions {
     process.exit(1);
   }
 
-  const shouldIncludeToolType = (toolType: 'code' | 'docs') =>
+  const shouldIncludeToolType = (toolType: 'code' | 'docs' | 'operations') =>
     argv.noTools?.includes(toolType) ? false
     : argv.tools?.includes(toolType) ? true
     : undefined;
 
   const includeCodeTool = shouldIncludeToolType('code');
   const includeDocsTools = shouldIncludeToolType('docs');
+  const operationToolNames = argv.operationTool?.length ? argv.operationTool : undefined;
+  const includeOperationTools =
+    shouldIncludeToolType('operations') ??
+    (operationToolNames && !argv.noTools?.includes('operations') ? true : undefined);
 
   const transport = argv.transport as 'stdio' | 'http';
   const logFormat =
@@ -151,6 +164,8 @@ export function parseCLIOptions(): CLIOptions {
   return {
     ...(includeCodeTool !== undefined && { includeCodeTool }),
     ...(includeDocsTools !== undefined && { includeDocsTools }),
+    ...(includeOperationTools !== undefined && { includeOperationTools }),
+    ...(operationToolNames && { operationToolNames }),
     debug: !!argv.debug,
 
     docsSearchMode: argv.docsSearchMode as 'local' | undefined,
@@ -180,8 +195,10 @@ const coerceArray = <T extends z.ZodTypeAny>(zodType: T) =>
   );
 
 const QueryOptions = z.object({
-  tools: coerceArray(z.enum(['code', 'docs'])).describe('Specify which MCP tools to use'),
-  no_tools: coerceArray(z.enum(['code', 'docs'])).describe('Specify which MCP tools to not use.'),
+  tools: coerceArray(z.enum(['code', 'docs', 'operations'])).describe('Specify which MCP tools to use'),
+  no_tools: coerceArray(z.enum(['code', 'docs', 'operations'])).describe(
+    'Specify which MCP tools to not use.',
+  ),
   tool: coerceArray(z.string()).describe('Include tools matching the specified names'),
 });
 
@@ -199,9 +216,20 @@ export function parseQueryOptions(defaultOptions: McpOptions, query: unknown): M
     : queryOptions.tools?.includes('docs') ? true
     : defaultOptions.includeDocsTools;
 
+  // `tool` narrows the per-operation tools to the given names and implies `tools=operations`.
+  const operationToolNames =
+    queryOptions.tool?.length ? queryOptions.tool : defaultOptions.operationToolNames;
+
+  let operationTools: boolean | undefined =
+    queryOptions.no_tools && queryOptions.no_tools?.includes('operations') ? false
+    : queryOptions.tools?.includes('operations') || queryOptions.tool?.length ? true
+    : defaultOptions.includeOperationTools;
+
   return {
     ...(codeTool !== undefined && { includeCodeTool: codeTool }),
     ...(docsTools !== undefined && { includeDocsTools: docsTools }),
+    ...(operationTools !== undefined && { includeOperationTools: operationTools }),
+    ...(operationToolNames && { operationToolNames }),
     codeExecutionMode: defaultOptions.codeExecutionMode,
     codeSandboxUrl: defaultOptions.codeSandboxUrl,
     codeSandboxApiKey: defaultOptions.codeSandboxApiKey,

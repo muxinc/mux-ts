@@ -117,6 +117,27 @@ writes one `{is_error, result, log_lines, err_lines}` JSON line to stdout and De
 output to stderr. The network grant is the set of hosts the SDK calls (the client's base URL plus the
 media hosts some endpoints use), as in local execution mode.
 
+## Per-operation tools
+
+Some MCP clients and directories (for example OpenAI's app/plugin directory) require every
+model-callable operation to be exposed upfront as its own tool. For those, the server can also
+expose one tool per Mux API operation, each with its own description, input schema and
+annotations. These are **off by default**; existing clients keep the two code-mode tools.
+
+- `--tools=operations` (or `?tools=operations` on the HTTP transport) adds the per-operation tools
+  alongside `execute` and `search_docs`.
+- Add `--no-tools=code` (or `&no_tools=code`) for an operations-only server without `execute`.
+- `--operation-tool=<name>` (or `?tool=<name>`, repeatable) exposes only the named operation tools.
+- `--code-allow-http-gets`, `--code-allowed-methods` and `--code-blocked-methods` apply to
+  the per-operation tools too, so `--code-allow-http-gets` gives a read-only tool set.
+
+The operation tools cover video assets (list/retrieve/create/update/delete, input info, playback
+IDs), direct uploads, playback ID lookup, live streams (CRUD, playback IDs, stream key reset,
+enable/disable/complete), Mux Data (metrics, video views, dimensions) and Robots jobs.
+
+Every tool, including `execute` and `search_docs`, declares a `title` and explicit boolean
+`readOnlyHint`, `destructiveHint`, `idempotentHint` and `openWorldHint` annotations.
+
 ## Running remotely
 
 Launching the client with `--transport=http` launches the server as a remote server using Streamable HTTP transport. The `--port` setting can choose the port it will run on, and the `--socket` setting allows it to run on a Unix socket.
