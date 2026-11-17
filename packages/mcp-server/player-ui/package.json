@@ -1,0 +1,23 @@
+{
+  "name": "@mux/mcp-player-ui",
+  "private": true,
+  "description": "Video.js 10 player rendered inline in chat as an MCP App (ui://mux/player.html). Built into ../src/lib/player/player-html.ts.",
+  "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "build": "vite build && node scripts/embed.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/embed.mjs --check",
+    "test": "node --test scripts/embed.test.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "2.0.4",
+    "@videojs/html": "10.4.0",
+    "@videojs/mux-video": "10.4.0"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3",
+    "vite": "^8.3.8",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}
