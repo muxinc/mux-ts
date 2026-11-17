@@ -117,6 +117,25 @@ writes one `{is_error, result, log_lines, err_lines}` JSON line to stdout and De
 output to stderr. The network grant is the set of hosts the SDK calls (the client's base URL plus the
 media hosts some endpoints use), as in local execution mode.
 
+## Show videos inline in chat
+
+Start the server with `--tools=player` to add a `play_video` tool. In clients that support [MCP Apps](https://github.com/modelcontextprotocol/ext-apps), such as Claude, ChatGPT, and VS Code, the tool shows a [Video.js](https://videojs.org) player inside the conversation. Other clients get a text reply instead.
+
+```sh
+npx -y @mux/mcp --tools=player
+```
+
+`play_video` takes either `playback_id` or `asset_id`, and an optional `start_time` in seconds.
+
+- A public playback ID needs no credentials.
+- An asset ID needs `MUX_TOKEN_ID` and `MUX_TOKEN_SECRET`.
+- A signed playback ID also needs `MUX_SIGNING_KEY` and `MUX_PRIVATE_KEY`. The server signs tokens that expire after 6 hours and sends them only to the player, not to the model.
+- DRM playback IDs are not supported.
+
+On clients that support model-context updates, the player tells the agent what is playing and where the viewer paused.
+
+To change the player, edit the files in `player-ui/` and run `yarn --cwd player-ui build`. The build regenerates `src/lib/player/player-html.ts`. `node player-ui/scripts/embed.mjs --check` fails when that file is out of date.
+
 ## Running remotely
 
 Launching the client with `--transport=http` launches the server as a remote server using Streamable HTTP transport. The `--port` setting can choose the port it will run on, and the `--socket` setting allows it to run on a Unix socket.

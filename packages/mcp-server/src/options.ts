@@ -14,9 +14,13 @@ export type CLIOptions = McpOptions & {
   socket: string | undefined;
 };
 
+const TOOL_TYPES = ['code', 'docs', 'player'] as const;
+type ToolType = (typeof TOOL_TYPES)[number];
+
 export type McpOptions = {
   includeCodeTool?: boolean | undefined;
   includeDocsTools?: boolean | undefined;
+  includePlayerTool?: boolean | undefined;
   stainlessApiKey?: string | undefined;
   docsSearchMode?: 'local' | undefined;
   docsDir?: string | undefined;
@@ -100,7 +104,7 @@ export function parseCLIOptions(): CLIOptions {
     .option('no-tools', {
       type: 'string',
       array: true,
-      choices: ['code', 'docs'],
+      choices: [...TOOL_TYPES],
       description: 'Tools to explicitly disable',
     })
     .option('port', {
@@ -112,7 +116,7 @@ export function parseCLIOptions(): CLIOptions {
     .option('tools', {
       type: 'string',
       array: true,
-      choices: ['code', 'docs'],
+      choices: [...TOOL_TYPES],
       description: 'Tools to explicitly enable',
     })
     .option('transport', {
@@ -134,13 +138,14 @@ export function parseCLIOptions(): CLIOptions {
     process.exit(1);
   }
 
-  const shouldIncludeToolType = (toolType: 'code' | 'docs') =>
+  const shouldIncludeToolType = (toolType: ToolType) =>
     argv.noTools?.includes(toolType) ? false
     : argv.tools?.includes(toolType) ? true
     : undefined;
 
   const includeCodeTool = shouldIncludeToolType('code');
   const includeDocsTools = shouldIncludeToolType('docs');
+  const includePlayerTool = shouldIncludeToolType('player');
 
   const transport = argv.transport as 'stdio' | 'http';
   const logFormat =
@@ -151,6 +156,7 @@ export function parseCLIOptions(): CLIOptions {
   return {
     ...(includeCodeTool !== undefined && { includeCodeTool }),
     ...(includeDocsTools !== undefined && { includeDocsTools }),
+    ...(includePlayerTool !== undefined && { includePlayerTool }),
     debug: !!argv.debug,
 
     docsSearchMode: argv.docsSearchMode as 'local' | undefined,
