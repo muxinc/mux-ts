@@ -228,9 +228,16 @@ export interface JobError {
   message: string;
 
   /**
-   * Stable public error category identifier.
+   * Stable public error category identifier. New types may be added, so handle
+   * unknown values.
    */
   type: string;
+
+  /**
+   * Identifies the specific condition that failed, when it has a public code. Absent
+   * for other failures. New codes may be added, so handle unknown values.
+   */
+  code?: string;
 
   /**
    * Whether retrying this job may resolve the error.

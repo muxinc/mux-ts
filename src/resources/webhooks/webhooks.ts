@@ -479,9 +479,16 @@ export namespace WebhookAnalyzeStructureJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -1138,9 +1145,16 @@ export namespace WebhookAnalyzeStructureJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -1746,9 +1760,16 @@ export namespace WebhookAskQuestionsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -2048,9 +2069,16 @@ export namespace WebhookAskQuestionsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -4105,9 +4133,16 @@ export namespace WebhookEditCaptionsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -4430,9 +4465,16 @@ export namespace WebhookEditCaptionsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -4760,9 +4802,16 @@ export namespace WebhookFindBestThumbnailsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -5122,9 +5171,16 @@ export namespace WebhookFindBestThumbnailsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -5553,9 +5609,16 @@ export namespace WebhookFindKeyMomentsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -6018,9 +6081,16 @@ export namespace WebhookFindKeyMomentsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -6461,9 +6531,16 @@ export namespace WebhookFindScenesJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -6834,9 +6911,16 @@ export namespace WebhookGenerateChaptersJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -7173,9 +7257,16 @@ export namespace WebhookGenerateChaptersJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -7632,9 +7723,16 @@ export namespace WebhookGenerateContextualTextJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -8017,9 +8115,16 @@ export namespace WebhookGenerateContextualTextJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -8224,9 +8329,16 @@ export namespace WebhookGenerateEngagementInsightsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -8456,9 +8568,16 @@ export namespace WebhookGenerateEngagementInsightsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -8746,9 +8865,16 @@ export namespace WebhookGeneratePremiumCaptionsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -9037,9 +9163,16 @@ export namespace WebhookGeneratePremiumCaptionsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -10213,9 +10346,16 @@ export namespace WebhookModerateJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -10654,9 +10794,16 @@ export namespace WebhookModerateJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -11123,9 +11270,16 @@ export namespace WebhookSummarizeJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -11529,9 +11683,16 @@ export namespace WebhookSummarizeJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -11825,9 +11986,16 @@ export namespace WebhookTranslateAudioJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -12118,9 +12286,16 @@ export namespace WebhookTranslateAudioJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -12419,9 +12594,16 @@ export namespace WebhookTranslateCaptionsJob {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
@@ -12671,9 +12853,16 @@ export namespace WebhookTranslateCaptionsJobV0 {
     message: string;
 
     /**
-     * Stable public error category identifier.
+     * Stable public error category identifier. New types may be added, so handle
+     * unknown values.
      */
     type: string;
+
+    /**
+     * Identifies the specific condition that failed, when it has a public code. Absent
+     * for other failures. New codes may be added, so handle unknown values.
+     */
+    code?: string;
 
     /**
      * Whether retrying this job may resolve the error.
