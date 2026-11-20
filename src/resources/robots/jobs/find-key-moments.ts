@@ -302,7 +302,8 @@ export interface FindKeyMomentsOutputSteering {
   audience?: string;
 
   /**
-   * Preferred brand or domain terms to use when supported by the source content.
+   * Preferred brand or domain terms to use when supported by the source content. The
+   * combined length of all terms must be 240 characters or fewer.
    */
   brand_terms?: Array<string>;
 
@@ -313,8 +314,11 @@ export interface FindKeyMomentsOutputSteering {
   rubric_priorities?: Array<'clarity_in_isolation' | 'emotional_intensity' | 'novelty' | 'soundbite_quality'>;
 
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

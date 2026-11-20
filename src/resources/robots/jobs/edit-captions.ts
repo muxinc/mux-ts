@@ -252,7 +252,8 @@ export namespace EditCaptionsJobParameters {
     find: string;
 
     /**
-     * Replacement text to insert when a match is found.
+     * Replacement text to insert when a match is found. Use an empty string to delete
+     * the match.
      */
     replace: string;
 
@@ -266,7 +267,8 @@ export namespace EditCaptionsJobParameters {
 
 export interface EditCaptionsSpeakerReplacement {
   /**
-   * Existing speaker label without the surrounding square brackets.
+   * Existing speaker label without the surrounding square brackets. Must match the
+   * label in the track exactly, including case.
    */
   find: string;
 

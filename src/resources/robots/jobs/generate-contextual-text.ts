@@ -180,11 +180,17 @@ export interface GenerateContextualTextJob {
  * Workflow results. Present when status is 'completed'.
  */
 export interface GenerateContextualTextJobOutputs {
+  /**
+   * Generated versions of the complete artifact set, one per requested variant.
+   */
   variants: Array<GenerateContextualTextJobOutputs.Variant>;
 }
 
 export namespace GenerateContextualTextJobOutputs {
   export interface Variant {
+    /**
+     * Generated deliverables for this variant, one per requested artifact.
+     */
     artifacts: Array<Variant.Artifact>;
 
     /**
@@ -196,6 +202,9 @@ export namespace GenerateContextualTextJobOutputs {
 
   export namespace Variant {
     export interface Artifact {
+      /**
+       * Generated text for this artifact.
+       */
       content: string;
 
       /**
@@ -271,7 +280,8 @@ export interface GenerateContextualTextOutputSteering {
   audience?: string;
 
   /**
-   * Preferred brand or domain terms to use when supported by the source content.
+   * Preferred brand or domain terms to use when supported by the source content. The
+   * combined length of all terms must be 240 characters or fewer.
    */
   brand_terms?: Array<string>;
 
@@ -282,8 +292,11 @@ export interface GenerateContextualTextOutputSteering {
   call_to_action?: 'none' | 'soft' | 'direct';
 
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

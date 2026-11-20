@@ -244,8 +244,11 @@ export namespace AskQuestionsJobParameters {
  */
 export interface AskQuestionsOutputSteering {
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 }

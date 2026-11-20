@@ -306,7 +306,8 @@ export interface ModerateJobParameters {
    * languages case-insensitively. When omitted, automatic selection applies. Uses
    * the first ready subtitle in asset track order without English preference.
    * Audio-only assets with one ready text track lacking subtitle metadata can use
-   * that legacy transcript.
+   * that legacy transcript. If no ready track matches, the request is rejected.
+   * Ignored for video assets when include_transcript is false.
    */
   language_code?: string;
 
@@ -373,8 +374,11 @@ export namespace ModerateJobParameters {
  */
 export interface ModerateOutputSteering {
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 }

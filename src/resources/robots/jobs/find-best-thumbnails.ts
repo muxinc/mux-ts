@@ -236,7 +236,7 @@ export interface FindBestThumbnailsJobParameters {
    * When true, the highest-scoring thumbnail's timestamp is written to the Mux
    * asset's thumbnail_time once the job completes, making that frame the asset's
    * default poster image. The new thumbnail will appear for some clients sooner than
-   * others, depending on local cache settings.
+   * others, depending on local cache settings. Defaults to false.
    */
   update_asset_thumbnail?: boolean;
 }
@@ -267,8 +267,11 @@ export interface FindBestThumbnailsOutputSteering {
   looking_for?: string;
 
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

@@ -246,8 +246,10 @@ export interface TranslateAudioJobParameters {
 
   /**
    * Whether to automatically upload the translated audio track to the Mux asset.
-   * Defaults to true. Must be false for audio-only assets; the job returns
-   * downloadable audio instead.
+   * Defaults to true. Must be false for audio-only assets, clips, and assets created
+   * from live streams, because Mux cannot add audio tracks to them; the job then
+   * returns downloadable audio instead. To keep a clip's dub on Mux, dub its source
+   * asset.
    */
   upload_to_mux?: boolean;
 }

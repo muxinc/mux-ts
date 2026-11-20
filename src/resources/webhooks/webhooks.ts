@@ -335,7 +335,8 @@ export namespace WebhookAnalyzeStructureJob {
 
     /**
      * BCP 47 language code for generated text. Auto-detected from available evidence
-     * when omitted.
+     * when omitted. Transcript cues and verbatim quotes remain in their source
+     * language.
      */
     output_language_code?: string;
 
@@ -375,7 +376,8 @@ export namespace WebhookAnalyzeStructureJob {
       audience?: string;
 
       /**
-       * Preferred brand or domain terms to use when supported by the source content.
+       * Preferred brand or domain terms to use when supported by the source content. The
+       * combined length of all terms must be 240 characters or fewer.
        */
       brand_terms?: Array<string>;
 
@@ -385,8 +387,11 @@ export namespace WebhookAnalyzeStructureJob {
       granularity?: 'coarse' | 'balanced' | 'fine';
 
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -399,8 +404,11 @@ export namespace WebhookAnalyzeStructureJob {
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -504,8 +512,9 @@ export namespace WebhookAnalyzeStructureJob {
    */
   export interface Outputs {
     /**
-     * Generated chapters in timeline order. Always present and empty below the chapter
-     * threshold.
+     * Generated chapters in timeline order. Chapters are generated only when the
+     * analyzed range is at least 60 seconds long and has at least two coverage
+     * segments. Always present, and may be empty even when those conditions are met.
      */
     chapters: Array<Outputs.Chapter>;
 
@@ -1713,16 +1722,22 @@ export namespace WebhookAskQuestionsJob {
      */
     export interface OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
     }
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -4089,7 +4104,8 @@ export namespace WebhookEditCaptionsJob {
       find: string;
 
       /**
-       * Replacement text to insert when a match is found.
+       * Replacement text to insert when a match is found. Use an empty string to delete
+       * the match.
        */
       replace: string;
 
@@ -4102,7 +4118,8 @@ export namespace WebhookEditCaptionsJob {
 
     export interface SpeakerReplacement {
       /**
-       * Existing speaker label without the surrounding square brackets.
+       * Existing speaker label without the surrounding square brackets. Must match the
+       * label in the track exactly, including case.
        */
       find: string;
 
@@ -4708,7 +4725,7 @@ export namespace WebhookFindBestThumbnailsJob {
      * When true, the highest-scoring thumbnail's timestamp is written to the Mux
      * asset's thumbnail_time once the job completes, making that frame the asset's
      * default poster image. The new thumbnail will appear for some clients sooner than
-     * others, depending on local cache settings.
+     * others, depending on local cache settings. Defaults to false.
      */
     update_asset_thumbnail?: boolean;
   }
@@ -4740,8 +4757,11 @@ export namespace WebhookFindBestThumbnailsJob {
       looking_for?: string;
 
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -4763,8 +4783,11 @@ export namespace WebhookFindBestThumbnailsJob {
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -5471,7 +5494,8 @@ export namespace WebhookFindKeyMomentsJob {
       audience?: string;
 
       /**
-       * Preferred brand or domain terms to use when supported by the source content.
+       * Preferred brand or domain terms to use when supported by the source content. The
+       * combined length of all terms must be 240 characters or fewer.
        */
       brand_terms?: Array<string>;
 
@@ -5484,8 +5508,11 @@ export namespace WebhookFindKeyMomentsJob {
       >;
 
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -5513,8 +5540,11 @@ export namespace WebhookFindKeyMomentsJob {
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -6875,7 +6905,8 @@ export namespace WebhookGenerateChaptersJob {
       audience?: string;
 
       /**
-       * Preferred brand or domain terms to use when supported by the source content.
+       * Preferred brand or domain terms to use when supported by the source content. The
+       * combined length of all terms must be 240 characters or fewer.
        */
       brand_terms?: Array<string>;
 
@@ -7658,7 +7689,8 @@ export namespace WebhookGenerateContextualTextJob {
       audience?: string;
 
       /**
-       * Preferred brand or domain terms to use when supported by the source content.
+       * Preferred brand or domain terms to use when supported by the source content. The
+       * combined length of all terms must be 240 characters or fewer.
        */
       brand_terms?: Array<string>;
 
@@ -7669,8 +7701,11 @@ export namespace WebhookGenerateContextualTextJob {
       call_to_action?: 'none' | 'soft' | 'direct';
 
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -7684,8 +7719,11 @@ export namespace WebhookGenerateContextualTextJob {
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -7747,11 +7785,17 @@ export namespace WebhookGenerateContextualTextJob {
    * Workflow results. Present when status is 'completed'.
    */
   export interface Outputs {
+    /**
+     * Generated versions of the complete artifact set, one per requested variant.
+     */
     variants: Array<Outputs.Variant>;
   }
 
   export namespace Outputs {
     export interface Variant {
+      /**
+       * Generated deliverables for this variant, one per requested artifact.
+       */
       artifacts: Array<Variant.Artifact>;
 
       /**
@@ -7763,6 +7807,9 @@ export namespace WebhookGenerateContextualTextJob {
 
     export namespace Variant {
       export interface Artifact {
+        /**
+         * Generated text for this artifact.
+         */
         content: string;
 
         /**
@@ -10218,7 +10265,8 @@ export namespace WebhookModerateJob {
      * languages case-insensitively. When omitted, automatic selection applies. Uses
      * the first ready subtitle in asset track order without English preference.
      * Audio-only assets with one ready text track lacking subtitle metadata can use
-     * that legacy transcript.
+     * that legacy transcript. If no ready track matches, the request is rejected.
+     * Ignored for video assets when include_transcript is false.
      */
     language_code?: string;
 
@@ -10279,16 +10327,22 @@ export namespace WebhookModerateJob {
      */
     export interface OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
     }
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -11143,8 +11197,9 @@ export namespace WebhookSummarizeJob {
 
     /**
      * When true, the generated title is written to the Mux asset's metadata
-     * (asset.meta.title) once the summary completes. Best-effort: a metadata-write
-     * failure does not fail the summary.
+     * (asset.meta.title) once the summary completes. Defaults to false. Best-effort: a
+     * metadata-write failure does not fail the summary. Check
+     * outputs.asset_updates.title for the outcome.
      */
     update_asset_meta?: boolean;
   }
@@ -11163,13 +11218,17 @@ export namespace WebhookSummarizeJob {
       audience?: string;
 
       /**
-       * Preferred brand or domain terms to use when supported by the source content.
+       * Preferred brand or domain terms to use when supported by the source content. The
+       * combined length of all terms must be 240 characters or fewer.
        */
       brand_terms?: Array<string>;
 
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       scope?: OutputSteering.Scope;
 
@@ -11188,8 +11247,11 @@ export namespace WebhookSummarizeJob {
 
     export namespace OutputSteering {
       /**
-       * Optional media execution window. Results remain timestamped against the original
-       * media timeline.
+       * Optional media execution window in seconds on the original asset timeline. At
+       * least one of start_time and end_time is required, and start_time must be less
+       * than end_time. An end_time past the end of the media is clamped to it, and a
+       * window that starts at or after the end of the media is rejected. Results remain
+       * timestamped against the original media timeline.
        */
       export interface Scope {
         /**
@@ -11927,8 +11989,10 @@ export namespace WebhookTranslateAudioJob {
 
     /**
      * Whether to automatically upload the translated audio track to the Mux asset.
-     * Defaults to true. Must be false for audio-only assets; the job returns
-     * downloadable audio instead.
+     * Defaults to true. Must be false for audio-only assets, clips, and assets created
+     * from live streams, because Mux cannot add audio tracks to them; the job then
+     * returns downloadable audio instead. To keep a clip's dub on Mux, dub its source
+     * asset.
      */
     upload_to_mux?: boolean;
   }

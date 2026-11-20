@@ -247,7 +247,8 @@ export interface GenerateChaptersOutputSteering {
   audience?: string;
 
   /**
-   * Preferred brand or domain terms to use when supported by the source content.
+   * Preferred brand or domain terms to use when supported by the source content. The
+   * combined length of all terms must be 240 characters or fewer.
    */
   brand_terms?: Array<string>;
 

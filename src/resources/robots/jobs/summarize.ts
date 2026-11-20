@@ -222,8 +222,9 @@ export interface SummarizeJobParameters {
 
   /**
    * When true, the generated title is written to the Mux asset's metadata
-   * (asset.meta.title) once the summary completes. Best-effort: a metadata-write
-   * failure does not fail the summary.
+   * (asset.meta.title) once the summary completes. Defaults to false. Best-effort: a
+   * metadata-write failure does not fail the summary. Check
+   * outputs.asset_updates.title for the outcome.
    */
   update_asset_meta?: boolean;
 }
@@ -241,13 +242,17 @@ export interface SummarizeOutputSteering {
   audience?: string;
 
   /**
-   * Preferred brand or domain terms to use when supported by the source content.
+   * Preferred brand or domain terms to use when supported by the source content. The
+   * combined length of all terms must be 240 characters or fewer.
    */
   brand_terms?: Array<string>;
 
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 

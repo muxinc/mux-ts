@@ -214,7 +214,8 @@ export namespace DirectiveBinding {
 
       /**
        * BCP 47 language code for generated text. Auto-detected from available evidence
-       * when omitted.
+       * when omitted. Transcript cues and verbatim quotes remain in their source
+       * language.
        */
       output_language_code?: string;
 
@@ -319,8 +320,9 @@ export namespace DirectiveBinding {
 
       /**
        * When true, the generated title is written to the Mux asset's metadata
-       * (asset.meta.title) once the summary completes. Best-effort: a metadata-write
-       * failure does not fail the summary.
+       * (asset.meta.title) once the summary completes. Defaults to false. Best-effort: a
+       * metadata-write failure does not fail the summary. Check
+       * outputs.asset_updates.title for the outcome.
        */
       update_asset_meta?: boolean;
     }
@@ -371,7 +373,8 @@ export namespace DirectiveBinding {
        * languages case-insensitively. When omitted, automatic selection applies. Uses
        * the first ready subtitle in asset track order without English preference.
        * Audio-only assets with one ready text track lacking subtitle metadata can use
-       * that legacy transcript.
+       * that legacy transcript. If no ready track matches, the request is rejected.
+       * Ignored for video assets when include_transcript is false.
        */
       language_code?: string;
 
@@ -692,7 +695,8 @@ export namespace DirectiveBinding {
         find: string;
 
         /**
-         * Replacement text to insert when a match is found.
+         * Replacement text to insert when a match is found. Use an empty string to delete
+         * the match.
          */
         replace: string;
 
@@ -852,8 +856,10 @@ export namespace DirectiveBinding {
 
       /**
        * Whether to automatically upload the translated audio track to the Mux asset.
-       * Defaults to true. Must be false for audio-only assets; the job returns
-       * downloadable audio instead.
+       * Defaults to true. Must be false for audio-only assets, clips, and assets created
+       * from live streams, because Mux cannot add audio tracks to them; the job then
+       * returns downloadable audio instead. To keep a clip's dub on Mux, dub its source
+       * asset.
        */
       upload_to_mux?: boolean;
     }
@@ -1174,7 +1180,7 @@ export namespace DirectiveBinding {
        * When true, the highest-scoring thumbnail's timestamp is written to the Mux
        * asset's thumbnail_time once the job completes, making that frame the asset's
        * default poster image. The new thumbnail will appear for some clients sooner than
-       * others, depending on local cache settings.
+       * others, depending on local cache settings. Defaults to false.
        */
       update_asset_thumbnail?: boolean;
     }

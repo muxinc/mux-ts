@@ -127,8 +127,9 @@ export interface AnalyzeStructureJob {
  */
 export interface AnalyzeStructureJobOutputs {
   /**
-   * Generated chapters in timeline order. Always present and empty below the chapter
-   * threshold.
+   * Generated chapters in timeline order. Chapters are generated only when the
+   * analyzed range is at least 60 seconds long and has at least two coverage
+   * segments. Always present, and may be empty even when those conditions are met.
    */
   chapters: Array<AnalyzeStructureJobOutputs.Chapter>;
 
@@ -488,7 +489,8 @@ export interface AnalyzeStructureJobParameters {
 
   /**
    * BCP 47 language code for generated text. Auto-detected from available evidence
-   * when omitted.
+   * when omitted. Transcript cues and verbatim quotes remain in their source
+   * language.
    */
   output_language_code?: string;
 
@@ -527,7 +529,8 @@ export interface AnalyzeStructureOutputSteering {
   audience?: string;
 
   /**
-   * Preferred brand or domain terms to use when supported by the source content.
+   * Preferred brand or domain terms to use when supported by the source content. The
+   * combined length of all terms must be 240 characters or fewer.
    */
   brand_terms?: Array<string>;
 
@@ -537,8 +540,11 @@ export interface AnalyzeStructureOutputSteering {
   granularity?: 'coarse' | 'balanced' | 'fine';
 
   /**
-   * Optional media execution window. Results remain timestamped against the original
-   * media timeline.
+   * Optional media execution window in seconds on the original asset timeline. At
+   * least one of start_time and end_time is required, and start_time must be less
+   * than end_time. An end_time past the end of the media is clamped to it, and a
+   * window that starts at or after the end of the media is rejected. Results remain
+   * timestamped against the original media timeline.
    */
   scope?: JobsAPI.OutputSteeringScope;
 
