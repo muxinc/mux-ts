@@ -1094,8 +1094,8 @@ export interface AssetOptions {
 export interface AssetProgress {
   /**
    * Represents the estimated completion percentage. Returns `0 - 100` when in
-   * `ingesting`, `transcoding`, or `completed` state, and `-1` when in `live` or
-   * `errored` state.
+   * `ingesting`, `transcoding`, `optimizing`, or `completed` state, and `-1` when in
+   * `live` or `errored` state.
    */
   progress: number;
 
@@ -1106,7 +1106,12 @@ export interface AssetProgress {
    *
    * - `ingesting`: Asset is being ingested (initial processing before or after
    *   transcoding). While in this state, the `progress` percentage will be 0.
-   * - `transcoding`: Asset is undergoing non-standard transcoding.
+   * - `transcoding`: Asset is undergoing non-standard transcoding. For assets with a
+   *   `delivery_profile` of `hls_podcast`, the `progress` percentage runs from 0 to
+   *   50 while transcoding.
+   * - `optimizing`: Asset is finishing additional processing its `delivery_profile`
+   *   requires, such as measuring each rendition's bitrate for `hls_podcast` assets.
+   *   `status` stays `preparing`, and the `progress` percentage runs from 50 to 100.
    * - `completed`: Asset processing is complete (`status` is `ready`). While in this
    *   state, the `progress` percentage will be 100.
    * - `live`: Asset is a live stream currently in progress. While in this state, the
@@ -1114,7 +1119,7 @@ export interface AssetProgress {
    * - `errored`: Asset has encountered an error (`status` is `errored`). While in
    *   this state, the `progress` percentage will be -1.
    */
-  state: 'ingesting' | 'transcoding' | 'completed' | 'live' | 'errored';
+  state: 'ingesting' | 'transcoding' | 'optimizing' | 'completed' | 'live' | 'errored';
 }
 
 export interface AssetResponse {
