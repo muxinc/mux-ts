@@ -176,6 +176,9 @@ export interface BaseWebhookEvent {
    */
   created_at: string;
 
+  /**
+   * The event's payload; its shape depends on the event type.
+   */
   data: { [key: string]: unknown };
 
   environment: BaseWebhookEvent.Environment;
