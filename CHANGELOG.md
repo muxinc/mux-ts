@@ -1,5 +1,31 @@
 # Changelog
 
+## [16.3.0](https://github.com/muxinc/mux-ts/compare/v16.2.0...v16.3.0) (2026-11-23)
+
+
+### Features
+
+* **robots:** add an optional error code to Robots error responses ([9362c4d](https://github.com/muxinc/mux-ts/commit/9362c4dadadf1a03c81173b1c3a7df9f44102c28))
+* **video:** Add optimizing asset progress state ([ef0410d](https://github.com/muxinc/mux-ts/commit/ef0410d7f6f6ae1ad8adaf6a933c6857f03912b3))
+* **webhooks:** generate verification and typed events in Java and Kotlin ([c00e144](https://github.com/muxinc/mux-ts/commit/c00e144f5954f2a416fb3208e0e58eef5ca2be6d))
+* **webhooks:** typed webhook payloads in Java, Kotlin and PHP; slimmer Java/Kotlin tests ([fe86d79](https://github.com/muxinc/mux-ts/commit/fe86d791831f50f15fbbde4b02506b4dd0ece004))
+
+
+### Bug Fixes
+
+* **jwt:** generate the JWT and webhook verification helpers; fix the README examples ([dba6aee](https://github.com/muxinc/mux-ts/commit/dba6aeeb876610793337374a4c5962cc1fc962df))
+
+
+### Documentation
+
+* **migration:** name DirectiveRun by its Directives namespace ([#30](https://github.com/muxinc/mux-ts/issues/30)) ([df13762](https://github.com/muxinc/mux-ts/commit/df13762622ea619b48ec09f0fbf5c9dc5824dfac))
+* **robots:** clarify Robots output_steering fields ([9664e09](https://github.com/muxinc/mux-ts/commit/9664e093ad1a6384ee40926b04a29ed6db53ba81))
+
+
+### Refactors
+
+* **webhooks:** BaseWebhookEvent keeps a generic data; drop the config's base-event override ([adcc7e7](https://github.com/muxinc/mux-ts/commit/adcc7e7f575f5c7486587947eff1fe9ece616273))
+
 ## [16.2.0](https://github.com/muxinc/mux-ts/compare/v16.1.0...v16.2.0) (2026-11-11)
 
 
