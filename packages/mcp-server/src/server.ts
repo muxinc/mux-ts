@@ -15,6 +15,8 @@ import { setLocalSearch } from './docs-search-tool';
 import { LocalDocsSearch } from './local-docs-search';
 import { getInstructions } from './instructions';
 import { McpOptions } from './options';
+import { playVideoTool } from './lib/player/play-video';
+import { registerUiResources } from './lib/player/ui-resource';
 import { blockedMethodsForCodeTool } from './methods';
 import { HandlerFunction, McpRequestContext, ToolCallResult, McpTool } from './types';
 
@@ -124,6 +126,7 @@ export async function initMcpServer(params: {
 
   const providedTools = selectTools(params.mcpOptions);
   const toolMap = Object.fromEntries(providedTools.map((mcpTool) => [mcpTool.tool.name, mcpTool]));
+  registerUiResources(server, providedTools);
 
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
@@ -213,6 +216,9 @@ export function selectTools(options?: McpOptions): McpTool[] {
   }
   if (options?.includeDocsTools ?? true) {
     includedTools.push(docsSearchTool);
+  }
+  if (options?.includePlayerTool ?? false) {
+    includedTools.push(playVideoTool);
   }
   return includedTools;
 }

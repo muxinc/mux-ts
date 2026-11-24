@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Mux player</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      #root {
+        --player-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--player-radius);
+        background: #000;
+        font:
+          14px/1.4 system-ui,
+          sans-serif;
+      }
+      video-skin {
+        --media-border-radius: var(--player-radius);
+        --media-border-color: transparent;
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      :root[data-display-mode='fullscreen'] #root {
+        --player-radius: 0;
+      }
+      :root[data-display-mode='fullscreen'] video-skin {
+        aspect-ratio: auto;
+        height: 100vh;
+      }
+      #overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 16px;
+        box-sizing: border-box;
+        text-align: center;
+        color: #fff;
+        pointer-events: none;
+      }
+      #overlay[hidden] {
+        display: none;
+      }
+      #root[data-phase='failed'] #overlay {
+        background: #111;
+        pointer-events: auto;
+      }
+      #status {
+        margin: 0;
+        max-width: 48ch;
+      }
+      #root button {
+        font: inherit;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      #root button[hidden] {
+        display: none;
+      }
+      #expand {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-phase="waiting">
+      <video-player>
+        <video-skin>
+          <!-- crossorigin: the storyboard <track> and thumbnail sprites are cross-origin and need CORS -->
+          <mux-video playsinline crossorigin="anonymous"></mux-video>
+        </video-skin>
+      </video-player>
+      <div id="overlay">
+        <p id="status" role="status">Waiting for the video…</p>
+        <button id="open-link" type="button" hidden>Open in Mux Player</button>
+      </div>
+      <button id="expand" type="button" hidden>Expand</button>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
