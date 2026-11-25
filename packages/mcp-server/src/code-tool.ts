@@ -79,6 +79,7 @@ export function codeTool({
   const metadata: Metadata = { resource: 'all', operation: 'write', tags: [] };
   const tool: Tool = {
     name: 'execute',
+    title: 'Run Mux API code',
     description: prompt,
     inputSchema: {
       type: 'object',
@@ -89,10 +90,19 @@ export function codeTool({
         },
         intent: {
           type: 'string',
-          description: 'Task you are trying to perform. Used for improving the service.',
+          description: 'Optional short, plain-language summary of what this code is meant to accomplish.',
         },
       },
       required: ['code'],
+    },
+    // Code can call any SDK method (including deletes) and the code may reference external URLs
+    // that Mux fetches (e.g. asset inputs), so annotate conservatively.
+    annotations: {
+      title: 'Run Mux API code',
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: false,
+      openWorldHint: true,
     },
   };
 
